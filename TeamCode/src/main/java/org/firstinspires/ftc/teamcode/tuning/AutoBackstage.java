@@ -14,7 +14,7 @@ import org.firstinspires.ftc.teamcode.tuning.TuningOpModes;
 public final class AutoBackstage extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
-        Pose2d beginPose = new Pose2d(14.5, 54, Math.toRadians(270));
+        Pose2d beginPose = new Pose2d(14.5, 53.5, Math.toRadians(270));
         if (TuningOpModes.DRIVE_CLASS.equals(MecanumDrive.class)) {
             MecanumDrive drive = new MecanumDrive(hardwareMap, beginPose);
 
@@ -22,8 +22,31 @@ public final class AutoBackstage extends LinearOpMode {
 
             Actions.runBlocking(
                 drive.actionBuilder(beginPose)
-                        //.splineTo(new Vector2d(30, 30), Math.PI / 2)
-                        .splineTo(new Vector2d(14.5, 15), Math.toRadians(270))
+                        // Center Pixel Placement
+//                        .splineTo(new Vector2d(18, 25.5), Math.toRadians(270))
+//                        // strafe left 29 inches
+//                        .strafeTo(new Vector2d(47,25.5))
+
+                        // Left Pixel Placement
+                        // .lineToY(47)
+                        .splineTo(new Vector2d(23, 38), Math.toRadians(270))
+//                        .waitSeconds(1)
+//                        .splineTo(new Vector2d(23, 43), Math.toRadians(270))
+//                        // strafe left 29 inches
+//                        .strafeTo(new Vector2d(47,27))
+//
+//                        // Right Pixel Placement
+//                        .splineTo(new Vector2d(1, 38), Math.toRadians(270))
+//                        // strafe left 29 inches
+//                        .strafeTo(new Vector2d(47,25.5))
+
+
+                        /* Placing pixel code here
+                        .waitSeconds(2)
+                        .setTangent(0)
+                        .splineTo(new Vector2d(36, 34.5), Math.toRadians(180))
+                        */
+
 
                         // CENTER POS
                        // .lineToY(-27)
