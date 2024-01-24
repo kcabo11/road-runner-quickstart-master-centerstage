@@ -31,9 +31,10 @@ public final class AutoBackstage extends LinearOpMode {
                         // .lineToY(47)
                         .splineTo(new Vector2d(23, 38), Math.toRadians(270))
 //                        .waitSeconds(1)
-//                        .splineTo(new Vector2d(23, 43), Math.toRadians(270))
+                        .setTangent(0)
+                        .splineToLinearHeading(new Pose2d(23, 43, Math.toRadians(270)), Math.toRadians(270))
 //                        // strafe left 29 inches
-//                        .strafeTo(new Vector2d(47,27))
+                        .strafeTo(new Vector2d(47,15))
 //
 //                        // Right Pixel Placement
 //                        .splineTo(new Vector2d(1, 38), Math.toRadians(270))
