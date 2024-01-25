@@ -5,6 +5,7 @@ import static org.firstinspires.ftc.teamcode.tuning.AutoBackstage.START_POSITION
 import static org.firstinspires.ftc.teamcode.tuning.AutoBackstage.START_POSITION.RED_BACKSTAGE;
 import static org.firstinspires.ftc.teamcode.tuning.AutoBackstage.START_POSITION.RED_STAGE;
 
+import org.firstinspires.ftc.robotcore.external.hardware.camera.CameraName;
 import org.firstinspires.ftc.teamcode.utils.ColorDetectionProcessor;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.Vector2d;
@@ -37,6 +38,7 @@ public final class AutoBackstage extends LinearOpMode {
         // ????
         UNKNOWN
     }
+    private VisionPortal cameraPortal;
     private static START_POSITION startPosition = START_POSITION.UNKNOWN; //WHERE WE ARE ON THE FIELD/ RED CLOSE ETC
 
     private ColorDetectionProcessor colorDetectionProcessor;
@@ -44,7 +46,9 @@ public final class AutoBackstage extends LinearOpMode {
 
     public void initLoop() {
         detectPurplePath();
-        telemetry.addData("Selected Auto: ", startPosition.toString());
+        telemetry.addData("You selected startPosition of", startPosition.toString());
+        telemetry.addData("Camera preview on/off", "3 dots, Camera Stream");
+        telemetry.addData(">", "Touch Play to start OpMode");
         telemetry.update();
     }
     private void detectPurplePath() {
@@ -59,17 +63,19 @@ public final class AutoBackstage extends LinearOpMode {
             Pose2d beginPose = new Pose2d(14.5, 53.5, Math.toRadians(270));
             MecanumDrive drive = new MecanumDrive(hardwareMap, beginPose);
 
-            selectStartingPosition(); //FIND FIELD POSITION & COLOR
+            selectStartingPosition(); //Select stage or backstage side via the D-PAD
+            initialize(); //Initialize the camera and any other devices
 
-
-            telemetry.addData("Camera preview on/off", "3 dots, Camera Stream");
-            telemetry.addData(">", "Touch Play to start OpMode");
-            telemetry.update();
+            while (!isStarted() && !isStopRequested())
+            {
+                initLoop(); //Continually find pixel path and print out the results
+            }
 
             waitForStart();
 
             //OVERRIDE FOR TESTING
-
+            startPosition = BLUE_BACKSTAGE;
+            purplePixelPath = ColorDetectionProcessor.StartingPosition.LEFT;
 
             if (startPosition == BLUE_BACKSTAGE) {
                 switch (purplePixelPath) {
@@ -187,6 +193,15 @@ public final class AutoBackstage extends LinearOpMode {
         } else {
             throw new RuntimeException();
         }
+    }
+
+    public void initialize(){
+        //initialize other hardware as needed.
+        CameraName frontCamera = hardwareMap.get(WebcamName.class, "Webcam 1");
+
+        colorDetectionProcessor = new ColorDetectionProcessor();
+        cameraPortal = VisionPortal.easyCreateWithDefaults(hardwareMap.get(WebcamName.class, "Webcam 1"), colorDetectionProcessor);
+
     }
 
     public void selectStartingPosition() {
