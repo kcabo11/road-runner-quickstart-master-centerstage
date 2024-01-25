@@ -41,6 +41,7 @@ public final class AutoBackstage extends LinearOpMode {
     private VisionPortal cameraPortal;
     private static START_POSITION startPosition = START_POSITION.UNKNOWN; //WHERE WE ARE ON THE FIELD/ RED CLOSE ETC
 
+    MecanumDrive drive;
     private ColorDetectionProcessor colorDetectionProcessor;
     private ColorDetectionProcessor.StartingPosition purplePixelPath = ColorDetectionProcessor.StartingPosition.CENTER;
 
@@ -61,7 +62,7 @@ public final class AutoBackstage extends LinearOpMode {
 
         if (TuningOpModes.DRIVE_CLASS.equals(MecanumDrive.class)) {
             Pose2d beginPose = new Pose2d(14.5, 53.5, Math.toRadians(270));
-            MecanumDrive drive = new MecanumDrive(hardwareMap, beginPose);
+            drive = new MecanumDrive(hardwareMap, beginPose);
 
             selectStartingPosition(); //Select stage or backstage side via the D-PAD
             initialize(); //Initialize the camera and any other devices
@@ -75,23 +76,55 @@ public final class AutoBackstage extends LinearOpMode {
 
             //OVERRIDE FOR TESTING
             startPosition = BLUE_BACKSTAGE;
-            purplePixelPath = ColorDetectionProcessor.StartingPosition.LEFT;
+            purplePixelPath = ColorDetectionProcessor.StartingPosition.RIGHT;
+
+
 
             if (startPosition == BLUE_BACKSTAGE) {
+                beginPose = new Pose2d(14.5, 53.5, Math.toRadians(270));
+                telemetry.addData("Running Blue_Backstage with pixel ","");
                 switch (purplePixelPath) {
-                    case LEFT:
-                        beginPose = new Pose2d(14.5, 53.5, Math.toRadians(270));
+                    case CENTER: {
+                        telemetry.addData("CENTER", "");
+                        telemetry.update();
                         Actions.runBlocking(
                                 drive.actionBuilder(beginPose)
-                                .splineTo(new Vector2d(23, 38), Math.toRadians(270))
-                                .setTangent(0)
-                                .splineToLinearHeading(new Pose2d(23, 43, Math.toRadians(270)), Math.toRadians(270))
-                                .strafeTo(new Vector2d(47,15))
-                                .build());
-                    case CENTER:
+                                        .splineTo(new Vector2d(14.5, 26.5), Math.toRadians(270))
+                                        .setTangent(0)
+                                        .splineToLinearHeading(new Pose2d(23, 43, Math.toRadians(270)), Math.toRadians(270))
+                                        .strafeTo(new Vector2d(47, 15))
+                                        .build());
+
+                        telemetry.addData("CENTER Complete", "");
+                        telemetry.update();
                         break;
-                    case RIGHT:
+                    }
+                    case LEFT: {
+                        telemetry.addData("LEFT", "");
+                        telemetry.update();
+                        Actions.runBlocking(
+                                drive.actionBuilder(beginPose)
+                                        .splineTo(new Vector2d(23, 38), Math.toRadians(270))
+                                        .setTangent(0)
+                                        .splineToLinearHeading(new Pose2d(23, 43, Math.toRadians(270)), Math.toRadians(270))
+                                        .strafeTo(new Vector2d(47, 15))
+                                        .build());
+                        telemetry.addData("LEFT Complete", "");
+                        telemetry.update();
                         break;
+                    }
+                    case RIGHT: {
+                        telemetry.addData("RIGHT", "");
+                        telemetry.update();
+                        Actions.runBlocking(
+                                drive.actionBuilder(beginPose)
+                                        .splineTo(new Vector2d(2, 38), Math.toRadians(270))
+                                        .setTangent(0)
+                                        .splineToLinearHeading(new Pose2d(23, 43, Math.toRadians(270)), Math.toRadians(270))
+                                        .strafeTo(new Vector2d(47, 15))
+                                        .build());
+                        break;
+                    }
                 }
             } else if (startPosition == BLUE_STAGE) {
                 switch (purplePixelPath) {
