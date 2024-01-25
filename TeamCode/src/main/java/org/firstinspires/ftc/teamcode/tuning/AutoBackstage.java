@@ -5,27 +5,24 @@ import static org.firstinspires.ftc.teamcode.tuning.AutoBackstage.START_POSITION
 import static org.firstinspires.ftc.teamcode.tuning.AutoBackstage.START_POSITION.RED_BACKSTAGE;
 import static org.firstinspires.ftc.teamcode.tuning.AutoBackstage.START_POSITION.RED_STAGE;
 
+import androidx.annotation.NonNull;
+
 import org.firstinspires.ftc.robotcore.external.hardware.camera.CameraName;
 import org.firstinspires.ftc.teamcode.utils.ColorDetectionProcessor;
+
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.CRServo;
 
-import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.ExposureControl;
-import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.GainControl;
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import org.firstinspires.ftc.vision.VisionPortal;
-import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
-import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
 import org.firstinspires.ftc.teamcode.MecanumDrive;
-import org.firstinspires.ftc.teamcode.TankDrive;
-import org.firstinspires.ftc.teamcode.tuning.TuningOpModes;
 
 @Autonomous
 public final class AutoBackstage extends LinearOpMode {
@@ -44,7 +41,8 @@ public final class AutoBackstage extends LinearOpMode {
     MecanumDrive drive;
     private ColorDetectionProcessor colorDetectionProcessor;
     private ColorDetectionProcessor.StartingPosition purplePixelPath = ColorDetectionProcessor.StartingPosition.CENTER;
-
+    public CRServo intakeLeft = null;
+    public CRServo intakeRight = null;
     public void initLoop() {
         detectPurplePath();
         telemetry.addData("You selected startPosition of", startPosition.toString());
@@ -75,11 +73,11 @@ public final class AutoBackstage extends LinearOpMode {
             waitForStart();
 
             //OVERRIDE FOR TESTING
-            startPosition = BLUE_BACKSTAGE;
+            startPosition = BLUE_STAGE;
             purplePixelPath = ColorDetectionProcessor.StartingPosition.RIGHT;
 
 
-
+//          Alliance: Blue; Position: Backstage
             if (startPosition == BLUE_BACKSTAGE) {
                 beginPose = new Pose2d(14.5, 53.5, Math.toRadians(270));
                 telemetry.addData("Running Blue_Backstage with pixel ","");
@@ -90,6 +88,7 @@ public final class AutoBackstage extends LinearOpMode {
                         Actions.runBlocking(
                                 drive.actionBuilder(beginPose)
                                         .splineTo(new Vector2d(14.5, 26.5), Math.toRadians(270))
+                                        .afterDisp(5, outtake_marker())
                                         .setTangent(0)
                                         .splineToLinearHeading(new Pose2d(23, 43, Math.toRadians(270)), Math.toRadians(270))
                                         .strafeTo(new Vector2d(47, 15))
@@ -105,6 +104,7 @@ public final class AutoBackstage extends LinearOpMode {
                         Actions.runBlocking(
                                 drive.actionBuilder(beginPose)
                                         .splineTo(new Vector2d(23, 38), Math.toRadians(270))
+                                        .afterDisp(5, outtake_marker())
                                         .setTangent(0)
                                         .splineToLinearHeading(new Pose2d(23, 43, Math.toRadians(270)), Math.toRadians(270))
                                         .strafeTo(new Vector2d(47, 15))
@@ -123,6 +123,7 @@ public final class AutoBackstage extends LinearOpMode {
                                         //.setTangent(0)
                                         .splineToLinearHeading(new Pose2d(2, 35, Math.toRadians(180)), Math.toRadians(0))
                                         //.splineToConstantHeading(new Vector2d(2, 35), Math.toRadians(180))
+                                        .afterDisp(5, outtake_marker())
                                         .strafeTo(new Vector2d(47, 15))
                                         .build());
                         telemetry.addData("RIGHT Complete", "");
@@ -130,15 +131,59 @@ public final class AutoBackstage extends LinearOpMode {
                         break;
                     }
                 }
+
+//          Alliance: Blue; Position: Frontstage
             } else if (startPosition == BLUE_STAGE) {
+                beginPose = new Pose2d(-38.5, 53.5, Math.toRadians(270));
+                telemetry.addData("Running Blue_Backstage with pixel ","");
                 switch (purplePixelPath) {
                     case LEFT:
+                        telemetry.addData("LEFT", "");
+                        telemetry.update();
+                        Actions.runBlocking(
+                                drive.actionBuilder(beginPose)
+                                        .splineTo(new Vector2d(-47, 38), Math.toRadians(270))
+                                        .afterDisp(5, outtake_marker())
+                                        .setTangent(0)
+                                        .splineToLinearHeading(new Pose2d(-38.5, 50, Math.toRadians(270)), Math.toRadians(270))
+                                        .strafeTo(new Vector2d(50, 50))
+                                        .build());
+                        telemetry.addData("LEFT Complete", "");
+                        telemetry.update();
                         break;
                     case CENTER:
+                        telemetry.addData("CENTER", "");
+                        telemetry.update();
+                        Actions.runBlocking(
+                                drive.actionBuilder(beginPose)
+                                        .splineTo(new Vector2d(-38.5, 26.5), Math.toRadians(270))
+                                        .afterDisp(5, outtake_marker())
+                                        .setTangent(0)
+                                        .splineToLinearHeading(new Pose2d(-38.5, 50, Math.toRadians(270)), Math.toRadians(270))
+                                        .strafeTo(new Vector2d(50, 50))
+                                        .build());
+
+                        telemetry.addData("CENTER Complete", "");
+                        telemetry.update();
                         break;
                     case RIGHT:
+                        telemetry.addData("RIGHT", "");
+                        telemetry.update();
+                        Actions.runBlocking(
+                                drive.actionBuilder(beginPose)
+                                        .setTangent(0)
+                                        .splineToLinearHeading(new Pose2d(-40, 35, Math.toRadians(180)), Math.toRadians(0))
+                                        //.splineToConstantHeading(new Vector2d(2, 35), Math.toRadians(180))
+                                        .afterDisp(5, outtake_marker())
+                                        .splineToLinearHeading(new Pose2d(-38.5, 50, Math.toRadians(270)), Math.toRadians(270))
+                                        .strafeTo(new Vector2d(50, 50))
+                                        .build());
+                        telemetry.addData("RIGHT Complete", "");
+                        telemetry.update();
                         break;
                 }
+
+//          Alliance: Red; Position: Backstage
             } else if (startPosition == RED_BACKSTAGE) {
                 switch (purplePixelPath) {
                     case LEFT:
@@ -148,6 +193,8 @@ public final class AutoBackstage extends LinearOpMode {
                     case RIGHT:
                         break;
                 }
+
+//          Alliance: Red; Position: Frontstage
             } else if (startPosition == RED_STAGE) {
                 switch (purplePixelPath) {
                     case LEFT:
@@ -232,6 +279,21 @@ public final class AutoBackstage extends LinearOpMode {
         }
     }
 
+    public class startServoOuttake implements Action {
+        private boolean initialized = false;
+
+        @ Override
+        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+            intakeLeft.setPower(.5);
+            intakeRight.setPower(-.5);
+            return true;
+        }
+    }
+
+    public Action outtake_marker() {
+        return new AutoBackstage.startServoOuttake();
+    }
+
     public void initialize(){
         //initialize other hardware as needed.
         CameraName frontCamera = hardwareMap.get(WebcamName.class, "Webcam 1");
@@ -239,7 +301,8 @@ public final class AutoBackstage extends LinearOpMode {
         colorDetectionProcessor = new ColorDetectionProcessor();
         cameraPortal = VisionPortal.easyCreateWithDefaults(hardwareMap.get(WebcamName.class, "Webcam 1"), colorDetectionProcessor);
 
-
+        intakeLeft = hardwareMap.get(CRServo.class, "intakeLeft");
+        intakeRight = hardwareMap.get(CRServo.class, "intakeRight");
     }
 
     public void selectStartingPosition() {
