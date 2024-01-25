@@ -118,11 +118,15 @@ public final class AutoBackstage extends LinearOpMode {
                         telemetry.update();
                         Actions.runBlocking(
                                 drive.actionBuilder(beginPose)
-                                        .splineTo(new Vector2d(2, 38), Math.toRadians(270))
                                         .setTangent(0)
-                                        .splineToLinearHeading(new Pose2d(23, 43, Math.toRadians(270)), Math.toRadians(270))
+                                        .splineToConstantHeading(new Vector2d(14.5, 33), Math.toRadians(270))
+                                        //.setTangent(0)
+                                        .splineToLinearHeading(new Pose2d(2, 35, Math.toRadians(180)), Math.toRadians(0))
+                                        //.splineToConstantHeading(new Vector2d(2, 35), Math.toRadians(180))
                                         .strafeTo(new Vector2d(47, 15))
                                         .build());
+                        telemetry.addData("RIGHT Complete", "");
+                        telemetry.update();
                         break;
                     }
                 }
@@ -234,6 +238,7 @@ public final class AutoBackstage extends LinearOpMode {
 
         colorDetectionProcessor = new ColorDetectionProcessor();
         cameraPortal = VisionPortal.easyCreateWithDefaults(hardwareMap.get(WebcamName.class, "Webcam 1"), colorDetectionProcessor);
+
 
     }
 
