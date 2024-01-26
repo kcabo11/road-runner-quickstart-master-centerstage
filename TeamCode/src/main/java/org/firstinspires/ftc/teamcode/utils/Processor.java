@@ -7,7 +7,7 @@ import org.firstinspires.ftc.robotcore.internal.camera.calibration.CameraCalibra
 public class Processor implements VisionProcessor {
     public double satRectLeft, satRectMiddle;
     public Rect rectLeft = new Rect(110, 330, 135, 130);
-    public Rect rectMiddle = new Rect(390, 330, 165, 110);
+    public Rect rectMiddle = new Rect(350, 330, 170, 110);
     Selected selection = Selected.NONE; Mat submat = new Mat();
     Mat hsvMat = new Mat();
     //https://www.reddit.com/r/FTC/comments/17b74hf/vision_portal_and_processor/

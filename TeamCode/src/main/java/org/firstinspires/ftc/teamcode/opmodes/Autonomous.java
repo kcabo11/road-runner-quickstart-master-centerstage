@@ -76,8 +76,8 @@ public final class Autonomous extends LinearOpMode {
             waitForStart();
 
             //OVERRIDE FOR TESTING
-            startPosition = BLUE_BACKSTAGE;
-            purplePixelPath = Processor.Selected.LEFT;
+//            startPosition = BLUE_BACKSTAGE;
+//            purplePixelPath = Processor.Selected.LEFT;
 
 
 //          Alliance: Blue; Position: Backstage
@@ -94,7 +94,8 @@ public final class Autonomous extends LinearOpMode {
                                         .afterDisp(5, outtake_marker())
                                         .setTangent(0)
                                         .splineToLinearHeading(new Pose2d(23, 43, Math.toRadians(270)), Math.toRadians(270))
-                                        .strafeTo(new Vector2d(47, 15))
+                                        .strafeTo(new Vector2d(50, 15))
+                                        .afterDisp(6, stop_outtake())
                                         .build());
 
                         telemetry.addData("CENTER Complete", "");
@@ -110,7 +111,8 @@ public final class Autonomous extends LinearOpMode {
                                         .afterDisp(5, outtake_marker())
                                         .setTangent(0)
                                         .splineToLinearHeading(new Pose2d(23, 43, Math.toRadians(270)), Math.toRadians(270))
-                                        .strafeTo(new Vector2d(47, 15))
+                                        .strafeTo(new Vector2d(50, 15))
+                                        .afterDisp(10, stop_outtake())
                                         .build());
                         telemetry.addData("LEFT Complete", "");
                         telemetry.update();
@@ -127,7 +129,8 @@ public final class Autonomous extends LinearOpMode {
                                         .splineToLinearHeading(new Pose2d(2, 35, Math.toRadians(180)), Math.toRadians(0))
                                         //.splineToConstantHeading(new Vector2d(2, 35), Math.toRadians(180))
                                         .afterDisp(5, outtake_marker())
-                                        .strafeTo(new Vector2d(47, 15))
+                                        .strafeTo(new Vector2d(50, 15))
+                                        .afterDisp(6, stop_outtake())
                                         .build());
                         telemetry.addData("RIGHT Complete", "");
                         telemetry.update();
@@ -149,7 +152,8 @@ public final class Autonomous extends LinearOpMode {
                                         .afterDisp(5, outtake_marker())
                                         .setTangent(0)
                                         .splineToLinearHeading(new Pose2d(-38.5, 50, Math.toRadians(270)), Math.toRadians(270))
-                                        .strafeTo(new Vector2d(50, 50))
+                                        .strafeTo(new Vector2d(55, 50))
+                                        .afterDisp(6, stop_outtake())
                                         .build());
                         telemetry.addData("LEFT Complete", "");
                         telemetry.update();
@@ -163,7 +167,8 @@ public final class Autonomous extends LinearOpMode {
                                         .afterDisp(5, outtake_marker())
                                         .setTangent(0)
                                         .splineToLinearHeading(new Pose2d(-38.5, 50, Math.toRadians(270)), Math.toRadians(270))
-                                        .strafeTo(new Vector2d(50, 50))
+                                        .strafeTo(new Vector2d(55, 50))
+                                        .afterDisp(6, stop_outtake())
                                         .build());
 
                         telemetry.addData("CENTER Complete", "");
@@ -179,7 +184,8 @@ public final class Autonomous extends LinearOpMode {
                                         //.splineToConstantHeading(new Vector2d(2, 35), Math.toRadians(180))
                                         .afterDisp(5, outtake_marker())
                                         .splineToLinearHeading(new Pose2d(-38.5, 50, Math.toRadians(270)), Math.toRadians(270))
-                                        .strafeTo(new Vector2d(50, 50))
+                                        .strafeTo(new Vector2d(55, 50))
+                                        .afterDisp(6, stop_outtake())
                                         .build());
                         telemetry.addData("RIGHT Complete", "");
                         telemetry.update();
@@ -295,6 +301,21 @@ public final class Autonomous extends LinearOpMode {
 
     public Action outtake_marker() {
         return new Autonomous.startServoOuttake();
+    }
+
+    public class stopServoOuttake implements Action {
+        private boolean initialized = false;
+
+        @ Override
+        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+            intakeLeft.setPower(0);
+            intakeRight.setPower(0);
+            return true;
+        }
+    }
+
+    public Action stop_outtake() {
+        return new Autonomous.stopServoOuttake();
     }
 
     public void initialize(){
