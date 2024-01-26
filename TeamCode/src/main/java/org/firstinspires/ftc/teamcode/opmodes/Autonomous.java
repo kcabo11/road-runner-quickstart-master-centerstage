@@ -1,21 +1,21 @@
-package org.firstinspires.ftc.teamcode.tuning;
+package org.firstinspires.ftc.teamcode.opmodes;
 
-import static org.firstinspires.ftc.teamcode.tuning.AutoBackstage.START_POSITION.BLUE_BACKSTAGE;
-import static org.firstinspires.ftc.teamcode.tuning.AutoBackstage.START_POSITION.BLUE_STAGE;
-import static org.firstinspires.ftc.teamcode.tuning.AutoBackstage.START_POSITION.RED_BACKSTAGE;
-import static org.firstinspires.ftc.teamcode.tuning.AutoBackstage.START_POSITION.RED_STAGE;
+import static org.firstinspires.ftc.teamcode.opmodes.Autonomous.START_POSITION.BLUE_BACKSTAGE;
+import static org.firstinspires.ftc.teamcode.opmodes.Autonomous.START_POSITION.BLUE_STAGE;
+import static org.firstinspires.ftc.teamcode.opmodes.Autonomous.START_POSITION.RED_BACKSTAGE;
+import static org.firstinspires.ftc.teamcode.opmodes.Autonomous.START_POSITION.RED_STAGE;
 
 import androidx.annotation.NonNull;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.CameraName;
-import org.firstinspires.ftc.teamcode.utils.ColorDetectionProcessor;
+import org.firstinspires.ftc.teamcode.tuning.TuningOpModes;
+import org.firstinspires.ftc.teamcode.utils.Processor;
 
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 
@@ -24,8 +24,8 @@ import org.firstinspires.ftc.vision.VisionPortal;
 
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 
-@Autonomous
-public final class AutoBackstage extends LinearOpMode {
+@com.qualcomm.robotcore.eventloop.opmode.Autonomous
+public final class Autonomous extends LinearOpMode {
     enum START_POSITION {
         //IN RELATION TO BACKBOARD
         BLUE_BACKSTAGE,
@@ -39,8 +39,8 @@ public final class AutoBackstage extends LinearOpMode {
     private static START_POSITION startPosition = START_POSITION.UNKNOWN; //WHERE WE ARE ON THE FIELD/ RED CLOSE ETC
 
     MecanumDrive drive;
-    private ColorDetectionProcessor colorDetectionProcessor;
-    private ColorDetectionProcessor.StartingPosition purplePixelPath = ColorDetectionProcessor.StartingPosition.CENTER;
+    private Processor processor;
+    private Processor.Selected purplePixelPath = Processor.Selected.LEFT;
     public CRServo intakeLeft = null;
     public CRServo intakeRight = null;
     public void initLoop() {
@@ -51,8 +51,11 @@ public final class AutoBackstage extends LinearOpMode {
         telemetry.update();
     }
     private void detectPurplePath() {
-        purplePixelPath = colorDetectionProcessor.getPosition();
+        purplePixelPath = processor.getSelection();
+        telemetry.addData("Left Saturation", processor.satRectLeft);
+        telemetry.addData("Right Saturation", processor.satRectMiddle);
         telemetry.addData("Purple Pixel Path: ", purplePixelPath.toString());
+        telemetry.addData("Delta Value:", (processor.satRectLeft - processor.satRectMiddle));
     }
 
     @Override
@@ -73,8 +76,8 @@ public final class AutoBackstage extends LinearOpMode {
             waitForStart();
 
             //OVERRIDE FOR TESTING
-            startPosition = BLUE_STAGE;
-            purplePixelPath = ColorDetectionProcessor.StartingPosition.RIGHT;
+            startPosition = BLUE_BACKSTAGE;
+            purplePixelPath = Processor.Selected.LEFT;
 
 
 //          Alliance: Blue; Position: Backstage
@@ -82,7 +85,7 @@ public final class AutoBackstage extends LinearOpMode {
                 beginPose = new Pose2d(14.5, 53.5, Math.toRadians(270));
                 telemetry.addData("Running Blue_Backstage with pixel ","");
                 switch (purplePixelPath) {
-                    case CENTER: {
+                    case MIDDLE: {
                         telemetry.addData("CENTER", "");
                         telemetry.update();
                         Actions.runBlocking(
@@ -151,7 +154,7 @@ public final class AutoBackstage extends LinearOpMode {
                         telemetry.addData("LEFT Complete", "");
                         telemetry.update();
                         break;
-                    case CENTER:
+                    case MIDDLE:
                         telemetry.addData("CENTER", "");
                         telemetry.update();
                         Actions.runBlocking(
@@ -188,7 +191,7 @@ public final class AutoBackstage extends LinearOpMode {
                 switch (purplePixelPath) {
                     case LEFT:
                         break;
-                    case CENTER:
+                    case MIDDLE:
                         break;
                     case RIGHT:
                         break;
@@ -199,7 +202,7 @@ public final class AutoBackstage extends LinearOpMode {
                 switch (purplePixelPath) {
                     case LEFT:
                         break;
-                    case CENTER:
+                    case MIDDLE:
                         break;
                     case RIGHT:
                         break;
@@ -291,15 +294,15 @@ public final class AutoBackstage extends LinearOpMode {
     }
 
     public Action outtake_marker() {
-        return new AutoBackstage.startServoOuttake();
+        return new Autonomous.startServoOuttake();
     }
 
     public void initialize(){
         //initialize other hardware as needed.
         CameraName frontCamera = hardwareMap.get(WebcamName.class, "Webcam 1");
 
-        colorDetectionProcessor = new ColorDetectionProcessor();
-        cameraPortal = VisionPortal.easyCreateWithDefaults(hardwareMap.get(WebcamName.class, "Webcam 1"), colorDetectionProcessor);
+        processor = new Processor();
+        cameraPortal = VisionPortal.easyCreateWithDefaults(hardwareMap.get(WebcamName.class, "Webcam 1"), processor);
 
         intakeLeft = hardwareMap.get(CRServo.class, "intakeLeft");
         intakeRight = hardwareMap.get(CRServo.class, "intakeRight");
@@ -316,6 +319,7 @@ public final class AutoBackstage extends LinearOpMode {
             telemetry.addData("    Red Left    ", "(<)");
             telemetry.addData("    Red Right  ", "(>)");
 
+
             if (gamepad1.dpad_up || gamepad2.dpad_up) {
                 startPosition = BLUE_BACKSTAGE;
                 break;
@@ -325,11 +329,11 @@ public final class AutoBackstage extends LinearOpMode {
                 break;
             }
             if (gamepad1.dpad_left || gamepad2.dpad_left) {
-                startPosition = START_POSITION.RED_BACKSTAGE;
+                startPosition = RED_BACKSTAGE;
                 break;
             }
             if (gamepad1.dpad_right || gamepad2.dpad_right) {
-                startPosition = START_POSITION.RED_STAGE;
+                startPosition = RED_STAGE;
                 break;
             }
             telemetry.update();
