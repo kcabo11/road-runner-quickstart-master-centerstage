@@ -113,6 +113,7 @@ public class Teleop extends LinearOpMode {
         liftMotor    = hardwareMap.get(DcMotor.class, "liftMotor");
         pixelLiftMotor    = hardwareMap.get(DcMotor.class, "pixelLiftMotor");
         pixelPlacerServo = hardwareMap.get(Servo.class, "pixelPlacerServo");
+        intakeMotor = hardwareMap.get(DcMotor.class, "intakeMotor");
 
         leftFront.setDirection(DcMotor.Direction.FORWARD);
         rightFront.setDirection(DcMotor.Direction.REVERSE);
