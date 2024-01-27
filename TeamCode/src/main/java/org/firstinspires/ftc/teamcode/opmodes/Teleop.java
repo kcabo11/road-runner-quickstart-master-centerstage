@@ -36,7 +36,10 @@ import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
+
+import java.util.Timer;
 
 /*
  * This OpMode executes a POV Game style Teleop for a direct drive robot
@@ -55,33 +58,26 @@ public class Teleop extends LinearOpMode {
 
     /* Declare OpMode members. */
     public DcMotor leftFront   = null;
+    public DcMotor leftBack   = null;
     public DcMotor  rightFront  = null;
-    public DcMotor  leftBack     = null;
-    public DcMotor  rightBack   = null;
-
-
-    public DcMotor  liftMotor     = null;
-    public DcMotor  liftDownMotor     = null;
-    public DcMotor  intakeMotor     = null;
-    public DcMotor  pixelLiftMotor     = null;
-    public Servo    linearSlide    = null;
-    public Servo    pixelPlacerServo = null;
-    //public Servo    rightClaw   = null;
-
-    // ============= POSSIBLE SERVOS: ========
-    public Servo leftPixelLatch = null;
-    public Servo rightPixelLatch = null;
-    // =======================================
-    public Servo pixelPlacer = null;
-    public CRServo intakeLeft = null;
-    public CRServo intakeRight = null;
-
+    public DcMotor  rightBack  = null;
+    public CRServo DroneLauncher = null;
+    public DcMotor liftDownMotor = null;
+    public DcMotor liftMotor = null;
+    public DcMotor pixelLiftMotor = null;
+    public Servo pixelPlacerServo = null;
+    public DcMotor intakeMotor = null;
+    public CRServo stage1Intake = null;
+    public CRServo stage2Intake = null;
 
     double clawOffset = 0;
     double scaleTurningSpeed = .8;
     double scaleFactor = .8;
     int direction = -1;
 
+    ElapsedTime timer = new ElapsedTime();
+
+    int planeStateMachine = 0;
     //  WHERE WOULD INTAKE BE PLACED HERE IN THE INITIALIZATION??
     // Initialize the following:
     // Linear slide ~~ servo
@@ -109,11 +105,12 @@ public class Teleop extends LinearOpMode {
         rightBack = hardwareMap.get(DcMotor.class, "rightBack");
         rightFront = hardwareMap.get(DcMotor.class, "rightFront");
         leftBack    = hardwareMap.get(DcMotor.class, "leftBack");
-        liftDownMotor    = hardwareMap.get(DcMotor.class, "liftDownMotor");
-        liftMotor    = hardwareMap.get(DcMotor.class, "liftMotor");
-        pixelLiftMotor    = hardwareMap.get(DcMotor.class, "pixelLiftMotor");
+        liftDownMotor = hardwareMap.get(DcMotor.class, "liftDownMotor");
+        liftMotor = hardwareMap.get(DcMotor.class, "liftMotor");
+        pixelLiftMotor = hardwareMap.get(DcMotor.class, "pixelLiftMotor");
         pixelPlacerServo = hardwareMap.get(Servo.class, "pixelPlacerServo");
         intakeMotor = hardwareMap.get(DcMotor.class, "intakeMotor");
+        DroneLauncher = hardwareMap.get(CRServo.class, "DroneLauncher");
 
         leftFront.setDirection(DcMotor.Direction.FORWARD);
         rightFront.setDirection(DcMotor.Direction.REVERSE);
@@ -142,8 +139,8 @@ public class Teleop extends LinearOpMode {
         // rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         // Define and initialize ALL installed servos.
-        intakeLeft = hardwareMap.get(CRServo.class, "intakeLeft");
-        intakeRight = hardwareMap.get(CRServo.class, "intakeRight");
+        stage1Intake = hardwareMap.get(CRServo.class, "intakeLeft");
+        stage2Intake = hardwareMap.get(CRServo.class, "intakeRight");
 //        linearSlide = hardwareMap.get(Servo.class, "linearSlide");
 //        pixelPlacer = hardwareMap.get(Servo.class, "pixelPlacer");
 //
@@ -196,6 +193,34 @@ public class Teleop extends LinearOpMode {
                 rightBack.setPower(v4);
             }
 
+
+            // Double Tap Y to launch Drone
+            switch (planeStateMachine) {
+                case 1: {
+                    if (gamepad1.y) {//check for first button hit {
+                    planeStateMachine++;
+                    timer.reset();
+                }
+
+                    break;
+                }
+                case 2: {
+                    if (gamepad1.y) { //y is hit again
+                        DroneLauncher.setPower(1);
+                        //launch your plane
+                    }
+                    else if (timer.seconds() > 1) {
+                        planeStateMachine = 1;
+//                            go back to state one
+                        }
+                }
+            }
+
+
+            if (gamepad1.y) {
+                DroneLauncher.setPower(1);
+            }
+
             if (gamepad2.dpad_up) { //checks out
                 pixelLiftMotor.setPower(-.5);
             } else if (gamepad2.dpad_down) {
@@ -224,18 +249,18 @@ public class Teleop extends LinearOpMode {
 
             if (gamepad2.b) {
                 //intakeMotor.setPower(.5);
-                intakeLeft.setPower(.5);
-                intakeRight.setPower(.5);
+                stage1Intake.setPower(.5);
+                stage2Intake.setPower(.5);
             }
             //Intake in
             else if (gamepad2.x) {
-                intakeLeft.setPower(-.5);
-                intakeRight.setPower(-.5);
+                stage1Intake.setPower(-.5);
+                stage2Intake.setPower(-.5);
                 //intakeMotor.setPower(-.5);
             } else {
-                intakeLeft.setPower(0);
-                intakeRight.setPower(0);
-                //intakeMotor.setPower(0);
+//                intakeLeft.setPower(0);
+//                intakeRight.setPower(0);
+                intakeMotor.setPower(0);
             }
 
 
