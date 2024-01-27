@@ -69,7 +69,7 @@ public final class MecanumDrive {
 
 
         // feedforward parameters (in tick units)
-        public double kS = 1.6771388; //1.7826444; //1.70373576;
+        public double kS = 1.71388; //1.7826444; //1.70373576;
         public double kV = -0.00435151;//0.00878811;
         public double kA = 0.0001; // kA = ACCELERATION, so don't put it to 1000... like last time
         // Roadrunner testing:

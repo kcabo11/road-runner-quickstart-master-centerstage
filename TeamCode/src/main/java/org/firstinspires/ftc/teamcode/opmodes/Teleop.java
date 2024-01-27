@@ -69,6 +69,8 @@ public class Teleop extends LinearOpMode {
     public DcMotor intakeMotor = null;
     public CRServo stage1Intake = null;
     public CRServo stage2Intake = null;
+    public Servo pixelLoaderLeft = null;
+    public Servo pixelLoaderRight = null;
 
     double clawOffset = 0;
     double scaleTurningSpeed = .8;
@@ -77,7 +79,7 @@ public class Teleop extends LinearOpMode {
 
     ElapsedTime timer = new ElapsedTime();
 
-    int planeStateMachine = 0;
+    int planeStateMachine = 1;
     //  WHERE WOULD INTAKE BE PLACED HERE IN THE INITIALIZATION??
     // Initialize the following:
     // Linear slide ~~ servo
@@ -141,6 +143,9 @@ public class Teleop extends LinearOpMode {
         // Define and initialize ALL installed servos.
         stage1Intake = hardwareMap.get(CRServo.class, "intakeLeft");
         stage2Intake = hardwareMap.get(CRServo.class, "intakeRight");
+        pixelLoaderLeft = hardwareMap.get(Servo.class, "pixelLoaderLeft");
+        pixelLoaderRight = hardwareMap.get(Servo.class, "pixelLoaderRight");
+
 //        linearSlide = hardwareMap.get(Servo.class, "linearSlide");
 //        pixelPlacer = hardwareMap.get(Servo.class, "pixelPlacer");
 //
@@ -193,11 +198,26 @@ public class Teleop extends LinearOpMode {
                 rightBack.setPower(v4);
             }
 
+            // Control of the robot lifting mechanism
+            // Lift motor: motor used to lift the linear slides
+            // liftDownMotor: motor used to pull the robot off the ground
+            // Press y extend the lift upward
+            // Press a to pull lift down
+            if (gamepad2.y) {
+                liftMotor.setPower(1);
+            } else if (gamepad2.a) {
+                liftDownMotor.setPower(-1);
+                liftMotor.setPower(-.5);
+            } else {
+                liftMotor.setPower(0);
+                liftDownMotor.setPower(0);
+            }
 
-            // Double Tap Y to launch Drone
+
+            // Double Tap B to launch Drone
             switch (planeStateMachine) {
                 case 1: {
-                    if (gamepad1.y) {//check for first button hit {
+                    if (gamepad1.b) {//check for first button hit {
                     planeStateMachine++;
                     timer.reset();
                 }
@@ -205,8 +225,8 @@ public class Teleop extends LinearOpMode {
                     break;
                 }
                 case 2: {
-                    if (gamepad1.y) { //y is hit again
-                        DroneLauncher.setPower(1);
+                    if (gamepad1.b) { //b is hit again
+                        DroneLauncher.setPower(-1);
                         //launch your plane
                     }
                     else if (timer.seconds() > 1) {
@@ -215,54 +235,6 @@ public class Teleop extends LinearOpMode {
                         }
                 }
             }
-
-
-            if (gamepad1.y) {
-                DroneLauncher.setPower(1);
-            }
-
-            if (gamepad2.dpad_up) { //checks out
-                pixelLiftMotor.setPower(-.5);
-            } else if (gamepad2.dpad_down) {
-                pixelLiftMotor.setPower(.2);
-            } else
-                pixelLiftMotor.setPower(0);
-
-            if (gamepad2.a)
-                liftMotor.setPower(1);
-            else
-                liftMotor.setPower(0);
-            // This is the pixelPlacerServo
-            if (gamepad2.right_bumper) {
-                pixelPlacerServo.setPosition(1);
-            } else if (gamepad2.left_bumper) {
-                pixelPlacerServo.setPosition(0);
-            }
-
-            if (gamepad2.y) {
-                liftDownMotor.setPower(1);
-                liftMotor.setPower(-.5);
-            } else
-                liftDownMotor.setPower(0);
-
-            //Intake out
-
-            if (gamepad2.b) {
-                //intakeMotor.setPower(.5);
-                stage1Intake.setPower(.5);
-                stage2Intake.setPower(.5);
-            }
-            //Intake in
-            else if (gamepad2.x) {
-                stage1Intake.setPower(-.5);
-                stage2Intake.setPower(-.5);
-                //intakeMotor.setPower(-.5);
-            } else {
-//                intakeLeft.setPower(0);
-//                intakeRight.setPower(0);
-                intakeMotor.setPower(0);
-            }
-
 
             //moving frontright changes the front left value
             //front left changes the right front value
@@ -275,15 +247,59 @@ public class Teleop extends LinearOpMode {
 
             // ========================== OPERATOR CONTROLLER ===========================================
 
-//            intakeLeft.setPower(1);
-//            intakeRight.setPower(-1);
+            // Extend pixel placer linear slide using dpad up
+            // Retract using dpad down
+            if (gamepad2.dpad_up) { //checks out
+                pixelLiftMotor.setPower(-.5);
+            } else if (gamepad2.dpad_down) {
+                pixelLiftMotor.setPower(.2);
+            } else
+                pixelLiftMotor.setPower(0);
+
+            // Change pixel loading side
+            // X places pixel in the left spot of the pixel placer, B places pixel in the right spot
+            if (gamepad2.x) {
+                pixelLoaderLeft.setPosition(1);
+                pixelLoaderRight.setPosition(0);
+            } else if (gamepad2.b) {
+                pixelLoaderLeft.setPosition(0);
+                pixelLoaderRight.setPosition(1);
+            }
+
+            // Move pixel placer using the left and right bumpers
+            // Right bumper places pixels, left bumper returns pixel placer to resting position
+            if (gamepad2.right_bumper) {
+                pixelPlacerServo.setPosition(1);
+            } else if (gamepad2.left_bumper) {
+                pixelPlacerServo.setPosition(0);
+            }
+
+            //Intake out
+            if (gamepad2.left_trigger > 0) {
+                stage1Intake.setPower(.5);
+                stage2Intake.setPower(.5);
+                intakeMotor.setPower(.5);
+            }
+            //Intake in
+            else if (gamepad2.right_trigger > 0) {
+                stage1Intake.setPower(-.5);
+                stage2Intake.setPower(-.5);
+                intakeMotor.setPower(-.5);
+            } else {
+//                intakeLeft.setPower(0);
+//                intakeRight.setPower(0);
+                intakeMotor.setPower(0);
+                stage1Intake.setPower(0);
+                stage2Intake.setPower(0);
+                intakeMotor.setPower(0);
+            }
 
             //D pad or bumper: up/down for linear slide
 
             //Use gamepad left & right triggers to manage intake and outake
-            if (gamepad2.right_trigger > 0 && gamepad2.left_trigger > 0) {
-                liftDownMotor.setPower(-1);
-            }
+//            if (gamepad2.right_trigger > 0 && gamepad2.left_trigger > 0) {
+//                liftDownMotor.setPower(-1);
+//            }
 
             //intakeRight
 //
