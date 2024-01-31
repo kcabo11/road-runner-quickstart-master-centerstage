@@ -80,6 +80,7 @@ public class Teleop extends LinearOpMode {
     ElapsedTime timer = new ElapsedTime();
 
     int planeStateMachine = 1;
+    int pixelliftMotorStateMachine = 1;
     //  WHERE WOULD INTAKE BE PLACED HERE IN THE INITIALIZATION??
     // Initialize the following:
     // Linear slide ~~ servo
@@ -101,6 +102,7 @@ public class Teleop extends LinearOpMode {
         double drive;
         double turn;
         double max;
+        boolean rightStickButtonPushed;
 
         // Define and Initialize Motors
         leftFront  = hardwareMap.get(DcMotor.class, "leftFront");
@@ -113,6 +115,10 @@ public class Teleop extends LinearOpMode {
         pixelPlacerServo = hardwareMap.get(Servo.class, "pixelPlacerServo");
         intakeMotor = hardwareMap.get(DcMotor.class, "intakeMotor");
         DroneLauncher = hardwareMap.get(CRServo.class, "DroneLauncher");
+
+        pixelLiftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        pixelLiftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
 
         leftFront.setDirection(DcMotor.Direction.FORWARD);
         rightFront.setDirection(DcMotor.Direction.REVERSE);
@@ -166,7 +172,7 @@ public class Teleop extends LinearOpMode {
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
 
-            // ========================== DRIVE CONTROLLER ================================================
+            // ========================== DRIVER CONTROLLER ================================================
 
             // Run wheels in POV mode (note: The joystick goes negative when pushed forward, so negate it)
             // In this mode the Left stick moves the robot fwd and back, the Right stick turns left and right.
@@ -249,12 +255,14 @@ public class Teleop extends LinearOpMode {
 
             // Extend pixel placer linear slide using dpad up
             // Retract using dpad down
-            if (gamepad2.dpad_up) { //checks out
+
+            if (gamepad2.left_stick_y > 0.03) { //checks out
                 pixelLiftMotor.setPower(-.5);
-            } else if (gamepad2.dpad_down) {
+            } else if (gamepad2.left_stick_y < -0.03) {
                 pixelLiftMotor.setPower(.2);
-            } else
+            } else {
                 pixelLiftMotor.setPower(0);
+            }
 
             // Change pixel loading side
             // X places pixel in the left spot of the pixel placer, B places pixel in the right spot
@@ -273,6 +281,72 @@ public class Teleop extends LinearOpMode {
             } else if (gamepad2.left_bumper) {
                 pixelPlacerServo.setPosition(0);
             }
+
+
+
+
+////            pixelliftMotor.setTargetPosition(DcMotor.RunMode.RUN_USING_ENCODER);
+//            if (gamepad2.right_stick_button) {
+//                pixelLiftMotor.setTargetPosition(1);
+//                pixelLiftMotor.setPower(.2);
+//                pixelLiftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//                rightStickButtonPushed = true;
+//            }
+//            else
+//            {
+//
+//
+//
+//            }
+
+            if (gamepad2.dpad_down){
+                pixelLiftMotor.setPower(.2);
+                pixelLiftMotor.setTargetPosition(0);
+                pixelliftMotorStateMachine = 1;
+            }
+
+
+//            // Click Right_stick_button to lift liftMotor to set position
+            switch (pixelliftMotorStateMachine) {
+                case 1: {
+                    if (gamepad2.dpad_up) { //check for first button hit {
+                        pixelliftMotorStateMachine++;
+                        pixelLiftMotor.setPower(-.5);
+                        pixelLiftMotor.setTargetPosition(-986);
+                        pixelLiftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    }
+                    break;
+                }
+                case 2: {
+                    if (gamepad2.dpad_up == false) { //dpad button is hit again
+                        pixelliftMotorStateMachine = 3;
+
+                    }
+                    break;
+                }
+                case 3: {
+                    if (gamepad2.dpad_up) {
+                        pixelLiftMotor.setTargetPosition(-1681);
+                        // Lift your motor to set position
+                        pixelliftMotorStateMachine = 4;
+                    }
+                    break;
+                }
+                case 4: {
+                    if (gamepad2.dpad_up == false) {
+                        pixelliftMotorStateMachine = 5;
+                    }
+                    break;
+                }
+                case 5: {
+                    if (gamepad2.dpad_up) { // dpad button is hit again
+                            pixelLiftMotor.setTargetPosition(-1792);
+                            // Lift your motor to set position
+                    }
+                    break;
+                }
+            }
+
 
             //Intake out
             if (gamepad2.left_trigger > 0) {
@@ -342,6 +416,7 @@ public class Teleop extends LinearOpMode {
             telemetry.addData("gamepad2.x", gamepad2.x);
             telemetry.addData("gamepad2.left_bumper", gamepad2.left_bumper);
             telemetry.addData("gamepad2.right_bumper", gamepad2.right_bumper);
+            telemetry.addData("pixelliftMotor Encoder Position: ", pixelLiftMotor.getCurrentPosition());
 
             telemetry.update();
 
