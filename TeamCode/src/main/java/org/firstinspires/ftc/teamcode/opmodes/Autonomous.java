@@ -78,14 +78,14 @@ public final class Autonomous extends LinearOpMode {
             waitForStart();
 
             //OVERRIDE FOR TESTING
-//            startPosition = BLUE_BACKSTAGE;
-//            purplePixelPath = Processor.Selected.LEFT;
+            startPosition = BLUE_BACKSTAGE;
+            purplePixelPath = Processor.Selected.MIDDLE;
 
 
 
 //          Alliance: Blue; Position: Backstage
             if (startPosition == BLUE_BACKSTAGE) {
-                beginPose = new Pose2d(12, 53.5, Math.toRadians(270));
+                beginPose = new Pose2d(12, 53.5, Math.toRadians(0));
                 telemetry.addData("Running Blue_Backstage with pixel ","");
                 switch (purplePixelPath) {
                     case MIDDLE: {
@@ -93,14 +93,19 @@ public final class Autonomous extends LinearOpMode {
                         telemetry.update();
                         Actions.runBlocking(
                                 drive.actionBuilder(beginPose)
-                                        .splineTo(new Vector2d(17, 23.5), Math.toRadians(270))
+//                                        .setTangent(0)
+//                                        .splineToLinearHeading(new Pose2d(17, 23.5, Math.toRadians(180)), Math.toRadians(180))
+//                                        .afterDisp(5, outtake_marker())
+//                                        .setTangent(0)
+//                                        .splineToLinearHeading(new Pose2d(17, 43, Math.toRadians(180)), Math.toRadians(180))
+//                                        .strafeTo(new Vector2d(50, 8))
+//                                        .afterDisp(6, stop_outtake())
+//                                        .build());
+
                                         .afterDisp(5, outtake_marker())
-                                        .setTangent(0)
-                                        .splineToLinearHeading(new Pose2d(17, 43, Math.toRadians(270)), Math.toRadians(270))
-                                        .strafeTo(new Vector2d(50, 8))
+                                        .strafeTo(new Vector2d(55, 50))
                                         .afterDisp(6, stop_outtake())
                                         .build());
-
                         telemetry.addData("CENTER Complete", "");
                         telemetry.update();
                         break;
@@ -110,12 +115,16 @@ public final class Autonomous extends LinearOpMode {
                         telemetry.update();
                         Actions.runBlocking(
                                 drive.actionBuilder(beginPose)
-                                        .splineTo(new Vector2d(20.5, 38), Math.toRadians(270))
+//                                        .splineTo(new Vector2d(20.5, 38), Math.toRadians(270))
+//                                        .afterDisp(5, outtake_marker())
+//                                        .setTangent(0)
+//                                        .splineToLinearHeading(new Pose2d(23, 43, Math.toRadians(270)), Math.toRadians(270))
+//                                        .strafeTo(new Vector2d(48, 15))
+//                                        .afterDisp(10, stop_outtake())
+//                                        .build());
                                         .afterDisp(5, outtake_marker())
-                                        .setTangent(0)
-                                        .splineToLinearHeading(new Pose2d(23, 43, Math.toRadians(270)), Math.toRadians(270))
-                                        .strafeTo(new Vector2d(48, 15))
-                                        .afterDisp(10, stop_outtake())
+                                        .strafeTo(new Vector2d(55, 50))
+                                        .afterDisp(6, stop_outtake())
                                         .build());
                         telemetry.addData("LEFT Complete", "");
                         telemetry.update();
@@ -126,15 +135,19 @@ public final class Autonomous extends LinearOpMode {
                         telemetry.update();
                         Actions.runBlocking(
                                 drive.actionBuilder(beginPose)
-                                        .setTangent(0)
-                                        .splineToConstantHeading(new Vector2d(12, 32), Math.toRadians(270))
-                                        //.setTangent(0)
-                                        .splineToLinearHeading(new Pose2d(15, 32, Math.toRadians(180)), Math.toRadians(0))
-                                        .splineToLinearHeading(new Pose2d(9, 32, Math.toRadians(180)), Math.toRadians(0))
-                                        .waitSeconds(1)
-                                        //.splineToConstantHeading(new Vector2d(2, 35), Math.toRadians(180))
+//                                        .setTangent(0)
+//                                        .splineToConstantHeading(new Vector2d(12, 32), Math.toRadians(270))
+//                                        //.setTangent(0)
+//                                        .splineToLinearHeading(new Pose2d(15, 32, Math.toRadians(180)), Math.toRadians(0))
+//                                        .splineToLinearHeading(new Pose2d(9, 32, Math.toRadians(180)), Math.toRadians(0))
+//                                        .waitSeconds(1)
+//                                        //.splineToConstantHeading(new Vector2d(2, 35), Math.toRadians(180))
+//                                        .afterDisp(5, outtake_marker())
+//                                        .strafeTo(new Vector2d(50, 15))
+//                                        .afterDisp(6, stop_outtake())
+//                                        .build());
                                         .afterDisp(5, outtake_marker())
-                                        .strafeTo(new Vector2d(50, 15))
+                                        .strafeTo(new Vector2d(55, 50))
                                         .afterDisp(6, stop_outtake())
                                         .build());
                         telemetry.addData("RIGHT Complete", "");
@@ -153,11 +166,15 @@ public final class Autonomous extends LinearOpMode {
                         telemetry.update();
                         Actions.runBlocking(
                                 drive.actionBuilder(beginPose)
-                                        .splineTo(new Vector2d(-26, 38), Math.toRadians(270))
+//                                        .splineTo(new Vector2d(-26, 38), Math.toRadians(270))
+//                                        .afterDisp(5, outtake_marker())
+//                                        .setTangent(0)
+//                                        .splineToLinearHeading(new Pose2d(-41, 50, Math.toRadians(270)), Math.toRadians(270))
+//                                        .strafeTo(new Vector2d(57, 50))
+//                                        .afterDisp(6, stop_outtake())
+//                                        .build());
                                         .afterDisp(5, outtake_marker())
-                                        .setTangent(0)
-                                        .splineToLinearHeading(new Pose2d(-41, 50, Math.toRadians(270)), Math.toRadians(270))
-                                        .strafeTo(new Vector2d(57, 50))
+                                        .strafeTo(new Vector2d(55, 50))
                                         .afterDisp(6, stop_outtake())
                                         .build());
                         telemetry.addData("LEFT Complete", "");
@@ -168,14 +185,17 @@ public final class Autonomous extends LinearOpMode {
                         telemetry.update();
                         Actions.runBlocking(
                                 drive.actionBuilder(beginPose)
-                                        .splineTo(new Vector2d(-41, 23.5), Math.toRadians(270))
+//                                        .splineTo(new Vector2d(-41, 23.5), Math.toRadians(270))
+//                                        .afterDisp(5, outtake_marker())
+//                                        .setTangent(0)
+//                                        .splineToLinearHeading(new Pose2d(-41, 50, Math.toRadians(270)), Math.toRadians(270))
+//                                        .strafeTo(new Vector2d(57, 50))
+//                                        .afterDisp(6, stop_outtake())
+//                                        .build());
                                         .afterDisp(5, outtake_marker())
-                                        .setTangent(0)
-                                        .splineToLinearHeading(new Pose2d(-41, 50, Math.toRadians(270)), Math.toRadians(270))
-                                        .strafeTo(new Vector2d(57, 50))
+                                        .strafeTo(new Vector2d(55, 50))
                                         .afterDisp(6, stop_outtake())
                                         .build());
-
                         telemetry.addData("CENTER Complete", "");
                         telemetry.update();
                         break;
@@ -184,15 +204,19 @@ public final class Autonomous extends LinearOpMode {
                         telemetry.update();
                         Actions.runBlocking(
                                 drive.actionBuilder(beginPose)
-                                        .setTangent(0)
-                                        .splineToConstantHeading(new Vector2d(-36, 32), Math.toRadians(270))
-                                        // setTangent(0)
-                                        .splineToLinearHeading(new Pose2d(-39, 32, Math.toRadians(180)), Math.toRadians(0))
-                                        .splineToLinearHeading(new Pose2d(-33, 32, Math.toRadians(180)), Math.toRadians(0))
-                                        .waitSeconds(1)
-                                        //.splineToConstantHeading(new Vector2d(2, 35), Math.toRadians(180))
+//                                        .setTangent(0)
+//                                        .splineToConstantHeading(new Vector2d(-36, 32), Math.toRadians(270))
+//                                        // setTangent(0)
+//                                        .splineToLinearHeading(new Pose2d(-39, 32, Math.toRadians(180)), Math.toRadians(0))
+//                                        .splineToLinearHeading(new Pose2d(-33, 32, Math.toRadians(180)), Math.toRadians(0))
+//                                        .waitSeconds(1)
+//                                        //.splineToConstantHeading(new Vector2d(2, 35), Math.toRadians(180))
+//                                        .afterDisp(5, outtake_marker())
+//                                        .splineToLinearHeading(new Pose2d(-36, 50, Math.toRadians(270)), Math.toRadians(270))
+//                                        .strafeTo(new Vector2d(55, 50))
+//                                        .afterDisp(6, stop_outtake())
+//                                        .build());
                                         .afterDisp(5, outtake_marker())
-                                        .splineToLinearHeading(new Pose2d(-36, 50, Math.toRadians(270)), Math.toRadians(270))
                                         .strafeTo(new Vector2d(55, 50))
                                         .afterDisp(6, stop_outtake())
                                         .build());
@@ -211,15 +235,15 @@ public final class Autonomous extends LinearOpMode {
                         telemetry.update();
                         Actions.runBlocking(
                                 drive.actionBuilder(beginPose)
-                                        .setTangent(0)
-                                        .splineToConstantHeading(new Vector2d(12, -33), Math.toRadians(90))
-                                        //.setTangent(0)
-                                        .splineToLinearHeading(new Pose2d(15, -32, Math.toRadians(180)), Math.toRadians(180))
-                                        .splineToLinearHeading(new Pose2d(9, -32, Math.toRadians(180)), Math.toRadians(180))
-                                        .waitSeconds(1)
-                                        //.splineToConstantHeading(new Vector2d(2, 35), Math.toRadians(180))
+//                                        .setTangent(0)
+//                                        .splineToConstantHeading(new Vector2d(12, -33), Math.toRadians(90))
+//                                        //.setTangent(0)
+//                                        .splineToLinearHeading(new Pose2d(15, -32, Math.toRadians(180)), Math.toRadians(180))
+//                                        .splineToLinearHeading(new Pose2d(9, -32, Math.toRadians(180)), Math.toRadians(180))
+//                                        .waitSeconds(1)
+//                                        //.splineToConstantHeading(new Vector2d(2, 35), Math.toRadians(180))
+                                        .strafeTo(new Vector2d(50, -50))
                                         .afterDisp(5, outtake_marker())
-                                        .strafeTo(new Vector2d(50, -15))
                                         .afterDisp(6, stop_outtake())
                                         .build());
                         telemetry.addData("LEFT Complete", "");
@@ -230,11 +254,15 @@ public final class Autonomous extends LinearOpMode {
                         telemetry.update();
                         Actions.runBlocking(
                                 drive.actionBuilder(beginPose)
-                                        .splineTo(new Vector2d(17, -23.5), Math.toRadians(90))
+//                                        .splineTo(new Vector2d(17, -23.5), Math.toRadians(90))
+//                                        .afterDisp(5, outtake_marker())
+//                                        .setTangent(0)
+//                                        .splineToLinearHeading(new Pose2d(17, -43, Math.toRadians(90)), Math.toRadians(90))
+//                                        .strafeTo(new Vector2d(50, -8))
+//                                        .afterDisp(6, stop_outtake())
+//                                        .build());
+                                        .strafeTo(new Vector2d(50, -50))
                                         .afterDisp(5, outtake_marker())
-                                        .setTangent(0)
-                                        .splineToLinearHeading(new Pose2d(17, -43, Math.toRadians(90)), Math.toRadians(90))
-                                        .strafeTo(new Vector2d(50, -8))
                                         .afterDisp(6, stop_outtake())
                                         .build());
 
@@ -246,13 +274,17 @@ public final class Autonomous extends LinearOpMode {
                         telemetry.update();
                         Actions.runBlocking(
                                 drive.actionBuilder(beginPose)
-                                        .splineTo(new Vector2d(20.5, -38), Math.toRadians(90))
+//                                        .splineTo(new Vector2d(20.5, -38), Math.toRadians(90))
+//                                        .afterDisp(5, outtake_marker())
+//                                        .setTangent(0)
+//                                        .splineToLinearHeading(new Pose2d(23, -43, Math.toRadians(90)), Math.toRadians(90))
+//                                        .strafeTo(new Vector2d(48, -15))
+//                                        .afterDisp(10, stop_outtake())
+//                                        .strafeTo(new Vector2d(55, -50))
+//                                        .build());
+                                        .strafeTo(new Vector2d(50, -50))
                                         .afterDisp(5, outtake_marker())
-                                        .setTangent(0)
-                                        .splineToLinearHeading(new Pose2d(23, -43, Math.toRadians(90)), Math.toRadians(90))
-                                        .strafeTo(new Vector2d(48, -15))
-                                        .afterDisp(10, stop_outtake())
-                                        .strafeTo(new Vector2d(55, -50))
+                                        .afterDisp(6, stop_outtake())
                                         .build());
                         telemetry.addData("RIGHT Complete", "");
                         telemetry.update();
@@ -269,11 +301,15 @@ public final class Autonomous extends LinearOpMode {
                         telemetry.update();
                         Actions.runBlocking(
                                 drive.actionBuilder(beginPose)
-                                        .splineTo(new Vector2d(-26, -38), Math.toRadians(90))
+//                                        .splineTo(new Vector2d(-26, -38), Math.toRadians(90))
+//                                        .afterDisp(5, outtake_marker())
+//                                        .setTangent(0)
+//                                        .splineToLinearHeading(new Pose2d(-36, -50, Math.toRadians(90)), Math.toRadians(90))
+//                                        .strafeTo(new Vector2d(55, -50))
+//                                        .afterDisp(6, stop_outtake())
+//                                        .build());
+                                        .strafeTo(new Vector2d(50, -50))
                                         .afterDisp(5, outtake_marker())
-                                        .setTangent(0)
-                                        .splineToLinearHeading(new Pose2d(-36, -50, Math.toRadians(90)), Math.toRadians(90))
-                                        .strafeTo(new Vector2d(55, -50))
                                         .afterDisp(6, stop_outtake())
                                         .build());
                         telemetry.addData("LEFT Complete", "");
@@ -285,14 +321,17 @@ public final class Autonomous extends LinearOpMode {
                         Actions.runBlocking(
                                 drive.actionBuilder(beginPose)
 //                                        .setTangent(0)
-                                        .splineTo(new Vector2d(-41, -26.5), Math.toRadians(90))
+//                                        .splineTo(new Vector2d(-41, -26.5), Math.toRadians(90))
+//                                        .afterDisp(5, outtake_marker())
+//                                        .setTangent(0)
+//                                        .splineToLinearHeading(new Pose2d(-36, -50, Math.toRadians(90)), Math.toRadians(90))
+//                                        .strafeTo(new Vector2d(57, -50))
+//                                        .afterDisp(6, stop_outtake())
+//                                        .build());
+                                        .strafeTo(new Vector2d(50, -50))
                                         .afterDisp(5, outtake_marker())
-                                        .setTangent(0)
-                                        .splineToLinearHeading(new Pose2d(-36, -50, Math.toRadians(90)), Math.toRadians(90))
-                                        .strafeTo(new Vector2d(57, -50))
                                         .afterDisp(6, stop_outtake())
                                         .build());
-
                         telemetry.addData("CENTER Complete", "");
                         telemetry.update();
                         break;
@@ -301,15 +340,19 @@ public final class Autonomous extends LinearOpMode {
                         telemetry.update();
                         Actions.runBlocking(
                                 drive.actionBuilder(beginPose)
-                                        .setTangent(0)
-                                        .splineToConstantHeading(new Vector2d(-36, -33), Math.toRadians(90))
-                                        //.splineToConstantHeading(new Vector2d(2, 35), Math.toRadians(180))
-                                        .splineToLinearHeading(new Pose2d(-39, -32, Math.toRadians(0)), Math.toRadians(0))
-                                        .splineToLinearHeading(new Pose2d(-33, -32, Math.toRadians(0)), Math.toRadians(0))
+//                                        .setTangent(0)
+//                                        .splineToConstantHeading(new Vector2d(-36, -33), Math.toRadians(90))
+//                                        //.splineToConstantHeading(new Vector2d(2, 35), Math.toRadians(180))
+//                                        .splineToLinearHeading(new Pose2d(-39, -32, Math.toRadians(0)), Math.toRadians(0))
+//                                        .splineToLinearHeading(new Pose2d(-33, -32, Math.toRadians(0)), Math.toRadians(0))
+//                                        .afterDisp(5, outtake_marker())
+//                                        .setTangent(0)
+//                                        .splineToLinearHeading(new Pose2d(-36, -50, Math.toRadians(90)), Math.toRadians(90))
+//                                        .strafeTo(new Vector2d(55, -50))
+//                                        .afterDisp(6, stop_outtake())
+//                                        .build());
+                                        .strafeTo(new Vector2d(50, -50))
                                         .afterDisp(5, outtake_marker())
-                                        .setTangent(0)
-                                        .splineToLinearHeading(new Pose2d(-36, -50, Math.toRadians(90)), Math.toRadians(90))
-                                        .strafeTo(new Vector2d(55, -50))
                                         .afterDisp(6, stop_outtake())
                                         .build());
                         telemetry.addData("RIGHT Complete", "");
@@ -351,6 +394,7 @@ public final class Autonomous extends LinearOpMode {
                             // CENTER POS
                            // .lineToY(-27)
                             //.back(2)
+
 
                             // sleep
                             //.splineToSplineHeading(new Pose2d(45, -35, Math.toRadians(180)), Math.toRadians(0))
