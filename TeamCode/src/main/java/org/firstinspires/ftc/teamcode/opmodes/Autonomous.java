@@ -105,8 +105,8 @@ public final class Autonomous extends LinearOpMode {
             waitForStart();
 
             //OVERRIDE FOR TESTING
-            startPosition = BLUE_BACKSTAGE;
-            purplePixelPath = Processor.Selected.MIDDLE;
+//            startPosition = BLUE_BACKSTAGE;
+//            purplePixelPath = Processor.Selected.MIDDLE;
 
 
 
@@ -120,18 +120,24 @@ public final class Autonomous extends LinearOpMode {
                         telemetry.update();
 
                         // CENTER PATH
-                        driveStraight(DRIVE_SPEED, 28.0, 0.0);    // Drive Forward 28"
-                        holdHeading(TURN_SPEED,   0.0, 2);    // Hold  0 Deg heading for 2 seconds
+                        driveStraight(DRIVE_SPEED, 28, 0.0);    // Drive Forward 28"
+                        holdHeading(DRIVE_SPEED,   0.0, 2);    // Hold  0 Deg heading for 2 seconds
+//                        // OUTTAKE PIXEL HERE
+//                        outtake_marker();
 
-                        turnToHeading(TURN_SPEED, 90); // turn left 90 degrees
-                        holdHeading(TURN_SPEED, 90, 2); // hold -90 degrees heading for 2 a second
-
-                        driveStraight(DRIVE_SPEED, 24.0, 90);    // Drive Forward 12"
+                        turnToHeading(TURN_SPEED, 90);
                         holdHeading(TURN_SPEED,   90, 2);    // Hold  0 Deg heading for 2 seconds
 
-                        turnToHeading(TURN_SPEED, 0.0); // turn right 90 degrees
-                        holdHeading(TURN_SPEED,   0.0, 2); // hold heading for 2 seconds
-                        driveStraight(DRIVE_SPEED,12, 0.0);    // Drive to park in backdrop
+                        // STOP OUTTAKE
+//                        stop_outtake();
+                        driveStraight(DRIVE_SPEED, 26, 90);    // Drive Forward 10"
+                        holdHeading(DRIVE_SPEED,   90, 2);    // Hold  0 Deg heading for 2 seconds
+
+                        turnToHeading(TURN_SPEED, -90); // turn left 90 degrees
+                        holdHeading(TURN_SPEED, -90, 2); // hold heading for 2 a second
+
+                        driveStraight(DRIVE_SPEED, -3, -90);    // Drive Backward 3"
+                        holdHeading(DRIVE_SPEED,   -90, 2);    // Hold heading for 2 seconds
 
                         telemetry.addData("CENTER", "Complete");
                         telemetry.update();
@@ -143,28 +149,41 @@ public final class Autonomous extends LinearOpMode {
                         telemetry.update();
 
                         // LEFT PATH
-                        driveStraight(DRIVE_SPEED, 5.0, 0.0);    // Drive Forward 5"
-                        holdHeading(TURN_SPEED,   0.0, 1);    // Hold  0 Deg heading for 1 seconds
+                        driveStraight(DRIVE_SPEED, 15, 0.0);    // Drive Forward 10"
+                        holdHeading(DRIVE_SPEED,   0.0, 2);    // Hold  0 Deg heading for 2 seconds
 
-                        turnToHeading(TURN_SPEED, 45); // turn left 45 degrees
-                        holdHeading(TURN_SPEED, 45, 2); // hold -90 degrees heading for 2 a second
+                        turnToHeading(TURN_SPEED, 30); // turn left 30 degrees
+                        holdHeading(TURN_SPEED, 30, 2); // hold heading for 2 a second
 
-                        driveStraight(DRIVE_SPEED, 20, 45);    // Drive Forward 20"
-                        holdHeading(TURN_SPEED,   45, 1);    // Hold heading for 2 seconds
-                        driveStraight(DRIVE_SPEED, -20, 45);    // Drive Forward -20"
-                        holdHeading(TURN_SPEED,   45, 1);    // Hold heading for 2 seconds
+                        driveStraight(DRIVE_SPEED, 7, 30);    // Drive Forward 7"
+                        holdHeading(DRIVE_SPEED,   30, 2);    // Hold  heading for 2 seconds
+
+                        // OUTTAKE PIXEL HERE
+//                        outtake_marker();
+
+                        driveStraight(DRIVE_SPEED, -10, 30);    // Drive Backward 10"
+                        holdHeading(DRIVE_SPEED,   30, 2);    // Hold heading for 2 seconds
+
+                        // STOP OUTTAKE
+//                        stop_outtake();
 
                         turnToHeading(TURN_SPEED, 90); // turn left 90 degrees
-                        holdHeading(TURN_SPEED,   90, 2); // hold heading for 2 seconds
-                        driveStraight(DRIVE_SPEED,24, 90);    // Drive forward 90"
+                        holdHeading(TURN_SPEED, 90, 2); // hold heading for 2 a second
 
-                        turnToHeading(TURN_SPEED, 0.0); // turn right 90 degrees
-                        holdHeading(TURN_SPEED, 0.0, 2); // hold heading for 2 seconds
+                        driveStraight(DRIVE_SPEED, 20, 90);    // Drive Forward 24"
+                        holdHeading(DRIVE_SPEED,   90, 2);    // Hold  heading for 2 seconds
 
-                        driveStraight(DRIVE_SPEED, 0.0, 28); // drive forward 28"
-                        holdHeading(DRIVE_SPEED, 0.0, 2); // hold heading for 2 seconds
-                        turnToHeading(TURN_SPEED, 90); // turn left 90 degrees
-                        holdHeading(TURN_SPEED, 90, 2); // hold heading for 2 seconds
+                        turnToHeading(TURN_SPEED, 0); // turn right 90 degrees
+                        holdHeading(TURN_SPEED, 0, 2); // hold heading for 2 a second
+
+                        driveStraight(DRIVE_SPEED, 20, 0);    // Drive Forward 20"
+                        holdHeading(DRIVE_SPEED,   0, 2);    // Hold  heading for 2 seconds
+
+                        turnToHeading(TURN_SPEED, -90); // turn left 90 degrees
+                        holdHeading(TURN_SPEED, -90, 2); // hold heading for 2 a second
+
+                        driveStraight(DRIVE_SPEED, -5, -90);    // Drive Backward 3"
+                        holdHeading(DRIVE_SPEED,   -90, 2);    // Hold heading for 2 seconds
 
                         telemetry.addData("LEFT Complete", "");
                         telemetry.update();
@@ -175,19 +194,23 @@ public final class Autonomous extends LinearOpMode {
                         telemetry.update();
 
                         // RIGHT PATH
-                        driveStraight(DRIVE_SPEED, 20, 0.0);    // Drive Forward 20"
-                        holdHeading(TURN_SPEED,   0.0, 1);    // Hold  0 Deg heading for 1 seconds
+                        driveStraight(DRIVE_SPEED, 24, 0.0);    // Drive Forward 24"
+                        holdHeading(DRIVE_SPEED,   0.0, 2);    // Hold  0 Deg heading for 2 seconds
 
                         turnToHeading(TURN_SPEED, -90); // turn right 90 degrees
-                        holdHeading(TURN_SPEED, 90, 2); // hold -90 degrees heading for 2 a second
+                        holdHeading(TURN_SPEED, -90, 2); // hold -90 degrees heading for 2 a second
 
                         driveStraight(DRIVE_SPEED, 5, -90);    // Drive Forward 5"
-                        holdHeading(TURN_SPEED,   -90, 1);    // Hold heading for 1 second
-                        driveStraight(DRIVE_SPEED, -30, -90);    // Drive Forward -30"
-                        holdHeading(TURN_SPEED,   -90, 1);    // Hold heading for 2 seconds
+                        holdHeading(DRIVE_SPEED,   -90, 1);    // Hold  heading for 1 second
 
-                        turnToHeading(TURN_SPEED, 90); // turn 180 degrees
-                        holdHeading(TURN_SPEED,   90, 2); // hold heading for 2 seconds
+                        // OUTTAKE HERE
+//                        outtake_marker();
+
+                        driveStraight(DRIVE_SPEED, -38, -90);    // Drive Backward 38"
+                        holdHeading(DRIVE_SPEED,   -90, 2);    // Hold heading for 2 seconds
+
+                        // STOP OUTTAKE
+//                        stop_outtake();
 
                         telemetry.addData("RIGHT Complete", "");
                         telemetry.update();
@@ -370,6 +393,9 @@ public final class Autonomous extends LinearOpMode {
         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
             intakeLeft.setPower(.5);
             intakeRight.setPower(-.5);
+
+            telemetry.addData("startServoOuttake: ", "running");
+            telemetry.update();
             return true;
         }
     }
