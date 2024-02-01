@@ -74,7 +74,7 @@ public class Teleop extends LinearOpMode {
 
     double clawOffset = 0;
     double scaleTurningSpeed = .8;
-    double scaleFactor = .8;
+    double scaleFactor = 1;
     int direction = -1;
 
     ElapsedTime timer = new ElapsedTime();
@@ -94,6 +94,7 @@ public class Teleop extends LinearOpMode {
     public static final double CLAW_SPEED  = 0.02 ;                 // sets rate to move servo
     public static final double ARM_UP_POWER    =  0.45 ;
     public static final double ARM_DOWN_POWER  = -0.45 ;
+    double v1, v2, v3, v4;
 
     @Override
     public void runOpMode() {
@@ -162,7 +163,7 @@ public class Teleop extends LinearOpMode {
 
         // Send telemetry message to signify robot waiting;
 
-        telemetry.addLine("Glendale Qualifier - Teleop Code Initialized");
+        telemetry.addLine("Queen Creek Qualifier - Teleop Code Initialized");
         telemetry.addData(">", "Robot Ready.  Press Play.");    //
         telemetry.update();
 
@@ -182,22 +183,21 @@ public class Teleop extends LinearOpMode {
             double r = Math.hypot(-gamepad1.left_stick_x, gamepad1.left_stick_y);
             double robotAngle = Math.atan2(-gamepad1.left_stick_y, gamepad1.left_stick_x) - Math.PI / 4;
             double rightX = gamepad1.right_stick_x;
-
             // Default mode: The robot starts with the scaleTurningSpeed set to 1, scaleFactor set to 1, and direction set to forward.
             if (direction == 1) {
-                final double v1 = (r * Math.cos(robotAngle) - (rightX * scaleTurningSpeed)) * scaleFactor * direction;
-                final double v2 = (r * Math.sin(robotAngle) + (rightX * scaleTurningSpeed)) * scaleFactor * direction;
-                final double v3 = (r * Math.sin(robotAngle) - (rightX * scaleTurningSpeed)) * scaleFactor * direction;
-                final double v4 = (r * Math.cos(robotAngle) + (rightX * scaleTurningSpeed)) * scaleFactor * direction;
+                v1 = (r * Math.cos(robotAngle) - (rightX * scaleTurningSpeed)) * scaleFactor * direction;
+                v2 = (r * Math.sin(robotAngle) + (rightX * scaleTurningSpeed)) * scaleFactor * direction;
+                v3 = (r * Math.sin(robotAngle) - (rightX * scaleTurningSpeed)) * scaleFactor * direction;
+                v4 = (r * Math.cos(robotAngle) + (rightX * scaleTurningSpeed)) * scaleFactor * direction;
                 leftFront.setPower(v3);
                 rightFront.setPower(v2);
                 leftBack.setPower(v3);
                 rightBack.setPower(v4);
             } else {
-                final double v1 = (r * Math.cos(robotAngle) + (rightX * scaleTurningSpeed)) * scaleFactor * direction;
-                final double v2 = (r * Math.sin(robotAngle) - (rightX * scaleTurningSpeed)) * scaleFactor * direction;
-                final double v3 = (r * Math.sin(robotAngle) + (rightX * scaleTurningSpeed)) * scaleFactor * direction;
-                final double v4 = (r * Math.cos(robotAngle) - (rightX * scaleTurningSpeed)) * scaleFactor * direction;
+                v1 = (r * Math.cos(robotAngle) + (rightX * scaleTurningSpeed)) * scaleFactor * direction;
+                v2 = (r * Math.sin(robotAngle) - (rightX * scaleTurningSpeed)) * scaleFactor * direction;
+                v3 = (r * Math.sin(robotAngle) + (rightX * scaleTurningSpeed)) * scaleFactor * direction;
+                v4 = (r * Math.cos(robotAngle) - (rightX * scaleTurningSpeed)) * scaleFactor * direction;
                 leftFront.setPower(v1);
                 rightFront.setPower(v2);
                 leftBack.setPower(v3);
@@ -398,6 +398,14 @@ public class Teleop extends LinearOpMode {
             telemetry.addData("leftBack: ", leftBack.getCurrentPosition());
             telemetry.addData("rightBack: ", rightBack.getCurrentPosition());
             telemetry.addData("rightFront: ", rightFront.getCurrentPosition());
+            telemetry.addData("v1", v1);
+            telemetry.addData("v2", v2);
+            telemetry.addData("v3", v3);
+            telemetry.addData("v4", v4);
+
+
+
+
             telemetry.addData("pixelLiftMotor pos: ", pixelLiftMotor.getCurrentPosition());
             telemetry.addData("pixelLiftMotor pwr: ", pixelLiftMotor.getPower());
             telemetry.addData("liftMotor pwr: ", liftMotor.getPower());
