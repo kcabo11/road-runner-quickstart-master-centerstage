@@ -70,7 +70,7 @@ public final class Autonomous extends LinearOpMode {
     private double  rightSpeed    = 0;
 
     static final double     P_TURN_GAIN            = 0.02;     // Larger is more responsive, but also less stable
-    static final double     P_DRIVE_GAIN           = 0.03;     // Larger is more responsive, but also less stable\
+    static final double     P_DRIVE_GAIN           = 0.1;     // Larger is more responsive, but also less stable\
     private double          headingError  = 0;
 
 
@@ -153,18 +153,18 @@ public final class Autonomous extends LinearOpMode {
 ////                        intakeRight.setPower(-.5);
 //
                         driveStraight(DRIVE_SPEED, -10, 0);    // Drive Backward 10"
-//                        holdHeading(DRIVE_SPEED,   0, 2);    // Hold  0 Deg heading for 2 seconds
-//
-//                        turnToHeading(TURN_SPEED, -90); // turn right 90 degrees
-//                        holdHeading(TURN_SPEED, -90, 2); // hold -90 degrees heading for 2 a second
+                        holdHeading(DRIVE_SPEED,   0, 2);    // Hold  0 Deg heading for 2 seconds
+
+                        turnToHeading(TURN_SPEED, -90); // turn right 90 degrees
+                        holdHeading(TURN_SPEED, -90, 2); // hold -90 degrees heading for 2 a second
 //
 //                        // STOP OUTTAKE
 ////                        stop_outtake();
 ////                        intakeLeft.setPower(0);
 ////                        intakeRight.setPower(0);
 //
-//                        driveStraight(DRIVE_SPEED, -36, -90);    // Drive Forward 10"
-//                        holdHeading(DRIVE_SPEED,   -90, 2);    // Hold  0 Deg heading for 2 seconds
+                        driveStraight(DRIVE_SPEED, -36, -90);    // Drive Forward 10"
+                        holdHeading(DRIVE_SPEED,   -90, 2);    // Hold  0 Deg heading for 2 seconds
 //
 
                         telemetry.addData("CENTER", "Complete");
