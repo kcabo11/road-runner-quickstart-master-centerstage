@@ -7,6 +7,7 @@ import static org.firstinspires.ftc.teamcode.opmodes.Autonomous.START_POSITION.R
 
 import androidx.annotation.NonNull;
 
+import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.CameraName;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
@@ -124,20 +125,23 @@ public final class Autonomous extends LinearOpMode {
                         holdHeading(DRIVE_SPEED,   0.0, 2);    // Hold  0 Deg heading for 2 seconds
 //                        // OUTTAKE PIXEL HERE
 //                        outtake_marker();
+//                        intakeLeft.setPower(.5);
+//                        intakeRight.setPower(-.5);
 
-                        turnToHeading(TURN_SPEED, 90);
-                        holdHeading(TURN_SPEED,   90, 2);    // Hold  0 Deg heading for 2 seconds
+                        driveStraight(DRIVE_SPEED, -10, 0);    // Drive Backward 10"
+                        holdHeading(DRIVE_SPEED,   0, 2);    // Hold  0 Deg heading for 2 seconds
+
+                        turnToHeading(TURN_SPEED, -90); // turn right 90 degrees
+                        holdHeading(TURN_SPEED, -90, 2); // hold -90 degrees heading for 2 a second
 
                         // STOP OUTTAKE
 //                        stop_outtake();
-                        driveStraight(DRIVE_SPEED, 26, 90);    // Drive Forward 10"
-                        holdHeading(DRIVE_SPEED,   90, 2);    // Hold  0 Deg heading for 2 seconds
+//                        intakeLeft.setPower(0);
+//                        intakeRight.setPower(0);
 
-                        turnToHeading(TURN_SPEED, -90); // turn left 90 degrees
-                        holdHeading(TURN_SPEED, -90, 2); // hold heading for 2 a second
+                        driveStraight(DRIVE_SPEED, -36, -90);    // Drive Forward 10"
+                        holdHeading(DRIVE_SPEED,   -90, 2);    // Hold  0 Deg heading for 2 seconds
 
-                        driveStraight(DRIVE_SPEED, -3, -90);    // Drive Backward 3"
-                        holdHeading(DRIVE_SPEED,   -90, 2);    // Hold heading for 2 seconds
 
                         telemetry.addData("CENTER", "Complete");
                         telemetry.update();
@@ -422,6 +426,11 @@ public final class Autonomous extends LinearOpMode {
     public void initialize(){
         //initialize other hardware as needed.
         CameraName frontCamera = hardwareMap.get(WebcamName.class, "Webcam 1");
+
+        //CameraName backCamera = hardwareMap.get(WebcamName.class, "Webcam 2");
+        //CameraName switchableCamera = ClassFactory.getInstance()
+         //       .getCameraManager().nameForSwitchableCamera(frontCamera, backCamera);
+
 
         processor = new Processor();
         cameraPortal = VisionPortal.easyCreateWithDefaults(hardwareMap.get(WebcamName.class, "Webcam 1"), processor);
