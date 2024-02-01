@@ -23,8 +23,10 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.robotcore.robot.Robot;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
+import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.vision.VisionPortal;
@@ -54,8 +56,7 @@ public final class Autonomous extends LinearOpMode {
     static final double     TURN_SPEED              = 0.2;     // Max Turn speed to limit turn rate
     static final double     HEADING_THRESHOLD       = 1.0 ;    // How close must the heading get to the target before moving to next step.
     // Requiring more accuracy (a smaller number) will often make the turn take longer to get into the final position.
-    private int     leftTarget    = 0;
-    private int     rightTarget   = 0;
+    private int     leftFrontTarget, leftBackTarget, rightBackTarget, rightFrontTarget    = 0;
     static final double     COUNTS_PER_MOTOR_REV    = 145.1 ;   // eg: GoBILDA 312 RPM Yellow Jacket
     static final double     DRIVE_GEAR_REDUCTION    = 1 ;     // No External Gearing.
     static final double     WHEEL_DIAMETER_INCHES   = 1.889765 ;     // For figuring circumference
@@ -77,6 +78,14 @@ public final class Autonomous extends LinearOpMode {
         detectPurplePath();
         telemetry.addData("You selected startPosition of", startPosition.toString());
         telemetry.addData("Camera preview on/off", "3 dots, Camera Stream");
+        telemetry.addData(" ","");
+        telemetry.addData("Heading - Current", "%5.0f", targetHeading, getHeading());
+        telemetry.addData("Actual Pos LF:LB",  "%7d:%7d",      drive.leftFront.getCurrentPosition(),
+                drive.leftBack.getCurrentPosition());
+        telemetry.addData("Actual Pos RF:RB",  "%7d:%7d",      drive.rightFront.getCurrentPosition(),
+                drive.rightBack.getCurrentPosition());
+
+        telemetry.addData(">", "Robot Heading = %4.0f", getHeading());
         telemetry.addData(">", "Touch Play to start OpMode");
         telemetry.update();
     }
@@ -95,8 +104,20 @@ public final class Autonomous extends LinearOpMode {
             Pose2d beginPose = new Pose2d(0, 0, Math.toRadians(0));
             drive = new MecanumDrive(hardwareMap, beginPose);
 
-            selectStartingPosition(); //Select stage or backstage side via the D-PAD
+//            selectStartingPosition(); //Select stage or backstage side via the D-PAD
             initialize(); //Initialize the camera and any other devices
+
+            // Set the encoders for closed loop speed control, and reset the heading.
+            drive.leftBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            drive.rightBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            drive.leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            drive.rightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+            drive.leftBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            drive.rightBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            drive.leftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            drive.rightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            drive.imu.resetYaw();
 
             while (!isStarted() && !isStopRequested())
             {
@@ -106,9 +127,8 @@ public final class Autonomous extends LinearOpMode {
             waitForStart();
 
             //OVERRIDE FOR TESTING
-//            startPosition = BLUE_BACKSTAGE;
-//            purplePixelPath = Processor.Selected.MIDDLE;
-
+            startPosition = BLUE_BACKSTAGE;
+            purplePixelPath = Processor.Selected.MIDDLE;
 
 
 //          Alliance: Blue; Position: Backstage
@@ -117,31 +137,35 @@ public final class Autonomous extends LinearOpMode {
                 telemetry.addData("Running Blue_Backstage with pixel ","");
                 switch (purplePixelPath) {
                     case MIDDLE: {
+                        RobotLog.d("10984:runOpMode:Blue_Backstage, Center");
                         telemetry.addData("CENTER", "");
                         telemetry.update();
+                        sleep(1000);
 
                         // CENTER PATH
+                        RobotLog.d("10984:runOpMode:BL,C:Calling driveStraight()");
                         driveStraight(DRIVE_SPEED, 28, 0.0);    // Drive Forward 28"
+                        RobotLog.d("10984:runOpMode:BL,C:Finished driveStraight()");
                         holdHeading(DRIVE_SPEED,   0.0, 2);    // Hold  0 Deg heading for 2 seconds
-//                        // OUTTAKE PIXEL HERE
-//                        outtake_marker();
-//                        intakeLeft.setPower(.5);
-//                        intakeRight.setPower(-.5);
-
+////                        // OUTTAKE PIXEL HERE
+////                        outtake_marker();
+////                        intakeLeft.setPower(.5);
+////                        intakeRight.setPower(-.5);
+//
                         driveStraight(DRIVE_SPEED, -10, 0);    // Drive Backward 10"
-                        holdHeading(DRIVE_SPEED,   0, 2);    // Hold  0 Deg heading for 2 seconds
-
-                        turnToHeading(TURN_SPEED, -90); // turn right 90 degrees
-                        holdHeading(TURN_SPEED, -90, 2); // hold -90 degrees heading for 2 a second
-
-                        // STOP OUTTAKE
-//                        stop_outtake();
-//                        intakeLeft.setPower(0);
-//                        intakeRight.setPower(0);
-
-                        driveStraight(DRIVE_SPEED, -36, -90);    // Drive Forward 10"
-                        holdHeading(DRIVE_SPEED,   -90, 2);    // Hold  0 Deg heading for 2 seconds
-
+//                        holdHeading(DRIVE_SPEED,   0, 2);    // Hold  0 Deg heading for 2 seconds
+//
+//                        turnToHeading(TURN_SPEED, -90); // turn right 90 degrees
+//                        holdHeading(TURN_SPEED, -90, 2); // hold -90 degrees heading for 2 a second
+//
+//                        // STOP OUTTAKE
+////                        stop_outtake();
+////                        intakeLeft.setPower(0);
+////                        intakeRight.setPower(0);
+//
+//                        driveStraight(DRIVE_SPEED, -36, -90);    // Drive Forward 10"
+//                        holdHeading(DRIVE_SPEED,   -90, 2);    // Hold  0 Deg heading for 2 seconds
+//
 
                         telemetry.addData("CENTER", "Complete");
                         telemetry.update();
@@ -149,6 +173,7 @@ public final class Autonomous extends LinearOpMode {
                         break;
                     }
                     case LEFT: {
+                        RobotLog.d("10984:runOpMode:Blue_Backstage, Left");
                         telemetry.addData("LEFT", "");
                         telemetry.update();
 
@@ -194,6 +219,7 @@ public final class Autonomous extends LinearOpMode {
                         break;
                     }
                     case RIGHT: {
+                        RobotLog.d("10984:runOpMode:Blue_Backstage, Right");
                         telemetry.addData("RIGHT", "");
                         telemetry.update();
 
@@ -457,17 +483,31 @@ public final class Autonomous extends LinearOpMode {
 
         // Ensure that the OpMode is still active
         if (opModeIsActive()) {
+            RobotLog.d("10984:Entered DriveStraight");
 
             // Determine new target position, and pass to motor controller
             int moveCounts = (int)(distance * COUNTS_PER_INCH);
-            leftTarget = drive.leftFront.getCurrentPosition() + moveCounts;
-            rightTarget = drive.rightFront.getCurrentPosition() + moveCounts;
+            leftFrontTarget = drive.leftFront.getCurrentPosition() + moveCounts;
+            leftBackTarget = drive.leftBack.getCurrentPosition() + moveCounts;
+            rightFrontTarget = drive.rightFront.getCurrentPosition() + moveCounts;
+            rightBackTarget = drive.rightBack.getCurrentPosition() + moveCounts;
+
+            telemetry.addData("Actual Pos LF:LB",  "%7d:%7d",      drive.leftFront.getCurrentPosition(),
+                    drive.leftBack.getCurrentPosition());
+            telemetry.addData("Actual Pos RF:RB",  "%7d:%7d",      drive.rightFront.getCurrentPosition(),
+                    drive.rightBack.getCurrentPosition());
+            telemetry.addData("Target Pos LF:LB",  "%7d:%7d",      leftFrontTarget,  leftBackTarget);
+            telemetry.addData("Target Pos RF:RB",  "%7d:%7d",      rightFrontTarget,  rightBackTarget);
+//            telemetry.addData("Move Counts",  "%7d",      double(moveCounts));
+//            telemetry.addData("Counts Per Inch",  "%7d",      COUNTS_PER_INCH);
+            telemetry.update();
+            sleep(5000);
 
             // Set Target FIRST, then turn on RUN_TO_POSITION
-            drive.leftFront.setTargetPosition(leftTarget);
-            drive.leftBack.setTargetPosition(leftTarget);
-            drive.rightFront.setTargetPosition(rightTarget);
-            drive.rightBack.setTargetPosition(rightTarget);
+            drive.leftFront.setTargetPosition(leftFrontTarget);
+            drive.leftBack.setTargetPosition(leftBackTarget);
+            drive.rightFront.setTargetPosition(rightFrontTarget);
+            drive.rightBack.setTargetPosition(rightBackTarget);
 
             drive.leftFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             drive.leftBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -477,11 +517,14 @@ public final class Autonomous extends LinearOpMode {
             // Set the required driving speed  (must be positive for RUN_TO_POSITION)
             // Start driving straight, and then enter the control loop
             maxDriveSpeed = Math.abs(maxDriveSpeed);
+
+            RobotLog.d("10984:DriveStraight Calling MoveRobot");
             moveRobot(maxDriveSpeed, 0);
 
             // keep looping while we are still active, and BOTH motors are running.
             while (opModeIsActive() &&
-                    (drive.leftFront.isBusy() && drive.rightFront.isBusy())) {
+                    (drive.leftFront.isBusy() && drive.rightFront.isBusy() &&
+                    drive.leftBack.isBusy() && drive.rightBack.isBusy())) {
 
                 // Determine required steering to keep on heading
                 turnSpeed = getSteeringCorrection(heading, P_DRIVE_GAIN);
@@ -491,6 +534,7 @@ public final class Autonomous extends LinearOpMode {
                     turnSpeed *= -1.0;
 
                 // Apply the turning correction to the current driving speed.
+                RobotLog.d("10984:DriveStraight Calling MoveRobot within loop");
                 moveRobot(driveSpeed, turnSpeed);
 
                 // Display drive status for the driver.
@@ -521,6 +565,7 @@ public final class Autonomous extends LinearOpMode {
      *              If a relative angle is required, add/subtract from current heading.
      */
     public void turnToHeading(double maxTurnSpeed, double heading) {
+        RobotLog.d("10984:Entered turnToHeading()");
 
         // Run getSteeringCorrection() once to pre-calculate the current error
         getSteeringCorrection(heading, P_DRIVE_GAIN);
@@ -563,6 +608,7 @@ public final class Autonomous extends LinearOpMode {
 
         ElapsedTime holdTimer = new ElapsedTime();
         holdTimer.reset();
+        RobotLog.d("10984:Entered holdHeading()");
 
         // keep looping while we have time remaining.
         while (opModeIsActive() && (holdTimer.time() < holdTime)) {
@@ -593,6 +639,7 @@ public final class Autonomous extends LinearOpMode {
      * @return                      Turning power needed to get to required heading.
      */
     public double getSteeringCorrection(double desiredHeading, double proportionalGain) {
+        RobotLog.d("10984:Entered getSteeringCorrection()");
         targetHeading = desiredHeading;  // Save for telemetry
 
         // Determine the heading current error
@@ -618,6 +665,7 @@ public final class Autonomous extends LinearOpMode {
 
         leftSpeed  = drivespeed_arg - turn;
         rightSpeed = drivespeed_arg + turn;
+        RobotLog.d("10984:Entered MoveRobot");
 
         // Scale speeds down if either one exceeds +/- 1.0;
         double max = Math.max(Math.abs(leftSpeed), Math.abs(rightSpeed));
@@ -640,17 +688,28 @@ public final class Autonomous extends LinearOpMode {
      */
     private void sendTelemetry(boolean straight) {
 
+        RobotLog.d("10984:Entered sendTelemetry()");
         if (straight) {
+            RobotLog.d("10984:Motion", "Drive Straight");
             telemetry.addData("Motion", "Drive Straight");
-            telemetry.addData("Target Pos L:R",  "%7d:%7d",      leftTarget,  rightTarget);
-            telemetry.addData("Actual Pos L:R",  "%7d:%7d",      drive.leftFront.getCurrentPosition(),
+            telemetry.addData("Target Pos LF:LB",  "%7d:%7d",      leftFrontTarget,  leftBackTarget);
+            telemetry.addData("Target Pos RF:RB",  "%7d:%7d",      rightFrontTarget,  rightBackTarget);
+            RobotLog.d("10984:Actual Pos L:R",  "%7d:%7d",      drive.leftFront.getCurrentPosition(),
                     drive.leftBack.getCurrentPosition());
-            telemetry.addData("Actual Pos L:R",  "%7d:%7d",      drive.rightFront.getCurrentPosition(),
+            telemetry.addData("Actual Pos LF:LB",  "%7d:%7d",      drive.leftFront.getCurrentPosition(),
+                    drive.leftBack.getCurrentPosition());
+            RobotLog.d("10984:Actual Pos L:R",  "%7d:%7d",      drive.rightFront.getCurrentPosition(),
+                    drive.rightBack.getCurrentPosition());
+            telemetry.addData("Actual Pos RF:RB",  "%7d:%7d",      drive.rightFront.getCurrentPosition(),
                     drive.rightBack.getCurrentPosition());
         } else {
             telemetry.addData("Motion", "Turning");
+            RobotLog.d("10984:Motion", "Turning");
         }
 
+        RobotLog.d("10984:Heading- Target : Current", "%5.2f : %5.0f", targetHeading, getHeading());
+        RobotLog.d("10984:Error  : Steer Pwr",  "%5.1f : %5.1f", headingError, turnSpeed);
+        RobotLog.d("10984:Wheel Speeds L : R", "%5.2f : %5.2f", leftSpeed, rightSpeed);
         telemetry.addData("Heading- Target : Current", "%5.2f : %5.0f", targetHeading, getHeading());
         telemetry.addData("Error  : Steer Pwr",  "%5.1f : %5.1f", headingError, turnSpeed);
         telemetry.addData("Wheel Speeds L : R", "%5.2f : %5.2f", leftSpeed, rightSpeed);
@@ -661,6 +720,7 @@ public final class Autonomous extends LinearOpMode {
      * read the Robot heading directly from the IMU (in degrees)
      */
     public double getHeading() {
+        RobotLog.d("10984:Entered getHeading()");
         YawPitchRollAngles orientation = drive.imu.getRobotYawPitchRollAngles();
         return orientation.getYaw(AngleUnit.DEGREES);
     }
@@ -669,7 +729,7 @@ public final class Autonomous extends LinearOpMode {
     public void selectStartingPosition() {
         //******select start pose*****
         while (!isStopRequested()) {
-            telemetry.addLine("Glendale Qualifier - Code Initialized");
+            telemetry.addLine("Queen Creek Qualifier - Code Initialized");
             telemetry.addData("---------------------------------------", "");
             telemetry.addLine("Select Starting Position using DPAD Keys");
             telemetry.addData("    Blue Left   ", "(^)");

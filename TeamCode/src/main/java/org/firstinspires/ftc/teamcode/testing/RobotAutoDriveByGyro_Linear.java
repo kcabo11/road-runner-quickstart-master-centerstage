@@ -95,6 +95,7 @@ import org.firstinspires.ftc.teamcode.MecanumDrive;
  */
 
 @Autonomous(name="Test Auto by Gyro", group="Robot")
+@Disabled
 public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
 
     /* Declare OpMode members. */
