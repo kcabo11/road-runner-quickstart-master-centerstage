@@ -52,7 +52,7 @@ public final class Autonomous extends LinearOpMode {
     private Processor.Selected purplePixelPath = Processor.Selected.LEFT;
     public CRServo intakeLeft = null;
     public CRServo intakeRight = null;
-    static final double     DRIVE_SPEED             = 0.3;     // Max driving speed for better distance accuracy.
+    static final double     DRIVE_SPEED             = 0.4;     // Max driving speed for better distance accuracy.
     static final double     TURN_SPEED              = 0.2;     // Max Turn speed to limit turn rate
     static final double     HEADING_THRESHOLD       = 1.0 ;    // How close must the heading get to the target before moving to next step.
     // Requiring more accuracy (a smaller number) will often make the turn take longer to get into the final position.
@@ -70,7 +70,7 @@ public final class Autonomous extends LinearOpMode {
     private double  rightSpeed    = 0;
 
     static final double     P_TURN_GAIN            = 0.02;     // Larger is more responsive, but also less stable
-    static final double     P_DRIVE_GAIN           = 0.1;     // Larger is more responsive, but also less stable\
+    static final double     P_DRIVE_GAIN           = 1;     // Larger is more responsive, but also less stable\
     private double          headingError  = 0;
 
 
@@ -113,11 +113,7 @@ public final class Autonomous extends LinearOpMode {
             drive.leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             drive.rightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-            drive.leftBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            drive.rightBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            drive.leftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            drive.rightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            drive.imu.resetYaw();
+
 
             while (!isStarted() && !isStopRequested())
             {
@@ -125,7 +121,12 @@ public final class Autonomous extends LinearOpMode {
             }
 
             waitForStart();
-
+            drive.leftBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            drive.rightBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            drive.leftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            drive.rightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            drive.imu.resetYaw();
+			
             //OVERRIDE FOR TESTING
             startPosition = BLUE_BACKSTAGE;
             purplePixelPath = Processor.Selected.MIDDLE;
@@ -147,21 +148,20 @@ public final class Autonomous extends LinearOpMode {
                         driveStraight(DRIVE_SPEED, 28, 0.0);    // Drive Forward 28"
                         RobotLog.d("10984:runOpMode:BL,C:Finished driveStraight()");
                         holdHeading(DRIVE_SPEED,   0.0, 2);    // Hold  0 Deg heading for 2 seconds
-////                        // OUTTAKE PIXEL HERE
-////                        outtake_marker();
-////                        intakeLeft.setPower(.5);
-////                        intakeRight.setPower(-.5);
-//
+//                        // OUTTAKE PIXEL HERE
+//                        outtake_marker();
+                        intakeLeft.setPower(.5);
+                        intakeRight.setPower(-.5);
+//                        // STOP OUTTAKE
+//                        stop_outtake();
+                        intakeLeft.setPower(0);
+                        intakeRight.setPower(0);
+
                         driveStraight(DRIVE_SPEED, -10, 0);    // Drive Backward 10"
                         holdHeading(DRIVE_SPEED,   0, 2);    // Hold  0 Deg heading for 2 seconds
 
                         turnToHeading(TURN_SPEED, -90); // turn right 90 degrees
                         holdHeading(TURN_SPEED, -90, 2); // hold -90 degrees heading for 2 a second
-//
-//                        // STOP OUTTAKE
-////                        stop_outtake();
-////                        intakeLeft.setPower(0);
-////                        intakeRight.setPower(0);
 //
                         driveStraight(DRIVE_SPEED, -36, -90);    // Drive Forward 10"
                         holdHeading(DRIVE_SPEED,   -90, 2);    // Hold  0 Deg heading for 2 seconds
@@ -176,9 +176,12 @@ public final class Autonomous extends LinearOpMode {
                         RobotLog.d("10984:runOpMode:Blue_Backstage, Left");
                         telemetry.addData("LEFT", "");
                         telemetry.update();
+                        sleep(1000);
 
                         // LEFT PATH
+                        RobotLog.d("10984:runOpMode:BL,C:Calling driveStraight()");
                         driveStraight(DRIVE_SPEED, 15, 0.0);    // Drive Forward 10"
+                        RobotLog.d("10984:runOpMode:BL,C:Finished driveStraight()");
                         holdHeading(DRIVE_SPEED,   0.0, 2);    // Hold  0 Deg heading for 2 seconds
 
                         turnToHeading(TURN_SPEED, 30); // turn left 30 degrees
@@ -187,14 +190,18 @@ public final class Autonomous extends LinearOpMode {
                         driveStraight(DRIVE_SPEED, 7, 30);    // Drive Forward 7"
                         holdHeading(DRIVE_SPEED,   30, 2);    // Hold  heading for 2 seconds
 
-                        // OUTTAKE PIXEL HERE
+//                        // OUTTAKE PIXEL HERE
 //                        outtake_marker();
+                        intakeLeft.setPower(.5);
+                        intakeRight.setPower(-.5);
 
                         driveStraight(DRIVE_SPEED, -10, 30);    // Drive Backward 10"
                         holdHeading(DRIVE_SPEED,   30, 2);    // Hold heading for 2 seconds
 
-                        // STOP OUTTAKE
+//                        // STOP OUTTAKE
 //                        stop_outtake();
+                        intakeLeft.setPower(0);
+                        intakeRight.setPower(0);
 
                         turnToHeading(TURN_SPEED, 90); // turn left 90 degrees
                         holdHeading(TURN_SPEED, 90, 2); // hold heading for 2 a second
@@ -222,9 +229,12 @@ public final class Autonomous extends LinearOpMode {
                         RobotLog.d("10984:runOpMode:Blue_Backstage, Right");
                         telemetry.addData("RIGHT", "");
                         telemetry.update();
+                        sleep(1000);
 
                         // RIGHT PATH
+                        RobotLog.d("10984:runOpMode:BL,C:Calling driveStraight()");
                         driveStraight(DRIVE_SPEED, 24, 0.0);    // Drive Forward 24"
+                        RobotLog.d("10984:runOpMode:BL,C:Finished driveStraight()");
                         holdHeading(DRIVE_SPEED,   0.0, 2);    // Hold  0 Deg heading for 2 seconds
 
                         turnToHeading(TURN_SPEED, -90); // turn right 90 degrees
@@ -521,10 +531,12 @@ public final class Autonomous extends LinearOpMode {
             RobotLog.d("10984:DriveStraight Calling MoveRobot");
             moveRobot(maxDriveSpeed, 0);
 
+
+
             // keep looping while we are still active, and BOTH motors are running.
             while (opModeIsActive() &&
-                    (drive.leftFront.isBusy() && drive.rightFront.isBusy() &&
-                    drive.leftBack.isBusy() && drive.rightBack.isBusy())) {
+                    (drive.leftFront.isBusy() && drive.rightFront.isBusy())) {
+                    //drive.leftBack.isBusy() && drive.rightBack.isBusy())) {
 
                 // Determine required steering to keep on heading
                 turnSpeed = getSteeringCorrection(heading, P_DRIVE_GAIN);

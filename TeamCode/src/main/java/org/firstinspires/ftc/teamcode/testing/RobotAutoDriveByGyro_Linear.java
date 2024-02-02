@@ -35,12 +35,14 @@ import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
+import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
@@ -103,6 +105,8 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
     private DcMotor         rightFront  = null;
     private DcMotor         rightBack  = null;
     private IMU             imu         = null;      // Control/Expansion Hub IMU
+    public CRServo intakeLeft = null;
+    public CRServo intakeRight = null;
 
     private double          headingError  = 0;
 
@@ -166,6 +170,9 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
         rightBack.setDirection(DcMotorSimple.Direction.FORWARD);
         rightFront.setDirection(DcMotorSimple.Direction.FORWARD);
 
+        intakeLeft = hardwareMap.get(CRServo.class, "intakeLeft");
+        intakeRight = hardwareMap.get(CRServo.class, "intakeRight");
+
         // DONE: make sure your config has an IMU with this name (can be BNO or BHI)
         //   see https://ftc-docs.firstinspires.org/en/latest/hardware_and_software_configuration/configuring/index.html
 
@@ -188,6 +195,7 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
         rightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//        imu.resetYaw();
 
         // Wait for the game to start (Display Gyro value while waiting)
         while (opModeInInit()) {
@@ -198,7 +206,7 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
         // Set the encoders for closed loop speed control, and reset the heading.
         leftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        imu.resetYaw();
+        //imu.resetYaw();
 
         // Step through each leg of the path,
         // Notes:   Reverse movement is obtained by setting a negative distance (not speed)
@@ -206,54 +214,181 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
         //          Add a sleep(2000) after any step to keep the telemetry data visible for review
 
 
-        // CENTER PATH
-        driveStraight(DRIVE_SPEED, 28.0, 0.0);    // Drive Forward 28"
+// B L U E - B A C K S T A G E
+// ========================================= BLUE BS CENTER PATH BELOW =========================================
+//        driveStraight(DRIVE_SPEED, 26, 0.0);    // Drive Forward 28"
+//        holdHeading(TURN_SPEED,   0.0, 2);    // Hold  0 Deg heading for .5 seconds
+//
+//        // OUTTAKE PIXEL
+//        intakeLeft.setPower(.5);
+//        intakeRight.setPower(-.5);
+//        sleep(500);
+//        // STOP OUTTAKE
+//        intakeLeft.setPower(0);
+//        intakeRight.setPower(0);
+//        sleep(1000);
+//
+//        driveStraight(DRIVE_SPEED, -10, 0);    // Drive Backward 10"
+//        holdHeading(TURN_SPEED,   0, 2);    // Hold  0 Deg heading for 2 seconds
+//
+//        turnToHeading(TURN_SPEED, -90); // turn right 90 degrees
+//        holdHeading(TURN_SPEED, -90, 2); // hold -90 degrees heading for 2 a second
+//
+//        driveStraight(DRIVE_SPEED, -36, -90);    // Drive Forward 10"
+//        holdHeading(DRIVE_SPEED,   -90, 2);    // Hold  0 Deg heading for 2 seconds
+//
+//        telemetry.addData("CENTER", "Complete");
+//        telemetry.update();
+// ========================================= BLUE BS CENTER PATH ABOVE =========================================
+
+
+// ========================================= BLUE BS LEFT PATH BELOW =========================================
+//        driveStraight(DRIVE_SPEED, 15, 0);    // Drive Forward 15"
+//        holdHeading(TURN_SPEED,   0.0, 2);    // Hold  0 Deg heading for 2 seconds
+//
+//        turnToHeading(TURN_SPEED, 40); // turn left 40 degrees
+//        holdHeading(TURN_SPEED, 40, 2); // hold heading for 2 a second
+//
+//        driveStraight(DRIVE_SPEED, 7, 40);    // Drive Forward 7"
+//        holdHeading(TURN_SPEED,   40, 2);    // Hold  heading for 2 seconds
+////
+//        // OUTTAKE PIXEL
+//        intakeLeft.setPower(.5);
+//        intakeRight.setPower(-.5);
+//        sleep(500);
+//        // STOP OUTTAKE
+//        intakeLeft.setPower(0);
+//        intakeRight.setPower(0);
+//        sleep(1000);
+//
+//        driveStraight(DRIVE_SPEED, -5, 40);    // Drive Backward 10"
+//        holdHeading(TURN_SPEED,   40, 2);    // Hold heading for 2 seconds
+//
+//        turnToHeading(TURN_SPEED, 90); // turn left 90 degrees
+//        holdHeading(TURN_SPEED, 90, 2); // hold heading for 2 a second
+//
+//        driveStraight(DRIVE_SPEED, 27, 90);    // Drive Forward 26"
+//        holdHeading(TURN_SPEED,   90, 2);    // Hold  heading for 2 seconds
+//
+//        telemetry.addData("LEFT Complete", "");
+//        telemetry.update();
+// ========================================= BLUE BS LEFT PATH ABOVE =========================================
+
+
+// ========================================= BLUE BS RIGHT PATH BELOW =========================================
+//        driveStraight(DRIVE_SPEED, 26, 0.0);    // Drive Forward 26"
+//        holdHeading(TURN_SPEED,   0.0, 2);    // Hold  0 Deg heading for 2 seconds
+//
+//        turnToHeading(TURN_SPEED, -90); // turn right 90 degrees
+//        holdHeading(TURN_SPEED, -90, 2); // hold -90 degrees heading for 2 a second
+//
+//        driveStraight(DRIVE_SPEED, 2, -90);    // Drive Forward 2"
+//        holdHeading(TURN_SPEED,   -90, 2);    // Hold heading for 2 seconds
+//
+//        // OUTTAKE HERE
+//        intakeLeft.setPower(.5);
+//        intakeRight.setPower(-.5);
+//        sleep(500);
+//        // STOP OUTTAKE
+//        intakeLeft.setPower(0);
+//        intakeRight.setPower(0);
+//        sleep(1000);
+//
+//        driveStraight(DRIVE_SPEED, -35, -90);    // Drive Backward 38"
+//        holdHeading(TURN_SPEED,   -90, 2);    // Hold heading for 2 seconds
+//
+//        telemetry.addData("RIGHT Complete", "");
+//        telemetry.update();
+// ========================================= BLUE BS RIGHT PATH ABOVE =========================================
+
+
+// R E D - B A C K S T A G E
+// ========================================= RED BS CENTER PATH BELOW =========================================
+        driveStraight(DRIVE_SPEED, 26, 0.0);    // Drive Forward 28"
         holdHeading(TURN_SPEED,   0.0, 2);    // Hold  0 Deg heading for .5 seconds
 
-        turnToHeading(TURN_SPEED, 90); // turn left 90 degrees
-        holdHeading(TURN_SPEED, 90, 2); // hold -90 degrees heading for 1/2 a second
+        // OUTTAKE PIXEL
+        intakeLeft.setPower(.5);
+        intakeRight.setPower(-.5);
+        sleep(500);
+        // STOP OUTTAKE
+        intakeLeft.setPower(0);
+        intakeRight.setPower(0);
+        sleep(1000);
 
-        driveStraight(DRIVE_SPEED, 24.0, 90);    // Drive Forward 12"
-        holdHeading(TURN_SPEED,   90, 2);    // Hold  0 Deg heading for .5 seconds
+        driveStraight(DRIVE_SPEED, -10, 0);    // Drive Backward 10"
+        holdHeading(TURN_SPEED,   0, 2);    // Hold  0 Deg heading for 2 seconds
 
-        turnToHeading(TURN_SPEED, 0.0); // turn right 90 degrees
-        holdHeading(TURN_SPEED,   0.0, 2);
-        driveStraight(DRIVE_SPEED,12, 0.0);    // Drive to park in backdrop
+        turnToHeading(TURN_SPEED, 90); // turn right 90 degrees
+        holdHeading(TURN_SPEED, 90, 2); // hold -90 degrees heading for 2 a second
 
+        driveStraight(DRIVE_SPEED, -36, 90);    // Drive Forward 10"
+        holdHeading(DRIVE_SPEED,   90, 2);    // Hold  0 Deg heading for 2 seconds
 
-
-        telemetry.addData("Path", "Complete");
+        telemetry.addData("CENTER", "Complete");
         telemetry.update();
+// ========================================= RED BS CENTER PATH ABOVE =========================================
 
-        // LEFT PATH
-        // CODE HERE
-//        telemetry.addData("Path", "Complete");
+
+// ========================================= RED BS LEFT PATH BELOW =========================================
+//        driveStraight(DRIVE_SPEED, 26, 0.0);    // Drive Forward 26"
+//        holdHeading(TURN_SPEED,   0.0, 2);    // Hold  0 Deg heading for 2 seconds
+//
+//        turnToHeading(TURN_SPEED, 90); // turn right 90 degrees
+//        holdHeading(TURN_SPEED, 90, 2); // hold 90 degrees heading for 2 a second
+//
+//        driveStraight(DRIVE_SPEED, 2, 90);    // Drive Forward 2"
+//        holdHeading(TURN_SPEED,   90, 2);    // Hold heading for 2 seconds
+//
+//        // OUTTAKE HERE
+//        intakeLeft.setPower(.5);
+//        intakeRight.setPower(-.5);
+//        sleep(500);
+//        // STOP OUTTAKE
+//        intakeLeft.setPower(0);
+//        intakeRight.setPower(0);
+//        sleep(1000);
+//
+//        driveStraight(DRIVE_SPEED, -35, 90);    // Drive Backward 38"
+//        holdHeading(TURN_SPEED,   90, 2);    // Hold heading for 2 seconds
+//
+//        telemetry.addData("RIGHT Complete", "");
 //        telemetry.update();
+// ========================================= RED BS LEFT PATH ABOVE =========================================
 
-        // RIGHT PATH
-        // CODE HERE
 
-//        telemetry.addData("Path", "Complete");
+// ========================================= RED BS RIGHT PATH BELOW =========================================
+//        driveStraight(DRIVE_SPEED, 15, 0);    // Drive Forward 15"
+//        holdHeading(TURN_SPEED,   0.0, 2);    // Hold  0 Deg heading for 2 seconds
+//
+//        turnToHeading(TURN_SPEED, -40); // turn left 40 degrees
+//        holdHeading(TURN_SPEED, -40, 2); // hold heading for 2 a second
+//
+//        driveStraight(DRIVE_SPEED, 7, -40);    // Drive Forward 7"
+//        holdHeading(TURN_SPEED,   -40, 2);    // Hold  heading for 2 seconds
+////
+//        // OUTTAKE PIXEL
+//        intakeLeft.setPower(.5);
+//        intakeRight.setPower(-.5);
+//        sleep(500);
+//        // STOP OUTTAKE
+//        intakeLeft.setPower(0);
+//        intakeRight.setPower(0);
+//        sleep(1000);
+//
+//        driveStraight(DRIVE_SPEED, -5, -40);    // Drive Backward 10"
+//        holdHeading(TURN_SPEED,   -40, 2);    // Hold heading for 2 seconds
+//
+//        turnToHeading(TURN_SPEED, -90); // turn left 90 degrees
+//        holdHeading(TURN_SPEED, -90, 2); // hold heading for 2 a second
+//
+//        driveStraight(DRIVE_SPEED, 27, -90);    // Drive Forward 26"
+//        holdHeading(TURN_SPEED,   -90, 2);    // Hold  heading for 2 seconds
+//
+//        telemetry.addData("LEFT Complete", "");
 //        telemetry.update();
+// ========================================= RED BS RIGHT PATH ABOVE =========================================
 
-
-
-//        driveStraight(DRIVE_SPEED, 24.0, 0.0);    // Drive Forward 24"
-//        turnToHeading( TURN_SPEED, -45.0);               // Turn  CW to -45 Degrees
-//        holdHeading( TURN_SPEED, -45.0, 0.5);   // Hold -45 Deg heading for a 1/2 second
-//
-//        driveStraight(DRIVE_SPEED, 17.0, -45.0);  // Drive Forward 17" at -45 degrees (12"x and 12"y)
-//        turnToHeading( TURN_SPEED,  45.0);               // Turn  CCW  to  45 Degrees
-//        holdHeading( TURN_SPEED,  45.0, 0.5);    // Hold  45 Deg heading for a 1/2 second
-//
-//        driveStraight(DRIVE_SPEED, 17.0, 45.0);  // Drive Forward 17" at 45 degrees (-12"x and 12"y)
-//        turnToHeading( TURN_SPEED,   0.0);               // Turn  CW  to 0 Degrees
-//        holdHeading( TURN_SPEED,   0.0, 1.0);    // Hold  0 Deg heading for 1 second
-//
-//        driveStraight(DRIVE_SPEED,-48.0, 0.0);    // Drive in Reverse 48" (should return to approx. staring position)
-//
-//        telemetry.addData("Path", "Complete");
-//        telemetry.update();
         sleep(1000);  // Pause to display last telemetry message.
     }
 
