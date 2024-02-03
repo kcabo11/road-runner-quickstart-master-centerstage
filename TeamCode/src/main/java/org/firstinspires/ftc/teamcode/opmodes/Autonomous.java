@@ -19,6 +19,7 @@ import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -34,6 +35,7 @@ import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 
 @com.qualcomm.robotcore.eventloop.opmode.Autonomous
+@Disabled
 public final class Autonomous extends LinearOpMode {
     enum START_POSITION {
         //IN RELATION TO BACKBOARD
@@ -138,37 +140,41 @@ public final class Autonomous extends LinearOpMode {
                 telemetry.addData("Running Blue_Backstage with pixel ","");
                 switch (purplePixelPath) {
                     case MIDDLE: {
-                        RobotLog.d("10984:runOpMode:Blue_Backstage, Center");
-                        telemetry.addData("CENTER", "");
+//                        RobotLog.d("10984:runOpMode:Blue_Backstage, Center");
+//                        telemetry.addData("CENTER", "");
+                        telemetry.addData("Motor Test", "");
                         telemetry.update();
-                        sleep(1000);
+//                        sleep(1000);
 
-                        // CENTER PATH
-                        RobotLog.d("10984:runOpMode:BL,C:Calling driveStraight()");
-                        driveStraight(DRIVE_SPEED, 28, 0.0);    // Drive Forward 28"
-                        RobotLog.d("10984:runOpMode:BL,C:Finished driveStraight()");
-                        holdHeading(DRIVE_SPEED,   0.0, 2);    // Hold  0 Deg heading for 2 seconds
-//                        // OUTTAKE PIXEL HERE
-//                        outtake_marker();
-                        intakeLeft.setPower(.5);
-                        intakeRight.setPower(-.5);
-//                        // STOP OUTTAKE
-//                        stop_outtake();
-                        intakeLeft.setPower(0);
-                        intakeRight.setPower(0);
+                        driveStraight(DRIVE_SPEED, 5, 0);
+                        holdHeading(TURN_SPEED, 0, 1);
 
-                        driveStraight(DRIVE_SPEED, -10, 0);    // Drive Backward 10"
-                        holdHeading(DRIVE_SPEED,   0, 2);    // Hold  0 Deg heading for 2 seconds
-
-                        turnToHeading(TURN_SPEED, -90); // turn right 90 degrees
-                        holdHeading(TURN_SPEED, -90, 2); // hold -90 degrees heading for 2 a second
+//                        // CENTER PATH
+//                        RobotLog.d("10984:runOpMode:BL,C:Calling driveStraight()");
+//                        driveStraight(DRIVE_SPEED, 28, 0.0);    // Drive Forward 28"
+//                        RobotLog.d("10984:runOpMode:BL,C:Finished driveStraight()");
+//                        holdHeading(DRIVE_SPEED,   0.0, 2);    // Hold  0 Deg heading for 2 seconds
+////                        // OUTTAKE PIXEL HERE
+////                        outtake_marker();
+//                        intakeLeft.setPower(.5);
+//                        intakeRight.setPower(-.5);
+////                        // STOP OUTTAKE
+////                        stop_outtake();
+//                        intakeLeft.setPower(0);
+//                        intakeRight.setPower(0);
 //
-                        driveStraight(DRIVE_SPEED, -36, -90);    // Drive Forward 10"
-                        holdHeading(DRIVE_SPEED,   -90, 2);    // Hold  0 Deg heading for 2 seconds
+//                        driveStraight(DRIVE_SPEED, -10, 0);    // Drive Backward 10"
+//                        holdHeading(DRIVE_SPEED,   0, 2);    // Hold  0 Deg heading for 2 seconds
+//
+//                        turnToHeading(TURN_SPEED, -90); // turn right 90 degrees
+//                        holdHeading(TURN_SPEED, -90, 2); // hold -90 degrees heading for 2 a second
+////
+//                        driveStraight(DRIVE_SPEED, -36, -90);    // Drive Forward 10"
+//                        holdHeading(DRIVE_SPEED,   -90, 2);    // Hold  0 Deg heading for 2 seconds
 //
 
-                        telemetry.addData("CENTER", "Complete");
-                        telemetry.update();
+//                        telemetry.addData("CENTER", "Complete");
+//                        telemetry.update();
 
                         break;
                     }
@@ -530,8 +536,6 @@ public final class Autonomous extends LinearOpMode {
 
             RobotLog.d("10984:DriveStraight Calling MoveRobot");
             moveRobot(maxDriveSpeed, 0);
-
-
 
             // keep looping while we are still active, and BOTH motors are running.
             while (opModeIsActive() &&

@@ -48,6 +48,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.vision.VisionPortal;
+import org.firstinspires.ftc.teamcode.utils.Processor;
 /*
  *  This OpMode illustrates the concept of driving an autonomous path based on Gyro (IMU) heading and encoder counts.
  *  The code is structured as a LinearOpMode
@@ -145,6 +148,21 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
     static final double     P_TURN_GAIN            = 0.02;     // Larger is more responsive, but also less stable
     static final double     P_DRIVE_GAIN           = 0.03;     // Larger is more responsive, but also less stable
 
+    enum START_POSITION {
+        //IN RELATION TO BACKBOARD
+        BLUE_BACKSTAGE,
+        BLUE_STAGE,
+        RED_BACKSTAGE,
+        RED_STAGE,
+        // ????
+        UNKNOWN
+    }
+
+    private VisionPortal cameraPortal;
+    private static START_POSITION startPosition = START_POSITION.UNKNOWN; //WHERE WE ARE ON THE FIELD/ RED CLOSE ETC
+
+    private Processor processor;
+    private Processor.Selected purplePixelPath = Processor.Selected.LEFT;
 
     @Override
     public void runOpMode() {
@@ -173,6 +191,9 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
         intakeLeft = hardwareMap.get(CRServo.class, "intakeLeft");
         intakeRight = hardwareMap.get(CRServo.class, "intakeRight");
 
+        processor = new Processor();
+        cameraPortal = VisionPortal.easyCreateWithDefaults(hardwareMap.get(WebcamName.class, "Webcam 1"), processor);
+
         // DONE: make sure your config has an IMU with this name (can be BNO or BHI)
         //   see https://ftc-docs.firstinspires.org/en/latest/hardware_and_software_configuration/configuring/index.html
 
@@ -197,8 +218,14 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
         rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 //        imu.resetYaw();
 
+        selectStartingPosition();
+
         // Wait for the game to start (Display Gyro value while waiting)
         while (opModeInInit()) {
+            detectPurplePath();
+            telemetry.addData("You selected startPosition of", startPosition.toString());
+            telemetry.addData("Camera preview on/off", "3 dots, Camera Stream");
+            telemetry.addData(" ","");
             telemetry.addData(">", "Robot Heading = %4.0f", getHeading());
             telemetry.update();
         }
@@ -213,184 +240,479 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
         //          holdHeading() is used after turns to let the heading stabilize
         //          Add a sleep(2000) after any step to keep the telemetry data visible for review
 
+        //OVERRIDE FOR TESTING
+//        startPosition = START_POSITION.BLUE_BACKSTAGE;
+//        purplePixelPath = Processor.Selected.MIDDLE;
 
-// B L U E - B A C K S T A G E
-// ========================================= BLUE BS CENTER PATH BELOW =========================================
-//        driveStraight(DRIVE_SPEED, 26, 0.0);    // Drive Forward 28"
-//        holdHeading(TURN_SPEED,   0.0, 2);    // Hold  0 Deg heading for .5 seconds
-//
-//        // OUTTAKE PIXEL
-//        intakeLeft.setPower(.5);
-//        intakeRight.setPower(-.5);
-//        sleep(500);
-//        // STOP OUTTAKE
-//        intakeLeft.setPower(0);
-//        intakeRight.setPower(0);
-//        sleep(1000);
-//
-//        driveStraight(DRIVE_SPEED, -10, 0);    // Drive Backward 10"
-//        holdHeading(TURN_SPEED,   0, 2);    // Hold  0 Deg heading for 2 seconds
-//
-//        turnToHeading(TURN_SPEED, -90); // turn right 90 degrees
-//        holdHeading(TURN_SPEED, -90, 2); // hold -90 degrees heading for 2 a second
-//
-//        driveStraight(DRIVE_SPEED, -36, -90);    // Drive Forward 10"
-//        holdHeading(DRIVE_SPEED,   -90, 2);    // Hold  0 Deg heading for 2 seconds
-//
-//        telemetry.addData("CENTER", "Complete");
-//        telemetry.update();
-// ========================================= BLUE BS CENTER PATH ABOVE =========================================
+        if (startPosition == START_POSITION.BLUE_BACKSTAGE) {
+            telemetry.addData("Running Blue_Backstage with pixel ", "");
+            switch (purplePixelPath) {
+                case MIDDLE: {
+                    driveStraight(DRIVE_SPEED, 26, 0.0);    // Drive Forward 28"
+                    holdHeading(TURN_SPEED,   0.0, 2);    // Hold  0 Deg heading for .5 seconds
 
+                    // OUTTAKE PIXEL
+                    intakeLeft.setPower(.5);
+                    intakeRight.setPower(-.5);
+                    sleep(500);
+                    // STOP OUTTAKE
+                    intakeLeft.setPower(0);
+                    intakeRight.setPower(0);
+                    sleep(1000);
 
-// ========================================= BLUE BS LEFT PATH BELOW =========================================
-//        driveStraight(DRIVE_SPEED, 15, 0);    // Drive Forward 15"
-//        holdHeading(TURN_SPEED,   0.0, 2);    // Hold  0 Deg heading for 2 seconds
-//
-//        turnToHeading(TURN_SPEED, 40); // turn left 40 degrees
-//        holdHeading(TURN_SPEED, 40, 2); // hold heading for 2 a second
-//
-//        driveStraight(DRIVE_SPEED, 7, 40);    // Drive Forward 7"
-//        holdHeading(TURN_SPEED,   40, 2);    // Hold  heading for 2 seconds
-////
-//        // OUTTAKE PIXEL
-//        intakeLeft.setPower(.5);
-//        intakeRight.setPower(-.5);
-//        sleep(500);
-//        // STOP OUTTAKE
-//        intakeLeft.setPower(0);
-//        intakeRight.setPower(0);
-//        sleep(1000);
-//
-//        driveStraight(DRIVE_SPEED, -5, 40);    // Drive Backward 10"
-//        holdHeading(TURN_SPEED,   40, 2);    // Hold heading for 2 seconds
-//
-//        turnToHeading(TURN_SPEED, 90); // turn left 90 degrees
-//        holdHeading(TURN_SPEED, 90, 2); // hold heading for 2 a second
-//
-//        driveStraight(DRIVE_SPEED, 27, 90);    // Drive Forward 26"
-//        holdHeading(TURN_SPEED,   90, 2);    // Hold  heading for 2 seconds
-//
-//        telemetry.addData("LEFT Complete", "");
-//        telemetry.update();
-// ========================================= BLUE BS LEFT PATH ABOVE =========================================
+                    driveStraight(DRIVE_SPEED, -10, 0);    // Drive Backward 10"
+                    holdHeading(TURN_SPEED,   0, 2);    // Hold  0 Deg heading for 2 seconds
 
+                    turnToHeading(TURN_SPEED, -90); // turn right 90 degrees
+                    holdHeading(TURN_SPEED, -90, 2); // hold -90 degrees heading for 2 a second
 
-// ========================================= BLUE BS RIGHT PATH BELOW =========================================
-//        driveStraight(DRIVE_SPEED, 26, 0.0);    // Drive Forward 26"
-//        holdHeading(TURN_SPEED,   0.0, 2);    // Hold  0 Deg heading for 2 seconds
-//
-//        turnToHeading(TURN_SPEED, -90); // turn right 90 degrees
-//        holdHeading(TURN_SPEED, -90, 2); // hold -90 degrees heading for 2 a second
-//
-//        driveStraight(DRIVE_SPEED, 2, -90);    // Drive Forward 2"
-//        holdHeading(TURN_SPEED,   -90, 2);    // Hold heading for 2 seconds
-//
-//        // OUTTAKE HERE
-//        intakeLeft.setPower(.5);
-//        intakeRight.setPower(-.5);
-//        sleep(500);
-//        // STOP OUTTAKE
-//        intakeLeft.setPower(0);
-//        intakeRight.setPower(0);
-//        sleep(1000);
-//
-//        driveStraight(DRIVE_SPEED, -35, -90);    // Drive Backward 38"
-//        holdHeading(TURN_SPEED,   -90, 2);    // Hold heading for 2 seconds
-//
-//        telemetry.addData("RIGHT Complete", "");
-//        telemetry.update();
-// ========================================= BLUE BS RIGHT PATH ABOVE =========================================
+                    driveStraight(DRIVE_SPEED, -36, -90);    // Drive Forward 10"
+                    holdHeading(TURN_SPEED,   -90, 2);    // Hold  0 Deg heading for 2 seconds
 
+                    telemetry.addData("CENTER", "Complete");
+                    telemetry.update();
+                    break;
+                }
+                case LEFT: {
+                    driveStraight(DRIVE_SPEED, 15, 0);    // Drive Forward 15"
+                    holdHeading(TURN_SPEED,   0.0, 2);    // Hold  0 Deg heading for 2 seconds
 
-// R E D - B A C K S T A G E
-// ========================================= RED BS CENTER PATH BELOW =========================================
-        driveStraight(DRIVE_SPEED, 26, 0.0);    // Drive Forward 28"
-        holdHeading(TURN_SPEED,   0.0, 2);    // Hold  0 Deg heading for .5 seconds
+                    turnToHeading(TURN_SPEED, 40); // turn left 40 degrees
+                    holdHeading(TURN_SPEED, 40, 2); // hold heading for 2 a second
 
-        // OUTTAKE PIXEL
-        intakeLeft.setPower(.5);
-        intakeRight.setPower(-.5);
-        sleep(500);
-        // STOP OUTTAKE
-        intakeLeft.setPower(0);
-        intakeRight.setPower(0);
-        sleep(1000);
+                    driveStraight(DRIVE_SPEED, 7, 40);    // Drive Forward 7"
+                    holdHeading(TURN_SPEED,   40, 2);    // Hold  heading for 2 seconds
+            //
+                    // OUTTAKE PIXEL
+                    intakeLeft.setPower(.5);
+                    intakeRight.setPower(-.5);
+                    sleep(500);
+                    // STOP OUTTAKE
+                    intakeLeft.setPower(0);
+                    intakeRight.setPower(0);
+                    sleep(1000);
 
-        driveStraight(DRIVE_SPEED, -10, 0);    // Drive Backward 10"
-        holdHeading(TURN_SPEED,   0, 2);    // Hold  0 Deg heading for 2 seconds
+                    driveStraight(DRIVE_SPEED, -5, 40);    // Drive Backward 10"
+                    holdHeading(TURN_SPEED,   40, 2);    // Hold heading for 2 seconds
 
-        turnToHeading(TURN_SPEED, 90); // turn right 90 degrees
-        holdHeading(TURN_SPEED, 90, 2); // hold -90 degrees heading for 2 a second
+                    turnToHeading(TURN_SPEED, 90); // turn left 90 degrees
+                    holdHeading(TURN_SPEED, 90, 2); // hold heading for 2 a second
 
-        driveStraight(DRIVE_SPEED, -36, 90);    // Drive Forward 10"
-        holdHeading(DRIVE_SPEED,   90, 2);    // Hold  0 Deg heading for 2 seconds
+                    driveStraight(DRIVE_SPEED, 27, 90);    // Drive Forward 26"
+                    holdHeading(TURN_SPEED,   90, 2);    // Hold  heading for 2 seconds
 
-        telemetry.addData("CENTER", "Complete");
-        telemetry.update();
-// ========================================= RED BS CENTER PATH ABOVE =========================================
+                    telemetry.addData("LEFT Complete", "");
+                    telemetry.update();
+                    break;
+                }
+                case RIGHT: {
+                    driveStraight(DRIVE_SPEED, 26, 0.0);    // Drive Forward 26"
+                    holdHeading(TURN_SPEED,   0.0, 2);    // Hold  0 Deg heading for 2 seconds
 
+                    turnToHeading(TURN_SPEED, -90); // turn right 90 degrees
+                    holdHeading(TURN_SPEED, -90, 2); // hold -90 degrees heading for 2 a second
 
-// ========================================= RED BS LEFT PATH BELOW =========================================
-//        driveStraight(DRIVE_SPEED, 26, 0.0);    // Drive Forward 26"
-//        holdHeading(TURN_SPEED,   0.0, 2);    // Hold  0 Deg heading for 2 seconds
-//
-//        turnToHeading(TURN_SPEED, 90); // turn right 90 degrees
-//        holdHeading(TURN_SPEED, 90, 2); // hold 90 degrees heading for 2 a second
-//
-//        driveStraight(DRIVE_SPEED, 2, 90);    // Drive Forward 2"
-//        holdHeading(TURN_SPEED,   90, 2);    // Hold heading for 2 seconds
-//
-//        // OUTTAKE HERE
-//        intakeLeft.setPower(.5);
-//        intakeRight.setPower(-.5);
-//        sleep(500);
-//        // STOP OUTTAKE
-//        intakeLeft.setPower(0);
-//        intakeRight.setPower(0);
-//        sleep(1000);
-//
-//        driveStraight(DRIVE_SPEED, -35, 90);    // Drive Backward 38"
-//        holdHeading(TURN_SPEED,   90, 2);    // Hold heading for 2 seconds
-//
-//        telemetry.addData("RIGHT Complete", "");
-//        telemetry.update();
-// ========================================= RED BS LEFT PATH ABOVE =========================================
+                    driveStraight(DRIVE_SPEED, 2, -90);    // Drive Forward 2"
+                    holdHeading(TURN_SPEED,   -90, 2);    // Hold heading for 2 seconds
 
+                    // OUTTAKE HERE
+                    intakeLeft.setPower(.5);
+                    intakeRight.setPower(-.5);
+                    sleep(500);
+                    // STOP OUTTAKE
+                    intakeLeft.setPower(0);
+                    intakeRight.setPower(0);
+                    sleep(1000);
 
-// ========================================= RED BS RIGHT PATH BELOW =========================================
-//        driveStraight(DRIVE_SPEED, 15, 0);    // Drive Forward 15"
-//        holdHeading(TURN_SPEED,   0.0, 2);    // Hold  0 Deg heading for 2 seconds
-//
-//        turnToHeading(TURN_SPEED, -40); // turn left 40 degrees
-//        holdHeading(TURN_SPEED, -40, 2); // hold heading for 2 a second
-//
-//        driveStraight(DRIVE_SPEED, 7, -40);    // Drive Forward 7"
-//        holdHeading(TURN_SPEED,   -40, 2);    // Hold  heading for 2 seconds
-////
-//        // OUTTAKE PIXEL
-//        intakeLeft.setPower(.5);
-//        intakeRight.setPower(-.5);
-//        sleep(500);
-//        // STOP OUTTAKE
-//        intakeLeft.setPower(0);
-//        intakeRight.setPower(0);
-//        sleep(1000);
-//
-//        driveStraight(DRIVE_SPEED, -5, -40);    // Drive Backward 10"
-//        holdHeading(TURN_SPEED,   -40, 2);    // Hold heading for 2 seconds
-//
-//        turnToHeading(TURN_SPEED, -90); // turn left 90 degrees
-//        holdHeading(TURN_SPEED, -90, 2); // hold heading for 2 a second
-//
-//        driveStraight(DRIVE_SPEED, 27, -90);    // Drive Forward 26"
-//        holdHeading(TURN_SPEED,   -90, 2);    // Hold  heading for 2 seconds
-//
-//        telemetry.addData("LEFT Complete", "");
-//        telemetry.update();
-// ========================================= RED BS RIGHT PATH ABOVE =========================================
+                    driveStraight(DRIVE_SPEED, -35, -90);    // Drive Backward 38"
+                    holdHeading(TURN_SPEED,   -90, 2);    // Hold heading for 2 seconds
+
+                    telemetry.addData("RIGHT Complete", "");
+                    telemetry.update();
+                    break;
+                }
+            }
+        }
+        else if (startPosition == START_POSITION.RED_BACKSTAGE) {
+            telemetry.addData("Running Red_Backstage with pixel ", "");
+            switch (purplePixelPath) {
+                case MIDDLE: {
+                    driveStraight(DRIVE_SPEED, 26, 0.0);    // Drive Forward 28"
+                    holdHeading(TURN_SPEED,   0.0, 2);    // Hold  0 Deg heading for .5 seconds
+
+                    // OUTTAKE PIXEL
+                    intakeLeft.setPower(.5);
+                    intakeRight.setPower(-.5);
+                    sleep(500);
+                    // STOP OUTTAKE
+                    intakeLeft.setPower(0);
+                    intakeRight.setPower(0);
+                    sleep(1000);
+
+                    driveStraight(DRIVE_SPEED, -5, 0);    // Drive Backward 10"
+                    holdHeading(TURN_SPEED,   0, 2);    // Hold  0 Deg heading for 2 seconds
+
+                    turnToHeading(TURN_SPEED, 90); // turn right 90 degrees
+                    holdHeading(TURN_SPEED, 90, 2); // hold -90 degrees heading for 2 a second
+
+                    driveStraight(DRIVE_SPEED, -36, 90);    // Drive Forward 10"
+                    holdHeading(TURN_SPEED,   90, 2);    // Hold  0 Deg heading for 2 seconds
+
+                    telemetry.addData("CENTER", "Complete");
+                    telemetry.update();
+                    break;
+                }
+                case LEFT: {
+                    driveStraight(DRIVE_SPEED, 26, 0.0);    // Drive Forward 26"
+                    holdHeading(TURN_SPEED,   0.0, 2);    // Hold  0 Deg heading for 2 seconds
+
+                    turnToHeading(TURN_SPEED, 90); // turn left 90 degrees
+                    holdHeading(TURN_SPEED, 90, 2); // hold 90 degrees heading for 2 a second
+
+                    driveStraight(DRIVE_SPEED, 2, 90);    // Drive Forward 2"
+                    holdHeading(TURN_SPEED,   90, 2);    // Hold heading for 2 seconds
+
+                    // OUTTAKE HERE
+                    intakeLeft.setPower(.5);
+                    intakeRight.setPower(-.5);
+                    sleep(500);
+                    // STOP OUTTAKE
+                    intakeLeft.setPower(0);
+                    intakeRight.setPower(0);
+                    sleep(1000);
+
+                    driveStraight(DRIVE_SPEED, -35, 90);    // Drive Backward 38"
+                    holdHeading(TURN_SPEED,   90, 2);    // Hold heading for 2 seconds
+
+                    telemetry.addData("RIGHT Complete", "");
+                    telemetry.update();
+                    break;
+                }
+                case RIGHT: {
+                    driveStraight(DRIVE_SPEED, 20, 0);    // Drive Forward 20"
+                    holdHeading(TURN_SPEED,   0.0, 2);    // Hold  0 Deg heading for 2 seconds
+
+                    turnToHeading(TURN_SPEED, -40); // turn left 40 degrees
+                    holdHeading(TURN_SPEED, -40, 2); // hold heading for 2 a second
+
+                    driveStraight(DRIVE_SPEED, 5, -40);    // Drive Forward 5"
+                    holdHeading(TURN_SPEED,   -40, 2);    // Hold  heading for 2 seconds
+            //
+                    // OUTTAKE PIXEL
+                    intakeLeft.setPower(.5);
+                    intakeRight.setPower(-.5);
+                    sleep(500);
+                    // STOP OUTTAKE
+                    intakeLeft.setPower(0);
+                    intakeRight.setPower(0);
+                    sleep(1000);
+
+                    driveStraight(DRIVE_SPEED, -7, -40);    // Drive Backward 10"
+                    holdHeading(TURN_SPEED,   -40, 2);    // Hold heading for 2 seconds
+
+                    turnToHeading(TURN_SPEED, -90); // turn left 90 degrees
+                    holdHeading(TURN_SPEED, -90, 2); // hold heading for 2 a second
+
+                    driveStraight(DRIVE_SPEED, 27, -90);    // Drive Forward 26"
+                    holdHeading(TURN_SPEED,   -90, 2);    // Hold  heading for 2 seconds
+
+                    telemetry.addData("LEFT Complete", "");
+                    telemetry.update();
+                    break;
+                }
+            }
+        }
+        else if (startPosition == START_POSITION.BLUE_STAGE) {
+            telemetry.addData("Running Blue_Frontstage with pixel ", "");
+            switch (purplePixelPath) {
+                case MIDDLE: {
+                    // Requires Testing
+                    driveStraight(DRIVE_SPEED, 26, 0.0);    // Drive Forward 28"
+                    holdHeading(TURN_SPEED,   0.0, 2);    // Hold  0 Deg heading for .5 seconds
+
+                    // OUTTAKE PIXEL
+                    intakeLeft.setPower(.5);
+                    intakeRight.setPower(-.5);
+                    sleep(500);
+                    // STOP OUTTAKE
+                    intakeLeft.setPower(0);
+                    intakeRight.setPower(0);
+                    sleep(1000);
+
+                    driveStraight(DRIVE_SPEED, -10, 0);    // Drive Backward 10"
+                    holdHeading(TURN_SPEED,   0, 2);    // Hold  0 Deg heading for 2 seconds
+
+                    // IN CASE OF EMERGENCY:
+                    // If your code interferes with your alliance, then comment the rest of this code out, and keep the upper portion
+                    // That way, you can just place your purple pixel and pull back, ready for TeleOp
+                    // If you are not going to interfere with your alliance, keep the following code to park
+
+                    turnToHeading(TURN_SPEED, -90); // turn right 90 degrees
+                    holdHeading(TURN_SPEED, -90, 2); // hold 90 degrees heading for 2 second
+
+                    driveStraight(DRIVE_SPEED, 15, -90);    // Drive Forward 15"
+                    holdHeading(TURN_SPEED,   -90, 2);    // Hold  0 Deg heading for 2 seconds
+
+                    turnToHeading(TURN_SPEED, 0); // turn right 90 degrees
+                    holdHeading(TURN_SPEED, 0, 2); // hold heading for 2 a second
+
+                    driveStraight(DRIVE_SPEED, 30, 0);    // Drive Forward 30"
+                    holdHeading(TURN_SPEED,   0, 2);    // Hold  0 Deg heading for 2 seconds
+
+                    turnToHeading(TURN_SPEED, 90); // turn left 90 degrees
+                    holdHeading(TURN_SPEED, 90, 2); // hold heading for 2 a second
+
+                    driveStraight(DRIVE_SPEED, 60, 90);    // Drive Forward 60" to park in backstage
+                    holdHeading(TURN_SPEED,   90, 2);    // Hold  0 Deg heading for 2 seconds
+
+                    telemetry.addData("CENTER", "Complete");
+                    telemetry.update();
+                    break;
+                }
+                case LEFT: {
+                    // Requries Testing
+                    driveStraight(DRIVE_SPEED, 15, 0);    // Drive Forward 15"
+                    holdHeading(TURN_SPEED,   0.0, 2);    // Hold  0 Deg heading for 2 seconds
+
+                    turnToHeading(TURN_SPEED, 40); // turn left 40 degrees
+                    holdHeading(TURN_SPEED, 40, 2); // hold heading for 2 a second
+
+                    driveStraight(DRIVE_SPEED, 7, 40);    // Drive Forward 7"
+                    holdHeading(TURN_SPEED,   40, 2);    // Hold  heading for 2 seconds
+
+                    // OUTTAKE PIXEL
+                    intakeLeft.setPower(.5);
+                    intakeRight.setPower(-.5);
+                    sleep(500);
+                    // STOP OUTTAKE
+                    intakeLeft.setPower(0);
+                    intakeRight.setPower(0);
+                    sleep(1000);
+
+                    driveStraight(DRIVE_SPEED, -10, 40);    // Drive Backward 10"
+                    holdHeading(TURN_SPEED,   40, 2);    // Hold heading for 2 seconds
+
+                    // IN CASE OF EMERGENCY:
+                    // If your code interferes with your alliance, then comment the rest of this code out, and keep the upper portion
+                    // That way, you can just place your purple pixel and pull back, ready for TeleOp
+                    // If you are not going to interfere with your alliance, keep the following code to park
+
+                    turnToHeading(TURN_SPEED, 0); // turn right 90 degrees
+                    holdHeading(TURN_SPEED, 0, 2); // hold heading for 2 a second
+
+                    driveStraight(DRIVE_SPEED, 30, 0);    // Drive Forward 30"
+                    holdHeading(TURN_SPEED,   0, 2);    // Hold  heading for 2 seconds
+
+                    turnToHeading(TURN_SPEED, 90); // turn left 90 degrees
+                    holdHeading(TURN_SPEED, 90, 2); // hold heading for 2 a second
+
+                    driveStraight(DRIVE_SPEED, 50, 90);    // Drive Forward 30"
+                    holdHeading(TURN_SPEED,   90, 2);    // Hold  0 Deg heading for 2 seconds
+
+                    telemetry.addData("LEFT Complete", "");
+                    telemetry.update();
+                    break;
+                }
+                case RIGHT: {
+                    driveStraight(DRIVE_SPEED, 26, 0.0);    // Drive Forward 26"
+                    holdHeading(TURN_SPEED,   0.0, 2);    // Hold  0 Deg heading for 2 seconds
+
+                    turnToHeading(TURN_SPEED, -90); // turn right 90 degrees
+                    holdHeading(TURN_SPEED, -90, 2); // hold -90 degrees heading for 2 a second
+
+                    driveStraight(DRIVE_SPEED, 2, -90);    // Drive Forward 2"
+                    holdHeading(TURN_SPEED,   -90, 2);    // Hold heading for 2 seconds
+
+                    // OUTTAKE HERE
+                    intakeLeft.setPower(.5);
+                    intakeRight.setPower(-.5);
+                    sleep(500);
+                    // STOP OUTTAKE
+                    intakeLeft.setPower(0);
+                    intakeRight.setPower(0);
+                    sleep(1000);
+
+                    driveStraight(DRIVE_SPEED, -35, -90);    // Drive Backward 38"
+                    holdHeading(TURN_SPEED,   -90, 2);    // Hold heading for 2 seconds
+
+                    telemetry.addData("RIGHT Complete", "");
+                    telemetry.update();
+                    break;
+                }
+            }
+        }
+        else if (startPosition == START_POSITION.RED_STAGE) {
+            telemetry.addData("Running Red_Frontstage with pixel ", "");
+            switch (purplePixelPath) {
+                case MIDDLE: {
+                    // Requires Testing
+                    driveStraight(DRIVE_SPEED, 26, 0.0);    // Drive Forward 28"
+                    holdHeading(TURN_SPEED,   0.0, 2);    // Hold  0 Deg heading for .5 seconds
+
+                    // OUTTAKE PIXEL
+                    intakeLeft.setPower(.5);
+                    intakeRight.setPower(-.5);
+                    sleep(500);
+                    // STOP OUTTAKE
+                    intakeLeft.setPower(0);
+                    intakeRight.setPower(0);
+                    sleep(1000);
+
+                    driveStraight(DRIVE_SPEED, -10, 0);    // Drive Backward 10"
+                    holdHeading(TURN_SPEED,   0, 2);    // Hold  0 Deg heading for 2 seconds
+
+                    // IN CASE OF EMERGENCY:
+                    // If your code interferes with your alliance, then comment the rest of this code out, and keep the upper portion
+                    // That way, you can just place your purple pixel and pull back, ready for TeleOp
+                    // If you are not going to interfere with your alliance, keep the following code to park
+
+                    turnToHeading(TURN_SPEED, 90); // turn left 90 degrees
+                    holdHeading(TURN_SPEED, 90, 2); // hold 90 degrees heading for 2 second
+
+                    driveStraight(DRIVE_SPEED, 15, 90);    // Drive Forward 15"
+                    holdHeading(TURN_SPEED,   90, 2);    // Hold  0 Deg heading for 2 seconds
+
+                    turnToHeading(TURN_SPEED, 0); // turn right 90 degrees
+                    holdHeading(TURN_SPEED, 0, 2); // hold heading for 2 a second
+
+                    driveStraight(DRIVE_SPEED, 30, 0);    // Drive Forward 30"
+                    holdHeading(TURN_SPEED,   0, 2);    // Hold  0 Deg heading for 2 seconds
+
+                    turnToHeading(TURN_SPEED, -90); // turn right 90 degrees
+                    holdHeading(TURN_SPEED, -90, 2); // hold heading for 2 a second
+
+                    driveStraight(DRIVE_SPEED, 60, -90);    // Drive Forward 60" to park in backstage
+                    holdHeading(TURN_SPEED,   -90, 2);    // Hold  0 Deg heading for 2 seconds
+
+                    telemetry.addData("CENTER", "Complete");
+                    telemetry.update();
+                    break;
+                }
+                case LEFT: {
+                    // Requires Modification
+                    driveStraight(DRIVE_SPEED, 20, 0);    // Drive Forward 20"
+                    holdHeading(TURN_SPEED,   0.0, 2);    // Hold  0 Deg heading for 2 seconds
+
+                    turnToHeading(TURN_SPEED, 40); // turn left 40 degrees
+                    holdHeading(TURN_SPEED, -40, 2); // hold heading for 2 a second
+
+                    driveStraight(DRIVE_SPEED, 5, -40);    // Drive Forward 5"
+                    holdHeading(TURN_SPEED,   -40, 2);    // Hold  heading for 2 seconds
+                    //
+                    // OUTTAKE PIXEL
+                    intakeLeft.setPower(.5);
+                    intakeRight.setPower(-.5);
+                    sleep(500);
+                    // STOP OUTTAKE
+                    intakeLeft.setPower(0);
+                    intakeRight.setPower(0);
+                    sleep(1000);
+
+                    driveStraight(DRIVE_SPEED, -7, -40);    // Drive Backward 10"
+                    holdHeading(TURN_SPEED,   -40, 2);    // Hold heading for 2 seconds
+
+                    turnToHeading(TURN_SPEED, -90); // turn left 90 degrees
+                    holdHeading(TURN_SPEED, -90, 2); // hold heading for 2 a second
+
+                    driveStraight(DRIVE_SPEED, 27, -90);    // Drive Forward 26"
+                    holdHeading(TURN_SPEED,   -90, 2);    // Hold  heading for 2 seconds
+
+                    telemetry.addData("LEFT Complete", "");
+                    telemetry.update();
+                }
+                case RIGHT: {
+                    // Requries Testing
+                    driveStraight(DRIVE_SPEED, 26, 0);    // Drive Forward 15"
+                    holdHeading(TURN_SPEED,   0.0, 2);    // Hold  0 Deg heading for 2 seconds
+
+                    turnToHeading(TURN_SPEED, 40); // turn left 40 degrees
+                    holdHeading(TURN_SPEED, 40, 2); // hold heading for 2 a second
+
+                    driveStraight(DRIVE_SPEED, 7, 40);    // Drive Forward 7"
+                    holdHeading(TURN_SPEED,   40, 2);    // Hold  heading for 2 seconds
+
+                    // OUTTAKE PIXEL
+                    intakeLeft.setPower(.5);
+                    intakeRight.setPower(-.5);
+                    sleep(500);
+                    // STOP OUTTAKE
+                    intakeLeft.setPower(0);
+                    intakeRight.setPower(0);
+                    sleep(1000);
+
+                    driveStraight(DRIVE_SPEED, -10, 40);    // Drive Backward 10"
+                    holdHeading(TURN_SPEED,   40, 2);    // Hold heading for 2 seconds
+
+                    // IN CASE OF EMERGENCY:
+                    // If your code interferes with your alliance, then comment the rest of this code out, and keep the upper portion
+                    // That way, you can just place your purple pixel and pull back, ready for TeleOp
+                    // If you are not going to interfere with your alliance, keep the following code to park
+
+                    turnToHeading(TURN_SPEED, 0); // turn right 90 degrees
+                    holdHeading(TURN_SPEED, 0, 2); // hold heading for 2 a second
+
+                    driveStraight(DRIVE_SPEED, 30, 0);    // Drive Forward 30"
+                    holdHeading(TURN_SPEED,   0, 2);    // Hold  heading for 2 seconds
+
+                    turnToHeading(TURN_SPEED, 90); // turn left 90 degrees
+                    holdHeading(TURN_SPEED, 90, 2); // hold heading for 2 a second
+
+                    driveStraight(DRIVE_SPEED, 50, 90);    // Drive Forward 30"
+                    holdHeading(TURN_SPEED,   90, 2);    // Hold  0 Deg heading for 2 seconds
+
+                    telemetry.addData("LEFT Complete", "");
+                    telemetry.update();
+                    break;
+                }
+            }
+        }
+
 
         sleep(1000);  // Pause to display last telemetry message.
     }
+
+
+    private void detectPurplePath() {
+        purplePixelPath = processor.getSelection();
+        telemetry.addData("Left Saturation", processor.satRectLeft);
+        telemetry.addData("Right Saturation", processor.satRectMiddle);
+        telemetry.addData("Purple Pixel Path: ", purplePixelPath.toString());
+        telemetry.addData("Delta Value:", (processor.satRectLeft - processor.satRectMiddle));
+    }
+
+    public void selectStartingPosition() {
+        //******select start pose*****
+        while (!isStopRequested()) {
+            telemetry.addLine("Queen Creek Qualifier - Code Initialized");
+            telemetry.addData("---------------------------------------", "");
+            telemetry.addLine("Select Starting Position using DPAD Keys");
+            telemetry.addData("    Blue Left   ", "(^)");
+            telemetry.addData("    Blue Right ", "(v)");
+            telemetry.addData("    Red Left    ", "(<)");
+            telemetry.addData("    Red Right  ", "(>)");
+
+
+            if (gamepad1.dpad_up || gamepad2.dpad_up) {
+                startPosition = START_POSITION.BLUE_BACKSTAGE;
+                break;
+            }
+            if (gamepad1.dpad_down || gamepad2.dpad_down) {
+                startPosition = START_POSITION.BLUE_STAGE;
+                break;
+            }
+            if (gamepad1.dpad_left || gamepad2.dpad_left) {
+                startPosition = START_POSITION.RED_STAGE;
+                break;
+            }
+            if (gamepad1.dpad_right || gamepad2.dpad_right) {
+                startPosition = START_POSITION.RED_BACKSTAGE;
+                break;
+            }
+            telemetry.update();
+        }
+        telemetry.clear();
+    }
+
 
     /*
      * ====================================================================================================

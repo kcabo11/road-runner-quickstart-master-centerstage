@@ -73,7 +73,7 @@ public class Teleop extends LinearOpMode {
     public Servo pixelLoaderRight = null;
 
     double clawOffset = 0;
-    double scaleTurningSpeed = .8;
+    double scaleTurningSpeed = 1;
     double scaleFactor = 1;
     int direction = -1;
 
@@ -81,6 +81,7 @@ public class Teleop extends LinearOpMode {
 
     int planeStateMachine = 1;
     int pixelliftMotorStateMachine = 1;
+    int pixelPlacerServoStateMachine = 1;
     //  WHERE WOULD INTAKE BE PLACED HERE IN THE INITIALIZATION??
     // Initialize the following:
     // Linear slide ~~ servo
@@ -189,7 +190,7 @@ public class Teleop extends LinearOpMode {
                 v2 = (r * Math.sin(robotAngle) + (rightX * scaleTurningSpeed)) * scaleFactor * direction;
                 v3 = (r * Math.sin(robotAngle) - (rightX * scaleTurningSpeed)) * scaleFactor * direction;
                 v4 = (r * Math.cos(robotAngle) + (rightX * scaleTurningSpeed)) * scaleFactor * direction;
-                leftFront.setPower(v3);
+                leftFront.setPower(v1);
                 rightFront.setPower(v2);
                 leftBack.setPower(v3);
                 rightBack.setPower(v4);
@@ -203,6 +204,25 @@ public class Teleop extends LinearOpMode {
                 leftBack.setPower(v3);
                 rightBack.setPower(v4);
             }
+
+            // GM0 Code for Debugging
+//            double y = -gamepad1.left_stick_y; // Remember, Y stick value is reversed
+//            double x = gamepad1.left_stick_x * 1.1; // Counteract imperfect strafing
+//            double rx = gamepad1.right_stick_x;
+//
+//            // Denominator is the largest motor power (absolute value) or 1
+//            // This ensures all the powers maintain the same ratio,
+//            // but only if at least one is out of the range [-1, 1]
+//            double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
+//            double frontLeftPower = (y + x + rx) / denominator;
+//            double backLeftPower = (y - x + rx) / denominator;
+//            double frontRightPower = (y - x - rx) / denominator;
+//            double backRightPower = (y + x - rx) / denominator;
+//
+//            leftFront.setPower(frontLeftPower);
+//            leftBack.setPower(backLeftPower);
+//            rightFront.setPower(frontRightPower);
+//            rightBack.setPower(backRightPower);
 
             // Control of the robot lifting mechanism
             // Lift motor: motor used to lift the linear slides
@@ -236,7 +256,7 @@ public class Teleop extends LinearOpMode {
                 }
                 case 2: {
                     if (gamepad1.b) { //b is hit again
-                        DroneLauncher.setPower(-1);
+                        DroneLauncher.setPower(1);
                         //launch your plane
                     }
                     else if (timer.seconds() > 1) {
@@ -272,9 +292,36 @@ public class Teleop extends LinearOpMode {
 
             // Move pixel placer using the left and right bumpers
             // Right bumper places pixels, left bumper returns pixel placer to resting position
-            if (gamepad2.right_bumper) {
-                pixelPlacerServo.setPosition(1);
-            } else if (gamepad2.left_bumper) {
+
+            switch (pixelPlacerServoStateMachine) {
+                case 1: {
+                    if (gamepad2.right_bumper) { //check for first button hit {
+                        pixelPlacerServo.setPosition(0.75);
+                        pixelPlacerServoStateMachine = 2;
+                    }
+                    break;
+                }
+                case 2: {
+                    if (gamepad2.right_bumper == false) {
+                        pixelPlacerServoStateMachine = 3;
+                    }
+                    break;
+                }
+                case 3: {
+                    if (gamepad2.right_bumper) {
+                        pixelPlacerServo.setPosition(0.9);
+                        pixelPlacerServoStateMachine = 4;
+                    }
+                    break;
+                }
+                case 4: {
+                    if (gamepad2.right_bumper == false) {
+                        pixelPlacerServoStateMachine = 1;
+                    }
+                    break;
+                }
+            }
+            if (gamepad2.left_bumper) {
                 pixelPlacerServo.setPosition(0);
             }
 
@@ -404,8 +451,6 @@ public class Teleop extends LinearOpMode {
             telemetry.addData("v4", v4);
 
 
-
-
             telemetry.addData("pixelLiftMotor pos: ", pixelLiftMotor.getCurrentPosition());
             telemetry.addData("pixelLiftMotor pwr: ", pixelLiftMotor.getPower());
             telemetry.addData("liftMotor pwr: ", liftMotor.getPower());
@@ -417,6 +462,8 @@ public class Teleop extends LinearOpMode {
             telemetry.addData("gamepad2.right_bumper", gamepad2.right_bumper);
             telemetry.addData("pixelliftMotor Encoder Position: ", pixelLiftMotor.getCurrentPosition());
             telemetry.addData("pixelliftMotor State Value: ", pixelliftMotorStateMachine);
+            telemetry.addData("pixelPlacerServo State Value: ", pixelPlacerServoStateMachine);
+            telemetry.addData("pixelPlacerServo Position: ", pixelPlacerServo.getPosition());
 
             telemetry.update();
 
