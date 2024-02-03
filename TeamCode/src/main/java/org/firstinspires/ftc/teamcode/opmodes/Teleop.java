@@ -73,7 +73,7 @@ public class Teleop extends LinearOpMode {
     public Servo pixelLoaderRight = null;
 
     double clawOffset = 0;
-    double scaleTurningSpeed = 1;
+    double scaleTurningSpeed = .8;
     double scaleFactor = 1;
     int direction = -1;
 
@@ -233,7 +233,7 @@ public class Teleop extends LinearOpMode {
                 liftMotor.setPower(1);
             } else if (gamepad2.a) {
                 liftDownMotor.setPower(-1);
-                liftMotor.setPower(-.5);
+                liftMotor.setPower(-.25);
             } else {
                 liftMotor.setPower(0);
                 liftDownMotor.setPower(0);
@@ -293,6 +293,8 @@ public class Teleop extends LinearOpMode {
             // Move pixel placer using the left and right bumpers
             // Right bumper places pixels, left bumper returns pixel placer to resting position
 
+
+
             switch (pixelPlacerServoStateMachine) {
                 case 1: {
                     if (gamepad2.right_bumper) { //check for first button hit {
@@ -350,6 +352,7 @@ public class Teleop extends LinearOpMode {
 
 
             if (gamepad2.dpad_down){
+                pixelPlacerServoStateMachine = 1; //reset the pixel placer state machine so it goes to mid on the next placement.
                 if (pixelLiftMotor.getCurrentPosition() > -700) {
                     pixelPlacerServo.setPosition(0);
                     sleep(1000);
