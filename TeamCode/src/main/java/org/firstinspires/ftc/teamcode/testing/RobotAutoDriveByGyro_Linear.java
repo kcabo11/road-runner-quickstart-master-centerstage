@@ -429,7 +429,6 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
                     // Requires Testing
                     driveStraight(DRIVE_SPEED, 26, 0.0);    // Drive Forward 28"
                     holdHeading(TURN_SPEED,   0.0, 2);    // Hold  0 Deg heading for .5 seconds
-
                     // OUTTAKE PIXEL
                     intakeLeft.setPower(.5);
                     intakeRight.setPower(-.5);
@@ -438,33 +437,24 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
                     intakeLeft.setPower(0);
                     intakeRight.setPower(0);
                     sleep(1000);
-
                     driveStraight(DRIVE_SPEED, -10, 0);    // Drive Backward 10"
                     holdHeading(TURN_SPEED,   0, 2);    // Hold  0 Deg heading for 2 seconds
-
                     // IN CASE OF EMERGENCY:
                     // If your code interferes with your alliance, then comment the rest of this code out, and keep the upper portion
                     // That way, you can just place your purple pixel and pull back, ready for TeleOp
                     // If you are not going to interfere with your alliance, keep the following code to park
-
                     turnToHeading(TURN_SPEED, -90); // turn right 90 degrees
                     holdHeading(TURN_SPEED, -90, 2); // hold 90 degrees heading for 2 second
-
                     driveStraight(DRIVE_SPEED, 15, -90);    // Drive Forward 15"
                     holdHeading(TURN_SPEED,   -90, 2);    // Hold  0 Deg heading for 2 seconds
-
                     turnToHeading(TURN_SPEED, 0); // turn right 90 degrees
                     holdHeading(TURN_SPEED, 0, 2); // hold heading for 2 a second
-
                     driveStraight(DRIVE_SPEED, 30, 0);    // Drive Forward 30"
                     holdHeading(TURN_SPEED,   0, 2);    // Hold  0 Deg heading for 2 seconds
-
                     turnToHeading(TURN_SPEED, 90); // turn left 90 degrees
                     holdHeading(TURN_SPEED, 90, 2); // hold heading for 2 a second
-
                     driveStraight(DRIVE_SPEED, 60, 90);    // Drive Forward 60" to park in backstage
                     holdHeading(TURN_SPEED,   90, 2);    // Hold  0 Deg heading for 2 seconds
-
                     telemetry.addData("CENTER", "Complete");
                     telemetry.update();
                     break;
@@ -473,13 +463,10 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
                     // Requries Testing
                     driveStraight(DRIVE_SPEED, 15, 0);    // Drive Forward 15"
                     holdHeading(TURN_SPEED,   0.0, 2);    // Hold  0 Deg heading for 2 seconds
-
                     turnToHeading(TURN_SPEED, 40); // turn left 40 degrees
                     holdHeading(TURN_SPEED, 40, 2); // hold heading for 2 a second
-
                     driveStraight(DRIVE_SPEED, 7, 40);    // Drive Forward 7"
                     holdHeading(TURN_SPEED,   40, 2);    // Hold  heading for 2 seconds
-
                     // OUTTAKE PIXEL
                     intakeLeft.setPower(.5);
                     intakeRight.setPower(-.5);
@@ -488,41 +475,32 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
                     intakeLeft.setPower(0);
                     intakeRight.setPower(0);
                     sleep(1000);
-
                     driveStraight(DRIVE_SPEED, -10, 40);    // Drive Backward 10"
                     holdHeading(TURN_SPEED,   40, 2);    // Hold heading for 2 seconds
-
                     // IN CASE OF EMERGENCY:
                     // If your code interferes with your alliance, then comment the rest of this code out, and keep the upper portion
                     // That way, you can just place your purple pixel and pull back, ready for TeleOp
                     // If you are not going to interfere with your alliance, keep the following code to park
-
                     turnToHeading(TURN_SPEED, 0); // turn right 90 degrees
                     holdHeading(TURN_SPEED, 0, 2); // hold heading for 2 a second
-
                     driveStraight(DRIVE_SPEED, 30, 0);    // Drive Forward 30"
                     holdHeading(TURN_SPEED,   0, 2);    // Hold  heading for 2 seconds
-
                     turnToHeading(TURN_SPEED, 90); // turn left 90 degrees
                     holdHeading(TURN_SPEED, 90, 2); // hold heading for 2 a second
-
                     driveStraight(DRIVE_SPEED, 50, 90);    // Drive Forward 30"
                     holdHeading(TURN_SPEED,   90, 2);    // Hold  0 Deg heading for 2 seconds
-
                     telemetry.addData("LEFT Complete", "");
                     telemetry.update();
                     break;
                 }
                 case RIGHT: {
+                    // Requires Testing
                     driveStraight(DRIVE_SPEED, 26, 0.0);    // Drive Forward 26"
                     holdHeading(TURN_SPEED,   0.0, 2);    // Hold  0 Deg heading for 2 seconds
-
                     turnToHeading(TURN_SPEED, -90); // turn right 90 degrees
                     holdHeading(TURN_SPEED, -90, 2); // hold -90 degrees heading for 2 a second
-
                     driveStraight(DRIVE_SPEED, 2, -90);    // Drive Forward 2"
                     holdHeading(TURN_SPEED,   -90, 2);    // Hold heading for 2 seconds
-
                     // OUTTAKE HERE
                     intakeLeft.setPower(.5);
                     intakeRight.setPower(-.5);
@@ -531,10 +509,8 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
                     intakeLeft.setPower(0);
                     intakeRight.setPower(0);
                     sleep(1000);
-
                     driveStraight(DRIVE_SPEED, -35, -90);    // Drive Backward 38"
                     holdHeading(TURN_SPEED,   -90, 2);    // Hold heading for 2 seconds
-
                     telemetry.addData("RIGHT Complete", "");
                     telemetry.update();
                     break;
@@ -548,7 +524,6 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
                     // Requires Testing
                     driveStraight(DRIVE_SPEED, 26, 0.0);    // Drive Forward 28"
                     holdHeading(TURN_SPEED,   0.0, 2);    // Hold  0 Deg heading for .5 seconds
-
                     // OUTTAKE PIXEL
                     intakeLeft.setPower(.5);
                     intakeRight.setPower(-.5);
@@ -557,33 +532,24 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
                     intakeLeft.setPower(0);
                     intakeRight.setPower(0);
                     sleep(1000);
-
                     driveStraight(DRIVE_SPEED, -10, 0);    // Drive Backward 10"
                     holdHeading(TURN_SPEED,   0, 2);    // Hold  0 Deg heading for 2 seconds
-
                     // IN CASE OF EMERGENCY:
                     // If your code interferes with your alliance, then comment the rest of this code out, and keep the upper portion
                     // That way, you can just place your purple pixel and pull back, ready for TeleOp
                     // If you are not going to interfere with your alliance, keep the following code to park
-
                     turnToHeading(TURN_SPEED, 90); // turn left 90 degrees
                     holdHeading(TURN_SPEED, 90, 2); // hold 90 degrees heading for 2 second
-
                     driveStraight(DRIVE_SPEED, 15, 90);    // Drive Forward 15"
                     holdHeading(TURN_SPEED,   90, 2);    // Hold  0 Deg heading for 2 seconds
-
                     turnToHeading(TURN_SPEED, 0); // turn right 90 degrees
                     holdHeading(TURN_SPEED, 0, 2); // hold heading for 2 a second
-
                     driveStraight(DRIVE_SPEED, 30, 0);    // Drive Forward 30"
                     holdHeading(TURN_SPEED,   0, 2);    // Hold  0 Deg heading for 2 seconds
-
                     turnToHeading(TURN_SPEED, -90); // turn right 90 degrees
                     holdHeading(TURN_SPEED, -90, 2); // hold heading for 2 a second
-
                     driveStraight(DRIVE_SPEED, 60, -90);    // Drive Forward 60" to park in backstage
                     holdHeading(TURN_SPEED,   -90, 2);    // Hold  0 Deg heading for 2 seconds
-
                     telemetry.addData("CENTER", "Complete");
                     telemetry.update();
                     break;
@@ -592,12 +558,10 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
                     // Requires Modification
                     driveStraight(DRIVE_SPEED, 20, 0);    // Drive Forward 20"
                     holdHeading(TURN_SPEED,   0.0, 2);    // Hold  0 Deg heading for 2 seconds
-
                     turnToHeading(TURN_SPEED, 40); // turn left 40 degrees
-                    holdHeading(TURN_SPEED, -40, 2); // hold heading for 2 a second
-
-                    driveStraight(DRIVE_SPEED, 5, -40);    // Drive Forward 5"
-                    holdHeading(TURN_SPEED,   -40, 2);    // Hold  heading for 2 seconds
+                    holdHeading(TURN_SPEED, 40, 2); // hold heading for 2 a second
+                    driveStraight(DRIVE_SPEED, 5, 40);    // Drive Forward 5"
+                    holdHeading(TURN_SPEED,   40, 2);    // Hold  heading for 2 seconds
                     //
                     // OUTTAKE PIXEL
                     intakeLeft.setPower(.5);
@@ -607,30 +571,31 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
                     intakeLeft.setPower(0);
                     intakeRight.setPower(0);
                     sleep(1000);
-
-                    driveStraight(DRIVE_SPEED, -7, -40);    // Drive Backward 10"
-                    holdHeading(TURN_SPEED,   -40, 2);    // Hold heading for 2 seconds
-
-                    turnToHeading(TURN_SPEED, -90); // turn left 90 degrees
+                    driveStraight(DRIVE_SPEED, -7, 40);    // Drive Backward 7"
+                    holdHeading(TURN_SPEED,   40, 2);    // Hold heading for 2 seconds
+                    // IN CASE OF EMERGENCY:
+                    // If your code interferes with your alliance, then comment the rest of this code out, and keep the upper portion
+                    // That way, you can just place your purple pixel and pull back, ready for TeleOp
+                    // If you are not going to interfere with your alliance, keep the following code to park
+                    turnToHeading(TURN_SPEED, 0); // turn right 90 degrees
+                    holdHeading(TURN_SPEED, 0, 2); // hold heading for 2 a second
+                    driveStraight(DRIVE_SPEED, 30, 0);    // Drive Forward 26"
+                    holdHeading(TURN_SPEED,   0, 2);    // Hold  heading for 2 seconds
+                    turnToHeading(TURN_SPEED, -90); // turn right 90 degrees
                     holdHeading(TURN_SPEED, -90, 2); // hold heading for 2 a second
-
-                    driveStraight(DRIVE_SPEED, 27, -90);    // Drive Forward 26"
+                    driveStraight(DRIVE_SPEED, 45, -90);    // Drive Forward 45"
                     holdHeading(TURN_SPEED,   -90, 2);    // Hold  heading for 2 seconds
-
                     telemetry.addData("LEFT Complete", "");
                     telemetry.update();
                 }
                 case RIGHT: {
                     // Requries Testing
-                    driveStraight(DRIVE_SPEED, 26, 0);    // Drive Forward 15"
+                    driveStraight(DRIVE_SPEED, 26, 0);    // Drive Forward 26"
                     holdHeading(TURN_SPEED,   0.0, 2);    // Hold  0 Deg heading for 2 seconds
-
-                    turnToHeading(TURN_SPEED, 40); // turn left 40 degrees
-                    holdHeading(TURN_SPEED, 40, 2); // hold heading for 2 a second
-
-                    driveStraight(DRIVE_SPEED, 7, 40);    // Drive Forward 7"
-                    holdHeading(TURN_SPEED,   40, 2);    // Hold  heading for 2 seconds
-
+                    turnToHeading(TURN_SPEED, -90); // turn right 90 degrees
+                    holdHeading(TURN_SPEED, -90, 2); // hold heading for 2 a second
+                    driveStraight(DRIVE_SPEED, 7, -90);    // Drive Forward 7"
+                    holdHeading(TURN_SPEED,   -90, 2);    // Hold  heading for 2 seconds
                     // OUTTAKE PIXEL
                     intakeLeft.setPower(.5);
                     intakeRight.setPower(-.5);
@@ -639,28 +604,21 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
                     intakeLeft.setPower(0);
                     intakeRight.setPower(0);
                     sleep(1000);
-
-                    driveStraight(DRIVE_SPEED, -10, 40);    // Drive Backward 10"
-                    holdHeading(TURN_SPEED,   40, 2);    // Hold heading for 2 seconds
-
+                    driveStraight(DRIVE_SPEED, -10, -90);    // Drive Backward -90"
+                    holdHeading(TURN_SPEED,   -90, 2);    // Hold heading for 2 seconds
                     // IN CASE OF EMERGENCY:
                     // If your code interferes with your alliance, then comment the rest of this code out, and keep the upper portion
                     // That way, you can just place your purple pixel and pull back, ready for TeleOp
                     // If you are not going to interfere with your alliance, keep the following code to park
-
                     turnToHeading(TURN_SPEED, 0); // turn right 90 degrees
                     holdHeading(TURN_SPEED, 0, 2); // hold heading for 2 a second
-
                     driveStraight(DRIVE_SPEED, 30, 0);    // Drive Forward 30"
                     holdHeading(TURN_SPEED,   0, 2);    // Hold  heading for 2 seconds
-
-                    turnToHeading(TURN_SPEED, 90); // turn left 90 degrees
-                    holdHeading(TURN_SPEED, 90, 2); // hold heading for 2 a second
-
-                    driveStraight(DRIVE_SPEED, 50, 90);    // Drive Forward 30"
-                    holdHeading(TURN_SPEED,   90, 2);    // Hold  0 Deg heading for 2 seconds
-
-                    telemetry.addData("LEFT Complete", "");
+                    turnToHeading(TURN_SPEED, -90); // turn right 90 degrees
+                    holdHeading(TURN_SPEED, -90, 2); // hold heading for 2 a second
+                    driveStraight(DRIVE_SPEED, 50, -90);    // Drive Forward 30"
+                    holdHeading(TURN_SPEED,   -90, 2);    // Hold  0 Deg heading for 2 seconds
+                    telemetry.addData("RIGHT Complete", "");
                     telemetry.update();
                     break;
                 }
