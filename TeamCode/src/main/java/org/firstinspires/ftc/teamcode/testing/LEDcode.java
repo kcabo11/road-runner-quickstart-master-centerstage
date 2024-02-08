@@ -37,7 +37,7 @@ public class LEDcode extends LinearOpMode {
                 //Touch Sensor is not pressed
                 state = !state;
                 redLED.setState(state);
-                redLED.setState(!state);
+                greenLED.setState(!state);
                 holdTimer.reset();
 
             }

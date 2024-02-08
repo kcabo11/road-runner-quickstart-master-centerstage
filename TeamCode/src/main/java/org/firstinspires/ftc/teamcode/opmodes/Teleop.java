@@ -29,12 +29,16 @@
 
 package org.firstinspires.ftc.teamcode.opmodes;
 
+import android.graphics.Color;
+
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -74,7 +78,13 @@ public class Teleop extends LinearOpMode {
     public Servo pixelLoaderLeft = null;
     public Servo pixelLoaderRight = null;
 
+    ColorSensor colorSensor;    // Hardware Device Object
+
+
     public ModernRoboticsI2cColorSensor frontColorSensor = null;
+
+    private DigitalChannel redLED;
+    private DigitalChannel greenLED;
 
     double clawOffset = 0;
     double scaleTurningSpeed = .8;
@@ -102,6 +112,7 @@ public class Teleop extends LinearOpMode {
     public static final double ARM_DOWN_POWER  = -0.45 ;
     double v1, v2, v3, v4;
 
+
     @Override
     public void runOpMode() {
         double left;
@@ -110,6 +121,10 @@ public class Teleop extends LinearOpMode {
         double turn;
         double max;
         boolean rightStickButtonPushed;
+        // hsvValues is an array that will hold the hue, saturation, and value information.
+        float hsvValues[] = {0F,0F,0F};
+        int colorSensorState = 0, pixels = 0;
+
 
         // Define and Initialize Motors
         leftFront  = hardwareMap.get(DcMotor.class, "leftFront");
@@ -125,7 +140,15 @@ public class Teleop extends LinearOpMode {
 
         pixelLiftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         pixelLiftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        colorSensor = hardwareMap.get(ColorSensor.class, "sensorColor");
 
+
+        // Get the LED colors and touch sensor from the hardwaremap
+        redLED = hardwareMap.get(DigitalChannel.class, "red");
+        greenLED = hardwareMap.get(DigitalChannel.class, "green");
+        // change LED mode from input to output
+        greenLED.setMode(DigitalChannel.Mode.OUTPUT);
+        redLED.setMode(DigitalChannel.Mode.OUTPUT);
 
         leftFront.setDirection(DcMotor.Direction.FORWARD);
         rightFront.setDirection(DcMotor.Direction.REVERSE);
@@ -175,6 +198,10 @@ public class Teleop extends LinearOpMode {
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
+
+        // convert the RGB values to HSV values.
+        Color.RGBToHSV(colorSensor.red() * 8, colorSensor.green() * 8, colorSensor.blue() * 8, hsvValues);
+        double DEFAULTHUE = hsvValues[0];
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
@@ -473,6 +500,57 @@ public class Teleop extends LinearOpMode {
                 intakeMotor.setPower(0);
             }
 
+
+            /******************************************
+             * PIXEL COUNTER
+             *****************************************/
+            // convert the RGB values to HSV values.
+            Color.RGBToHSV(colorSensor.red() * 8, colorSensor.green() * 8, colorSensor.blue() * 8, hsvValues);
+
+            switch (colorSensorState) {
+                case 0: {
+                    if ((hsvValues[0] > (DEFAULTHUE * 1.1)) || (hsvValues[0] < (DEFAULTHUE * .9))) {
+                        //A pixel has been seen
+                        pixels++;
+                        colorSensorState = 1;
+                        redLED.setState(true);
+                        greenLED.setState(false);
+                    }
+                    break;
+                }
+                case 1: {
+                    if ((hsvValues[0] < (DEFAULTHUE * 1.1)) && (hsvValues[0] > (DEFAULTHUE * .9))) {
+                        //A pixel has been seen
+                        colorSensorState = 2;
+                    }
+                    break;
+                }
+                case 2: {
+                    if ((hsvValues[0] > (DEFAULTHUE * 1.1)) || (hsvValues[0] < (DEFAULTHUE * .9))) {
+                        pixels++;
+                        colorSensorState = 3;
+                        redLED.setState(false);
+                        greenLED.setState(true);
+                    }
+                    break;
+                }
+                case 3: {
+                    if (pixelPlacerServoStateMachine > 1) {
+                        // if the pixel placer has flipped, then reset to 0;;
+                        pixels = 0;
+                        colorSensorState = 4;
+                        redLED.setState(false);
+                        greenLED.setState(false);
+                    }
+                    break;
+                }
+                case 4: { //Pixel Lift
+                    if (pixelliftMotorStateMachine == 1)
+                    {
+                        colorSensorState = 0;
+                    }
+                }
+            }
             // ==================================== TELEMETRY =========================================
             // Send telemetry message to signify robot running;
 
@@ -501,6 +579,8 @@ public class Teleop extends LinearOpMode {
             telemetry.addData("pixelPlacerServo Position: ", pixelPlacerServo.getPosition());
             telemetry.addData("DroneLauncher Position: ", DroneLauncher.getPosition());
             telemetry.addData("DroneLauncher State: ", planeStateMachine);
+            telemetry.addData("Default Hue", DEFAULTHUE);
+            telemetry.addData("number of pixels", pixels);
 
             telemetry.update();
 
