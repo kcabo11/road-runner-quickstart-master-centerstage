@@ -40,6 +40,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 import com.qualcomm.robotcore.util.RobotLog;
@@ -110,6 +111,8 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
     private IMU             imu         = null;      // Control/Expansion Hub IMU
     public CRServo intakeLeft = null;
     public CRServo intakeRight = null;
+    public DcMotor pixelLiftMotor = null;
+    public Servo pixelPlacerServo = null;
 
     private double          headingError  = 0;
 
@@ -179,6 +182,13 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
         leftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        pixelLiftMotor = hardwareMap.get(DcMotor.class, "pixelLiftMotor");
+        pixelPlacerServo = hardwareMap.get(Servo.class, "pixelPlacerServo");
+
+        pixelLiftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        pixelLiftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
 
         // DONE: reverse motor directions if needed
         //   leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -266,15 +276,32 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
                     turnToHeading(TURN_SPEED, -90); // turn right 90 degrees
                     holdHeading(TURN_SPEED, -90, 2); // hold -90 degrees heading for 2 a second
 
-                    driveStraight(DRIVE_SPEED, -36, -90);    // Drive Forward 10"
+                    driveStraight(DRIVE_SPEED, -38, -90);    // Drive Forward 10"
                     holdHeading(TURN_SPEED,   -90, 2);    // Hold  0 Deg heading for 2 seconds
+
+                    // Place your pixel here:
+                    // First life your pixelliftmotor
+                    pixelLiftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                    pixelLiftMotor.setTargetPosition(-484);
+                    pixelLiftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    pixelLiftMotor.setPower(-.5);
+
+                    // Flip your pixelplacerservo
+                    pixelPlacerServo.setPosition(0.9);
+                    sleep(1000);
+
+                    // Come Back down
+                    pixelPlacerServo.setPosition(0);
+                    pixelPlacerServo.setPosition(0);
+                    sleep(1000);
+                    pixelLiftMotor.setTargetPosition(0);
 
                     telemetry.addData("CENTER", "Complete");
                     telemetry.update();
                     break;
                 }
                 case LEFT: {
-                    driveStraight(DRIVE_SPEED, 15, 0);    // Drive Forward 15"
+                    driveStraight(DRIVE_SPEED, 20, 0);    // Drive Forward 15"
                     holdHeading(TURN_SPEED,   0.0, 2);    // Hold  0 Deg heading for 2 seconds
 
                     turnToHeading(TURN_SPEED, 40); // turn left 40 degrees
@@ -298,15 +325,36 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
                     turnToHeading(TURN_SPEED, 90); // turn left 90 degrees
                     holdHeading(TURN_SPEED, 90, 2); // hold heading for 2 a second
 
-                    driveStraight(DRIVE_SPEED, 27, 90);    // Drive Forward 26"
+                    driveStraight(DRIVE_SPEED, 29, 90);    // Drive Forward 26"
                     holdHeading(TURN_SPEED,   90, 2);    // Hold  heading for 2 seconds
+
+                    // Place Pixel!!
+                    turnToHeading(TURN_SPEED, -90); // Make a 180 degree turn
+                    holdHeading(TURN_SPEED, -90, 2); // Hold heading for 2 seconds
+
+                    // Place your pixel here:
+                    // First life your pixelliftmotor
+                    pixelLiftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                    pixelLiftMotor.setTargetPosition(-484);
+                    pixelLiftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    pixelLiftMotor.setPower(-.5);
+
+                    // Flip your pixelplacerservo
+                    pixelPlacerServo.setPosition(0.9);
+                    sleep(1000);
+
+                    // Come Back down
+                    pixelPlacerServo.setPosition(0);
+                    pixelPlacerServo.setPosition(0);
+                    sleep(1000);
+                    pixelLiftMotor.setTargetPosition(0);
 
                     telemetry.addData("LEFT Complete", "");
                     telemetry.update();
                     break;
                 }
                 case RIGHT: {
-                    driveStraight(DRIVE_SPEED, 26, 0.0);    // Drive Forward 26"
+                    driveStraight(DRIVE_SPEED, 24, 0.0);    // Drive Forward 26"
                     holdHeading(TURN_SPEED,   0.0, 2);    // Hold  0 Deg heading for 2 seconds
 
                     turnToHeading(TURN_SPEED, -90); // turn right 90 degrees
@@ -324,8 +372,26 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
                     intakeRight.setPower(0);
                     sleep(1000);
 
-                    driveStraight(DRIVE_SPEED, -35, -90);    // Drive Backward 38"
+                    driveStraight(DRIVE_SPEED, -37, -90);    // Drive Backward 38"
                     holdHeading(TURN_SPEED,   -90, 2);    // Hold heading for 2 seconds
+
+                    // Place your pixel here:
+                    // First life your pixelliftmotor
+                    pixelLiftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                    pixelLiftMotor.setTargetPosition(-484);
+                    pixelLiftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    pixelLiftMotor.setPower(-.5);
+
+                    // Flip your pixelplacerservo
+                    pixelPlacerServo.setPosition(0.9);
+                    sleep(1000);
+
+                    // Come Back down
+                    pixelPlacerServo.setPosition(0);
+                    pixelPlacerServo.setPosition(0);
+                    sleep(1000);
+                    pixelLiftMotor.setTargetPosition(0);
+
 
                     telemetry.addData("RIGHT Complete", "");
                     telemetry.update();
@@ -358,6 +424,27 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
                     driveStraight(DRIVE_SPEED, -36, 90);    // Drive Forward 10"
                     holdHeading(TURN_SPEED,   90, 2);    // Hold  0 Deg heading for 2 seconds
 
+//                    // Place Pixel!!
+//                    turnToHeading(TURN_SPEED, 90); // Make a 180 degree turn
+//                    holdHeading(TURN_SPEED, 90, 2); // Hold heading for 2 seconds
+
+                    // Place your pixel here:
+                    // First life your pixelliftmotor
+                    pixelLiftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                    pixelLiftMotor.setTargetPosition(-484);
+                    pixelLiftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    pixelLiftMotor.setPower(-.5);
+
+                    // Flip your pixelplacerservo
+                    pixelPlacerServo.setPosition(0.9);
+                    sleep(1000);
+
+                    // Come Back down
+                    pixelPlacerServo.setPosition(0);
+                    pixelPlacerServo.setPosition(0);
+                    sleep(1000);
+                    pixelLiftMotor.setTargetPosition(0);
+
                     telemetry.addData("CENTER", "Complete");
                     telemetry.update();
                     break;
@@ -384,19 +471,36 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
                     driveStraight(DRIVE_SPEED, -35, 90);    // Drive Backward 38"
                     holdHeading(TURN_SPEED,   90, 2);    // Hold heading for 2 seconds
 
-                    telemetry.addData("RIGHT Complete", "");
+                    // Place your pixel here:
+                    // First life your pixelliftmotor
+                    pixelLiftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                    pixelLiftMotor.setTargetPosition(-484);
+                    pixelLiftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    pixelLiftMotor.setPower(-.5);
+
+                    // Flip your pixelplacerservo
+                    pixelPlacerServo.setPosition(0.9);
+                    sleep(1000);
+
+                    // Come Back down
+                    pixelPlacerServo.setPosition(0);
+                    pixelPlacerServo.setPosition(0);
+                    sleep(1000);
+                    pixelLiftMotor.setTargetPosition(0);
+
+                    telemetry.addData("LEFT Complete", "");
                     telemetry.update();
                     break;
                 }
                 case RIGHT: {
-                    driveStraight(DRIVE_SPEED, 20, 0);    // Drive Forward 20"
+                    driveStraight(DRIVE_SPEED, 16, 0);    // Drive Forward 20"
                     holdHeading(TURN_SPEED,   0.0, 2);    // Hold  0 Deg heading for 2 seconds
 
-                    turnToHeading(TURN_SPEED, -40); // turn left 40 degrees
-                    holdHeading(TURN_SPEED, -40, 2); // hold heading for 2 a second
+                    turnToHeading(TURN_SPEED, -45); // turn left 40 degrees
+                    holdHeading(TURN_SPEED, -45, 2); // hold heading for 2 a second
 
-                    driveStraight(DRIVE_SPEED, 5, -40);    // Drive Forward 5"
-                    holdHeading(TURN_SPEED,   -40, 2);    // Hold  heading for 2 seconds
+                    driveStraight(DRIVE_SPEED, 5, -45);    // Drive Forward 5"
+                    holdHeading(TURN_SPEED,   -45, 2);    // Hold  heading for 2 seconds
             //
                     // OUTTAKE PIXEL
                     intakeLeft.setPower(.5);
@@ -407,14 +511,38 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
                     intakeRight.setPower(0);
                     sleep(1000);
 
-                    driveStraight(DRIVE_SPEED, -7, -40);    // Drive Backward 10"
-                    holdHeading(TURN_SPEED,   -40, 2);    // Hold heading for 2 seconds
+                    driveStraight(DRIVE_SPEED, -7, -45);    // Drive Backward 10"
+                    holdHeading(TURN_SPEED,   -45, 2);    // Hold heading for 2 seconds
 
                     turnToHeading(TURN_SPEED, -90); // turn left 90 degrees
                     holdHeading(TURN_SPEED, -90, 2); // hold heading for 2 a second
 
-                    driveStraight(DRIVE_SPEED, 27, -90);    // Drive Forward 26"
+                    driveStraight(DRIVE_SPEED, 30, -90);    // Drive Forward 26"
                     holdHeading(TURN_SPEED,   -90, 2);    // Hold  heading for 2 seconds
+
+                    turnToHeading(TURN_SPEED, 90); // make a 180 degree turn
+                    holdHeading(TURN_SPEED, 90, 2); // hold heading for 2 a second
+
+                    driveStraight(DRIVE_SPEED, -8, 90);    // Drive Forward 26"
+                    holdHeading(TURN_SPEED,   90, 2);    // Hold  heading for 2 seconds
+
+                    // Place your pixel here:
+                    // First life your pixelliftmotor
+                    pixelLiftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                    pixelLiftMotor.setTargetPosition(-484);
+                    pixelLiftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    pixelLiftMotor.setPower(-.5);
+
+                    // Flip your pixelplacerservo
+                    pixelPlacerServo.setPosition(0.9);
+                    sleep(1000);
+
+                    // Come Back down
+                    pixelPlacerServo.setPosition(0);
+                    pixelPlacerServo.setPosition(0);
+                    sleep(1000);
+                    pixelLiftMotor.setTargetPosition(0);
+
 
                     telemetry.addData("LEFT Complete", "");
                     telemetry.update();
@@ -455,6 +583,28 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
                     holdHeading(TURN_SPEED, 90, 2); // hold heading for 2 a second
                     driveStraight(DRIVE_SPEED, 60, 90);    // Drive Forward 60" to park in backstage
                     holdHeading(TURN_SPEED,   90, 2);    // Hold  0 Deg heading for 2 seconds
+
+                    // Place Pixel!!
+                    turnToHeading(TURN_SPEED, -90); // Make a 180 degree turn
+                    holdHeading(TURN_SPEED, -90, 2); // Hold heading for 2 seconds
+
+                    // Place your pixel here:
+                    // First life your pixelliftmotor
+                    pixelLiftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                    pixelLiftMotor.setTargetPosition(-484);
+                    pixelLiftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    pixelLiftMotor.setPower(-.5);
+
+                    // Flip your pixelplacerservo
+                    pixelPlacerServo.setPosition(0.9);
+                    sleep(1000);
+
+                    // Come Back down
+                    pixelPlacerServo.setPosition(0);
+                    pixelPlacerServo.setPosition(0);
+                    sleep(1000);
+                    pixelLiftMotor.setTargetPosition(0);
+
                     telemetry.addData("CENTER", "Complete");
                     telemetry.update();
                     break;
@@ -489,6 +639,28 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
                     holdHeading(TURN_SPEED, 90, 2); // hold heading for 2 a second
                     driveStraight(DRIVE_SPEED, 50, 90);    // Drive Forward 30"
                     holdHeading(TURN_SPEED,   90, 2);    // Hold  0 Deg heading for 2 seconds
+
+                    // Place Pixel!!
+                    turnToHeading(TURN_SPEED, -90); // Make a 180 degree turn
+                    holdHeading(TURN_SPEED, -90, 2); // Hold heading for 2 seconds
+
+                    // Place your pixel here:
+                    // First life your pixelliftmotor
+                    pixelLiftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                    pixelLiftMotor.setTargetPosition(-484);
+                    pixelLiftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    pixelLiftMotor.setPower(-.5);
+
+                    // Flip your pixelplacerservo
+                    pixelPlacerServo.setPosition(0.9);
+                    sleep(1000);
+
+                    // Come Back down
+                    pixelPlacerServo.setPosition(0);
+                    pixelPlacerServo.setPosition(0);
+                    sleep(1000);
+                    pixelLiftMotor.setTargetPosition(0);
+
                     telemetry.addData("LEFT Complete", "");
                     telemetry.update();
                     break;
@@ -550,6 +722,28 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
                     holdHeading(TURN_SPEED, -90, 2); // hold heading for 2 a second
                     driveStraight(DRIVE_SPEED, 60, -90);    // Drive Forward 60" to park in backstage
                     holdHeading(TURN_SPEED,   -90, 2);    // Hold  0 Deg heading for 2 seconds
+
+                    // Place Pixel!!
+                    turnToHeading(TURN_SPEED, 90); // Make a 180 degree turn
+                    holdHeading(TURN_SPEED, 90, 2); // Hold heading for 2 seconds
+
+                    // Place your pixel here:
+                    // First life your pixelliftmotor
+                    pixelLiftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                    pixelLiftMotor.setTargetPosition(-484);
+                    pixelLiftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    pixelLiftMotor.setPower(-.5);
+
+                    // Flip your pixelplacerservo
+                    pixelPlacerServo.setPosition(0.9);
+                    sleep(1000);
+
+                    // Come Back down
+                    pixelPlacerServo.setPosition(0);
+                    pixelPlacerServo.setPosition(0);
+                    sleep(1000);
+                    pixelLiftMotor.setTargetPosition(0);
+
                     telemetry.addData("CENTER", "Complete");
                     telemetry.update();
                     break;
@@ -585,6 +779,28 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
                     holdHeading(TURN_SPEED, -90, 2); // hold heading for 2 a second
                     driveStraight(DRIVE_SPEED, 45, -90);    // Drive Forward 45"
                     holdHeading(TURN_SPEED,   -90, 2);    // Hold  heading for 2 seconds
+
+                    // Place Pixel!!
+                    turnToHeading(TURN_SPEED, 90); // Make a 180 degree turn
+                    holdHeading(TURN_SPEED, 90, 2); // Hold heading for 2 seconds
+
+                    // Place your pixel here:
+                    // First life your pixelliftmotor
+                    pixelLiftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                    pixelLiftMotor.setTargetPosition(-484);
+                    pixelLiftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    pixelLiftMotor.setPower(-.5);
+
+                    // Flip your pixelplacerservo
+                    pixelPlacerServo.setPosition(0.9);
+                    sleep(1000);
+
+                    // Come Back down
+                    pixelPlacerServo.setPosition(0);
+                    pixelPlacerServo.setPosition(0);
+                    sleep(1000);
+                    pixelLiftMotor.setTargetPosition(0);
+
                     telemetry.addData("LEFT Complete", "");
                     telemetry.update();
                 }
@@ -618,6 +834,28 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
                     holdHeading(TURN_SPEED, -90, 2); // hold heading for 2 a second
                     driveStraight(DRIVE_SPEED, 50, -90);    // Drive Forward 30"
                     holdHeading(TURN_SPEED,   -90, 2);    // Hold  0 Deg heading for 2 seconds
+
+                    // Place Pixel!!
+                    turnToHeading(TURN_SPEED, 90); // Make a 180 degree turn
+                    holdHeading(TURN_SPEED, 90, 2); // Hold heading for 2 seconds
+
+                    // Place your pixel here:
+                    // First life your pixelliftmotor
+                    pixelLiftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                    pixelLiftMotor.setTargetPosition(-484);
+                    pixelLiftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    pixelLiftMotor.setPower(-.5);
+
+                    // Flip your pixelplacerservo
+                    pixelPlacerServo.setPosition(0.9);
+                    sleep(1000);
+
+                    // Come Back down
+                    pixelPlacerServo.setPosition(0);
+                    pixelPlacerServo.setPosition(0);
+                    sleep(1000);
+                    pixelLiftMotor.setTargetPosition(0);
+
                     telemetry.addData("RIGHT Complete", "");
                     telemetry.update();
                     break;

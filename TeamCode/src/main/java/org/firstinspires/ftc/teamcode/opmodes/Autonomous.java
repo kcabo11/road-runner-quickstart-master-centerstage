@@ -19,6 +19,7 @@ import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
+import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cColorSensor;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -123,12 +124,14 @@ public final class Autonomous extends LinearOpMode {
             }
 
             waitForStart();
+
+
             drive.leftBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             drive.rightBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             drive.leftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             drive.rightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             drive.imu.resetYaw();
-			
+
             //OVERRIDE FOR TESTING
             startPosition = BLUE_BACKSTAGE;
             purplePixelPath = Processor.Selected.MIDDLE;
