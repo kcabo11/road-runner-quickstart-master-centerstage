@@ -52,6 +52,22 @@ import org.firstinspires.ftc.teamcode.MecanumDrive;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.teamcode.utils.Processor;
+
+// HuskyLens Integration
+package org.firstinspires.ftc.robotcontroller.external.samples;
+
+import com.qualcomm.hardware.dfrobot.HuskyLens;
+import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
+
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.robotcore.internal.system.Deadline;
+
+import java.util.concurrent.TimeUnit;
+
 /*
  *  This OpMode illustrates the concept of driving an autonomous path based on Gyro (IMU) heading and encoder counts.
  *  The code is structured as a LinearOpMode
@@ -103,6 +119,11 @@ import org.firstinspires.ftc.teamcode.utils.Processor;
 @Autonomous(name="Test Auto by Gyro", group="Robot")
 public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
 
+    // Huskylens Integration
+    private final int READ_PERIOD = 1;
+
+    private HuskyLens huskyLens;
+
     /* Declare OpMode members. */
     private DcMotor         leftFront   = null;
     private DcMotor         leftBack   = null;
@@ -136,14 +157,14 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
     static final double     DRIVE_GEAR_REDUCTION    = 1 ;     // No External Gearing.
     static final double     WHEEL_DIAMETER_INCHES   = 1.889765 ;     // For figuring circumference
     static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
-                                                      (WHEEL_DIAMETER_INCHES * 3.1415);
+            (WHEEL_DIAMETER_INCHES * 3.1415);
 
     // These constants define the desired driving/control characteristics
     // They can/should be tweaked to suit the specific robot drive train.
     static final double     DRIVE_SPEED             = 0.3;     // Max driving speed for better distance accuracy.
     static final double     TURN_SPEED              = 0.2;     // Max Turn speed to limit turn rate
     static final double     HEADING_THRESHOLD       = 1.0 ;    // How close must the heading get to the target before moving to next step.
-                                                               // Requiring more accuracy (a smaller number) will often make the turn take longer to get into the final position.
+    // Requiring more accuracy (a smaller number) will often make the turn take longer to get into the final position.
     // Define the Proportional control coefficient (or GAIN) for "heading control".
     // We define one value when Turning (larger errors), and the other is used when Driving straight (smaller errors).
     // Increase these numbers if the heading does not corrects strongly enough (eg: a heavy robot or using tracks)
@@ -170,6 +191,25 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
     @Override
     public void runOpMode() {
 
+        // Huskylens Integration ====================================================================
+        Deadline rateLimit = new Deadline(READ_PERIOD, TimeUnit.SECONDS);
+
+        /*
+         * Immediately expire so that the first time through we'll do the read.
+         */
+        rateLimit.expire();
+
+        if (!huskyLens.knock()) {
+            telemetry.addData(">>", "Problem communicating with " + huskyLens.getDeviceName());
+        } else {
+            telemetry.addData(">>", "Press start to continue");
+        }
+
+        huskyLens.selectAlgorithm(HuskyLens.Algorithm.TAG_RECOGNITION);
+
+        telemetry.update();
+        waitForStart();
+        // ^Huskylens Integration^ ===================================================================
 
         // DONE: make sure your config has motors with these names (or change them)
         //   see https://ftc-docs.firstinspires.org/en/latest/hardware_and_software_configuration/configuring/index.html
@@ -250,6 +290,16 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
         //          holdHeading() is used after turns to let the heading stabilize
         //          Add a sleep(2000) after any step to keep the telemetry data visible for review
 
+        // Huskylens Integration ====================================================================
+        HuskyLens.Block[] blocks = huskyLens.blocks();
+        telemetry.addData("Block count", blocks.length);
+        for (int i = 0; i < blocks.length; i++) {
+            telemetry.addData("Block", blocks[i].toString());
+        }
+
+        telemetry.update();
+        // ^Huskylens Integration^ ===================================================================
+
         //OVERRIDE FOR TESTING
 //        startPosition = START_POSITION.BLUE_BACKSTAGE;
 //        purplePixelPath = Processor.Selected.MIDDLE;
@@ -309,7 +359,7 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
 
                     driveStraight(DRIVE_SPEED, 7, 40);    // Drive Forward 7"
                     holdHeading(TURN_SPEED,   40, 2);    // Hold  heading for 2 seconds
-            //
+                    //
                     // OUTTAKE PIXEL
                     intakeLeft.setPower(.5);
                     intakeRight.setPower(-.5);
@@ -501,7 +551,7 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
 
                     driveStraight(DRIVE_SPEED, 5, -45);    // Drive Forward 5"
                     holdHeading(TURN_SPEED,   -45, 2);    // Hold  heading for 2 seconds
-            //
+                    //
                     // OUTTAKE PIXEL
                     intakeLeft.setPower(.5);
                     intakeRight.setPower(-.5);
@@ -920,17 +970,17 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
     // **********  HIGH Level driving functions.  ********************
 
     /**
-    *  Drive in a straight line, on a fixed compass heading (angle), based on encoder counts.
-    *  Move will stop if either of these conditions occur:
-    *  1) Move gets to the desired position
-    *  2) Driver stops the OpMode running.
-    *
-    * @param maxDriveSpeed MAX Speed for forward/rev motion (range 0 to +1.0) .
-    * @param distance   Distance (in inches) to move from current position.  Negative distance means move backward.
-    * @param heading      Absolute Heading Angle (in Degrees) relative to last gyro reset.
-    *                   0 = fwd. +ve is CCW from fwd. -ve is CW from forward.
-    *                   If a relative angle is required, add/subtract from the current robotHeading.
-    */
+     *  Drive in a straight line, on a fixed compass heading (angle), based on encoder counts.
+     *  Move will stop if either of these conditions occur:
+     *  1) Move gets to the desired position
+     *  2) Driver stops the OpMode running.
+     *
+     * @param maxDriveSpeed MAX Speed for forward/rev motion (range 0 to +1.0) .
+     * @param distance   Distance (in inches) to move from current position.  Negative distance means move backward.
+     * @param heading      Absolute Heading Angle (in Degrees) relative to last gyro reset.
+     *                   0 = fwd. +ve is CCW from fwd. -ve is CW from forward.
+     *                   If a relative angle is required, add/subtract from the current robotHeading.
+     */
     public void driveStraight(double maxDriveSpeed,
                               double distance,
                               double heading) {
@@ -961,7 +1011,7 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
 
             // keep looping while we are still active, and BOTH motors are running.
             while (opModeIsActive() &&
-                   (leftFront.isBusy() && rightFront.isBusy())) {
+                    (leftFront.isBusy() && rightFront.isBusy())) {
 
                 // Determine required steering to keep on heading
                 turnSpeed = getSteeringCorrection(heading, P_DRIVE_GAIN);
