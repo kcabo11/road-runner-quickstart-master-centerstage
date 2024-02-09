@@ -36,9 +36,11 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -54,7 +56,7 @@ import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.teamcode.utils.Processor;
 
 // HuskyLens Integration
-package org.firstinspires.ftc.robotcontroller.external.samples;
+//package org.firstinspires.ftc.robotcontroller.external.samples;
 
 import com.qualcomm.hardware.dfrobot.HuskyLens;
 import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
@@ -125,6 +127,9 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
     private HuskyLens huskyLens;
 
     /* Declare OpMode members. */
+    private DigitalChannel redLED;
+    private DigitalChannel greenLED;
+
     private DcMotor         leftFront   = null;
     private DcMotor         leftBack   = null;
     private DcMotor         rightFront  = null;
@@ -134,6 +139,7 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
     public CRServo intakeRight = null;
     public DcMotor pixelLiftMotor = null;
     public Servo pixelPlacerServo = null;
+    public ColorSensor floorSensor = null;
 
     private double          headingError  = 0;
 
@@ -146,6 +152,7 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
     private double  rightSpeed    = 0;
     private int     leftTarget    = 0;
     private int     rightTarget   = 0;
+
 
     // Calculate the COUNTS_PER_INCH for your specific drive train.
     // Go to your motor vendor website to determine your motor's COUNTS_PER_MOTOR_REV
@@ -188,11 +195,19 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
     private Processor processor;
     private Processor.Selected purplePixelPath = Processor.Selected.LEFT;
 
+    ColorSensor colorSensor;    // Hardware Device Object
+
     @Override
     public void runOpMode() {
 
+        float hsvValues[] = {0F,0F,0F};
+
+
         // Huskylens Integration ====================================================================
         Deadline rateLimit = new Deadline(READ_PERIOD, TimeUnit.SECONDS);
+        huskyLens = hardwareMap.get(HuskyLens.class, "huskylens");
+
+
 
         /*
          * Immediately expire so that the first time through we'll do the read.
@@ -229,8 +244,13 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
         pixelLiftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         pixelLiftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-
-        // DONE: reverse motor directions if needed
+        redLED = hardwareMap.get(DigitalChannel.class, "red");
+        greenLED = hardwareMap.get(DigitalChannel.class, "green");
+        // change LED mode from input to output
+        greenLED.setMode(DigitalChannel.Mode.OUTPUT);
+        redLED.setMode(DigitalChannel.Mode.OUTPUT);
+        redLED.setState(false);
+        greenLED.setState(true);
         //   leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
 
         leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -240,6 +260,9 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
 
         intakeLeft = hardwareMap.get(CRServo.class, "intakeLeft");
         intakeRight = hardwareMap.get(CRServo.class, "intakeRight");
+        floorSensor = hardwareMap.get(ColorSensor.class, "floorSensor");
+        colorSensor = hardwareMap.get(ColorSensor.class, "floorSensor");
+
 
         processor = new Processor();
         cameraPortal = VisionPortal.easyCreateWithDefaults(hardwareMap.get(WebcamName.class, "Webcam 1"), processor);
@@ -301,15 +324,24 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
         // ^Huskylens Integration^ ===================================================================
 
         //OVERRIDE FOR TESTING
-//        startPosition = START_POSITION.BLUE_BACKSTAGE;
-//        purplePixelPath = Processor.Selected.MIDDLE;
+        startPosition = START_POSITION.BLUE_BACKSTAGE;
+        purplePixelPath = Processor.Selected.MIDDLE;
 
         if (startPosition == START_POSITION.BLUE_BACKSTAGE) {
             telemetry.addData("Running Blue_Backstage with pixel ", "");
             switch (purplePixelPath) {
                 case MIDDLE: {
+
                     driveStraight(DRIVE_SPEED, 26, 0.0);    // Drive Forward 28"
+                    redLED.setState(true);
                     holdHeading(TURN_SPEED,   0.0, 2);    // Hold  0 Deg heading for .5 seconds
+                    greenLED.setState(true);
+                    redLED.setState(false);
+
+
+                    driveStraightToLine(DRIVE_SPEED/2, 10, 0.0);
+                    greenLED.setState(false);
+                    redLED.setState(true);
 
                     // OUTTAKE PIXEL
                     intakeLeft.setPower(.5);
@@ -1193,4 +1225,62 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
         YawPitchRollAngles orientation = imu.getRobotYawPitchRollAngles();
         return orientation.getYaw(AngleUnit.DEGREES);
     }
+
+
+    public void driveStraightToLine(double maxDriveSpeed,
+                              double distance,
+                              double heading) {
+
+        // Ensure that the OpMode is still active
+        if (opModeIsActive()) {
+
+            // Determine new target position, and pass to motor controller
+            int moveCounts = (int)(distance * COUNTS_PER_INCH);
+            leftTarget = leftFront.getCurrentPosition() + moveCounts;
+            rightTarget = rightFront.getCurrentPosition() + moveCounts;
+
+            // Set Target FIRST, then turn on RUN_TO_POSITION
+            leftFront.setTargetPosition(leftTarget);
+            leftBack.setTargetPosition(leftTarget);
+            rightFront.setTargetPosition(rightTarget);
+            rightBack.setTargetPosition(rightTarget);
+
+            leftFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            leftBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            rightFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            rightBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            // Set the required driving speed  (must be positive for RUN_TO_POSITION)
+            // Start driving straight, and then enter the control loop
+            maxDriveSpeed = Math.abs(maxDriveSpeed);
+            moveRobot(maxDriveSpeed, 0);
+
+            // keep looping while we are still active, and BOTH motors are running.
+            while (opModeIsActive() &&
+                    (leftFront.isBusy() && rightFront.isBusy())
+                    & floorSensor.blue() < 60 ) {
+
+                // Determine required steering to keep on heading
+                turnSpeed = getSteeringCorrection(heading, P_DRIVE_GAIN);
+
+                // if driving in reverse, the motor correction also needs to be reversed
+                if (distance < 0)
+                    turnSpeed *= -1.0;
+
+                // Apply the turning correction to the current driving speed.
+                moveRobot(driveSpeed, turnSpeed);
+
+                // Display drive status for the driver.
+                sendTelemetry(true);
+            }
+
+            // Stop all motion & Turn off RUN_TO_POSITION
+            moveRobot(0, 0);
+            leftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            leftBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            rightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            rightBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        }
+    }
+
 }

@@ -38,6 +38,9 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.ColorSensor;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
+
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 /*
  *
@@ -81,7 +84,7 @@ public class SensorMRColor extends LinearOpMode {
 
     int colorSensorState = 0, pixels = 0;
     // get a reference to our ColorSensor object.
-    colorSensor = hardwareMap.get(ColorSensor.class, "sensorColor");
+    colorSensor = hardwareMap.get(ColorSensor.class, "floorSensor");
 
     // Set the LED in the beginning
     colorSensor.enableLed(bLedOn);
@@ -147,6 +150,7 @@ public class SensorMRColor extends LinearOpMode {
           break;
         }
       }
+
 
 
       // send the info back to driver station using telemetry function.
