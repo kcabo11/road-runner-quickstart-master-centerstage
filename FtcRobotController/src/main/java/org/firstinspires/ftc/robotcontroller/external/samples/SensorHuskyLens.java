@@ -60,12 +60,15 @@ import java.util.concurrent.TimeUnit;
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  */
 @TeleOp(name = "Sensor: HuskyLens", group = "Sensor")
-@Disabled
+//@Disabled
 public class SensorHuskyLens extends LinearOpMode {
 
     private final int READ_PERIOD = 1;
 
     private HuskyLens huskyLens;
+
+    HuskyElapsedTime = new ElapsedTime();
+    ElapsedTime myElapsedTime;
 
     @Override
     public void runOpMode()
@@ -141,9 +144,75 @@ public class SensorHuskyLens extends LinearOpMode {
             telemetry.addData("Block count", blocks.length);
             for (int i = 0; i < blocks.length; i++) {
                 telemetry.addData("Block", blocks[i].toString());
+                telemetry.addData("Corrdinates: ", blocks.)
             }
 
             telemetry.update();
+
+            // Huskylens Integration ====================================================================
+//            HuskyElapsedTime = new ElapsedTime();
+//        ElapsedTime myElapsedTime;
+
+            HuskyLens.Block[] blocks = huskyLens.blocks();
+            telemetry.addData("Block count", blocks.length);
+            for (int i = 0; i < blocks.length; i++) {
+                telemetry.addData("Block", blocks[i].toString());
+            }
+
+            telemetry.update();
+
+            // Pseudocode for Huskylens:
+            // Block ID 1 = RED
+            // Block ID 2 = BLUE
+
+/*
+======== Blue Backstage/Frontstage: ======================================
+        MIDDLE:
+        If huskylens [BlockID2] xvalue >= 160 (for >= 1 second)
+        run middle code
+
+        LEFT:
+        If huskylens [BlockID2] xvalue < 160 (for >= 1 second)
+        run left code
+
+        RIGHT:
+        If huskylens ![BlockID2] xvalue (for >= 1 second)
+        run right code
+
+======== Red Backstage/Frontstage: ======================================
+        MIDDLE:
+        If huskylens [BlockID1] xvalue >= 160 (for >= 1 second)
+        run middle code
+
+        LEFT:
+        If huskylens [BlockID1] xvalue < 160 (for >= 1 second)
+        run left code
+
+        RIGHT:
+        If huskylens ![BlockID1] xvalue (for >= 1 second)
+        run right code
+
+ */
+
+
+            if (HuskyElapsedTime.seconds() >= 1) {
+                myElapsedTime.reset();
+                HuskyLensBlocks = huskylensAsHuskyLens.blocks();
+                telemetry.addData("Block count", JavaUtil.listLength(myHuskyLensBlocks));
+                for (HuskyLens.Block myHuskyLensBlock_item : myHuskyLensBlocks) {
+                    myHuskyLensBlock = myHuskyLensBlock_item;
+                    telemetry.addData("Block", "id=" + myHuskyLensBlock.id + " size: " +
+                            myHuskyLensBlock.width + "x" + myHuskyLensBlock.height + " position: " +
+                            myHuskyLensBlock.x + "," + myHuskyLensBlock.y;
+                    telemetry.update();
+                }
+
+                // Testing
+                telemetry.addData("BlockID1: ", "xvalue =" + huskyLens.x);
+                telemetry.addData("BlockID1: ", "xvalue =" + myHuskyLensBlock.x);
+                telemetry.update();
+
+                // ^Huskylens Integration^ ===================================================================
         }
     }
 }
