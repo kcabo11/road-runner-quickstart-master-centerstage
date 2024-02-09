@@ -332,7 +332,8 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
             switch (purplePixelPath) {
                 case MIDDLE: {
 
-                    driveStraight(DRIVE_SPEED, 26, 0.0);    // Drive Forward 28"
+//                    driveStraight(DRIVE_SPEED, 26, 0.0);    // Drive Forward 28"
+                    driveStraightToLine(DRIVE_SPEED/2, 24, 0.0);
                     redLED.setState(true);
                     holdHeading(TURN_SPEED,   0.0, 2);    // Hold  0 Deg heading for .5 seconds
                     greenLED.setState(true);
@@ -388,10 +389,16 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
                 }
                 case LEFT: {
                     driveStraight(DRIVE_SPEED, 20, 0);    // Drive Forward 15"
+                    redLED.setState(true);
                     holdHeading(TURN_SPEED,   0.0, 2);    // Hold  0 Deg heading for 2 seconds
+                    greenLED.setState(true);
+                    redLED.setState(false);
 
                     turnToHeading(TURN_SPEED, 40); // turn left 40 degrees
                     holdHeading(TURN_SPEED, 40, 2); // hold heading for 2 a second
+                    greenLED.setState(false);
+                    redLED.setState(true);
+
 
                     // If necessary, you can utilize the sensor to scan the line before you go forward and place the pixel
                     driveStraight(DRIVE_SPEED, 7, 40);    // Drive Forward 7"
@@ -448,14 +455,19 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
                 }
                 case RIGHT: {
                     driveStraight(DRIVE_SPEED, 24, 0.0);    // Drive Forward 26"
+                    redLED.setState(true);
                     holdHeading(TURN_SPEED,   0.0, 2);    // Hold  0 Deg heading for 2 seconds
+                    greenLED.setState(true);
+                    redLED.setState(false);
 
                     // If necessary, you can utilize the sensor to scan the line before you go forward and place the pixel
                     turnToHeading(TURN_SPEED, -90); // turn right 90 degrees
                     holdHeading(TURN_SPEED, -90, 2); // hold -90 degrees heading for 2 a second
 
-                    driveStraight(DRIVE_SPEED, 2, -90);    // Drive Forward 2"
+                    driveStraightToLine(DRIVE_SPEED/4, 2, -90);    // Drive Forward 2"
                     holdHeading(TURN_SPEED,   -90, 2);    // Hold heading for 2 seconds
+                    greenLED.setState(false);
+                    redLED.setState(true);
 
                     // OUTTAKE HERE
                     intakeLeft.setPower(.5);
