@@ -1,32 +1,3 @@
-/* Copyright (c) 2022 FIRST. All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted (subject to the limitations in the disclaimer below) provided that
- * the following conditions are met:
- *
- * Redistributions of source code must retain the above copyright notice, this list
- * of conditions and the following disclaimer.
- *
- * Redistributions in binary form must reproduce the above copyright notice, this
- * list of conditions and the following disclaimer in the documentation and/or
- * other materials provided with the distribution.
- *
- * Neither the name of FIRST nor the names of its contributors may be used to endorse or
- * promote products derived from this software without specific prior written permission.
- *
- * NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE GRANTED BY THIS
- * LICENSE. THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
- * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE
- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
- * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
- * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
- * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
- * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-
 package org.firstinspires.ftc.teamcode.testing;
 
 import com.acmerobotics.roadrunner.SafeTrajectoryBuilder;
@@ -289,7 +260,6 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
         rightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-//        imu.resetYaw();
 
         selectStartingPosition();
 
@@ -314,7 +284,7 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
         //          Add a sleep(2000) after any step to keep the telemetry data visible for review
 
         // Huskylens Integration ====================================================================
-        HuskyElapsedTime = new ElapsedTime();
+        //HuskyElapsedTime = new ElapsedTime();
 //        ElapsedTime myElapsedTime;
 
         HuskyLens.Block[] blocks = huskyLens.blocks();
@@ -359,17 +329,17 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
  */
 
 
-         if (HuskyElapsedTime.seconds() >= 1) {
-             myElapsedTime.reset();
-             HuskyLensBlocks = huskylensAsHuskyLens.blocks();
-             telemetry.addData("Block count", JavaUtil.listLength(myHuskyLensBlocks));
-             for (HuskyLens.Block myHuskyLensBlock_item : myHuskyLensBlocks) {
-             myHuskyLensBlock = myHuskyLensBlock_item;
-             telemetry.addData("Block", "id=" + myHuskyLensBlock.id + " size: " +
-             myHuskyLensBlock.width + "x" + myHuskyLensBlock.height + " position: " +
-             myHuskyLensBlock.x + "," + myHuskyLensBlock.y;
-         telemetry.update();
-         }
+//         if (HuskyElapsedTime.seconds() >= 1) {
+//             myElapsedTime.reset();
+//             HuskyLensBlocks = huskylensAsHuskyLens.blocks();
+//             telemetry.addData("Block count", JavaUtil.listLength(myHuskyLensBlocks));
+//             for (HuskyLens.Block myHuskyLensBlock_item : myHuskyLensBlocks) {
+//             myHuskyLensBlock = myHuskyLensBlock_item;
+//             telemetry.addData("Block", "id=" + myHuskyLensBlock.id + " size: " +
+//             myHuskyLensBlock.width + "x" + myHuskyLensBlock.height + " position: " +
+//             myHuskyLensBlock.x + "," + myHuskyLensBlock.y;
+//         telemetry.update();
+//         }
 
 
         // ^Huskylens Integration^ ===================================================================
@@ -383,7 +353,8 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
             switch (purplePixelPath) {
                 case MIDDLE: {
 
-                    driveStraight(DRIVE_SPEED, 26, 0.0);    // Drive Forward 28"
+//                    driveStraight(DRIVE_SPEED, 26, 0.0);    // Drive Forward 28"
+                    driveStraightToLine(DRIVE_SPEED/2, 24, 0.0);
                     redLED.setState(true);
                     holdHeading(TURN_SPEED,   0.0, 2);    // Hold  0 Deg heading for .5 seconds
                     greenLED.setState(true);
@@ -439,10 +410,16 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
                 }
                 case LEFT: {
                     driveStraight(DRIVE_SPEED, 20, 0);    // Drive Forward 15"
+                    redLED.setState(true);
                     holdHeading(TURN_SPEED,   0.0, 2);    // Hold  0 Deg heading for 2 seconds
+                    greenLED.setState(true);
+                    redLED.setState(false);
 
                     turnToHeading(TURN_SPEED, 40); // turn left 40 degrees
                     holdHeading(TURN_SPEED, 40, 2); // hold heading for 2 a second
+                    greenLED.setState(false);
+                    redLED.setState(true);
+
 
                     // If necessary, you can utilize the sensor to scan the line before you go forward and place the pixel
                     driveStraight(DRIVE_SPEED, 7, 40);    // Drive Forward 7"
@@ -499,14 +476,19 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
                 }
                 case RIGHT: {
                     driveStraight(DRIVE_SPEED, 24, 0.0);    // Drive Forward 26"
+                    redLED.setState(true);
                     holdHeading(TURN_SPEED,   0.0, 2);    // Hold  0 Deg heading for 2 seconds
+                    greenLED.setState(true);
+                    redLED.setState(false);
 
                     // If necessary, you can utilize the sensor to scan the line before you go forward and place the pixel
                     turnToHeading(TURN_SPEED, -90); // turn right 90 degrees
                     holdHeading(TURN_SPEED, -90, 2); // hold -90 degrees heading for 2 a second
 
-                    driveStraight(DRIVE_SPEED, 2, -90);    // Drive Forward 2"
+                    driveStraightToLine(DRIVE_SPEED/4, 2, -90);    // Drive Forward 2"
                     holdHeading(TURN_SPEED,   -90, 2);    // Hold heading for 2 seconds
+                    greenLED.setState(false);
+                    redLED.setState(true);
 
                     // OUTTAKE HERE
                     intakeLeft.setPower(.5);
@@ -1088,10 +1070,8 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
                 }
             }
         }
-
-
-        sleep(1000);  // Pause to display last telemetry message.
     }
+
 
 
     private void detectPurplePath() {
@@ -1426,5 +1406,4 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
             rightBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
     }
-
 }
