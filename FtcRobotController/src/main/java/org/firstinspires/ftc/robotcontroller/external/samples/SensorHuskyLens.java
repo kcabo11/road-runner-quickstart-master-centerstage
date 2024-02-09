@@ -67,6 +67,9 @@ public class SensorHuskyLens extends LinearOpMode {
 
     private HuskyLens huskyLens;
 
+    HuskyElapsedTime = new ElapsedTime();
+    ElapsedTime myElapsedTime;
+
     @Override
     public void runOpMode()
     {
@@ -147,7 +150,7 @@ public class SensorHuskyLens extends LinearOpMode {
             telemetry.update();
 
             // Huskylens Integration ====================================================================
-            HuskyElapsedTime = new ElapsedTime();
+//            HuskyElapsedTime = new ElapsedTime();
 //        ElapsedTime myElapsedTime;
 
             HuskyLens.Block[] blocks = huskyLens.blocks();
@@ -204,6 +207,10 @@ public class SensorHuskyLens extends LinearOpMode {
                     telemetry.update();
                 }
 
+                // Testing
+                telemetry.addData("BlockID1: ", "xvalue =" + huskyLens.x);
+                telemetry.addData("BlockID1: ", "xvalue =" + myHuskyLensBlock.x);
+                telemetry.update();
 
                 // ^Huskylens Integration^ ===================================================================
         }
