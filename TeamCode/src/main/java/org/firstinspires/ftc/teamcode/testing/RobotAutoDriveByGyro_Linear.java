@@ -289,7 +289,6 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
         rightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-//        imu.resetYaw();
 
         selectStartingPosition();
 
@@ -314,7 +313,7 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
         //          Add a sleep(2000) after any step to keep the telemetry data visible for review
 
         // Huskylens Integration ====================================================================
-        HuskyElapsedTime = new ElapsedTime();
+        //HuskyElapsedTime = new ElapsedTime();
 //        ElapsedTime myElapsedTime;
 
         HuskyLens.Block[] blocks = huskyLens.blocks();
@@ -359,17 +358,17 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
  */
 
 
-         if (HuskyElapsedTime.seconds() >= 1) {
-             myElapsedTime.reset();
-             HuskyLensBlocks = huskylensAsHuskyLens.blocks();
-             telemetry.addData("Block count", JavaUtil.listLength(myHuskyLensBlocks));
-             for (HuskyLens.Block myHuskyLensBlock_item : myHuskyLensBlocks) {
-             myHuskyLensBlock = myHuskyLensBlock_item;
-             telemetry.addData("Block", "id=" + myHuskyLensBlock.id + " size: " +
-             myHuskyLensBlock.width + "x" + myHuskyLensBlock.height + " position: " +
-             myHuskyLensBlock.x + "," + myHuskyLensBlock.y;
-         telemetry.update();
-         }
+//         if (HuskyElapsedTime.seconds() >= 1) {
+//             myElapsedTime.reset();
+//             HuskyLensBlocks = huskylensAsHuskyLens.blocks();
+//             telemetry.addData("Block count", JavaUtil.listLength(myHuskyLensBlocks));
+//             for (HuskyLens.Block myHuskyLensBlock_item : myHuskyLensBlocks) {
+//             myHuskyLensBlock = myHuskyLensBlock_item;
+//             telemetry.addData("Block", "id=" + myHuskyLensBlock.id + " size: " +
+//             myHuskyLensBlock.width + "x" + myHuskyLensBlock.height + " position: " +
+//             myHuskyLensBlock.x + "," + myHuskyLensBlock.y;
+//         telemetry.update();
+//         }
 
 
         // ^Huskylens Integration^ ===================================================================
@@ -1100,10 +1099,8 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
                 }
             }
         }
-
-
-        sleep(1000);  // Pause to display last telemetry message.
     }
+
 
 
     private void detectPurplePath() {
@@ -1438,5 +1435,4 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
             rightBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
     }
-
 }
