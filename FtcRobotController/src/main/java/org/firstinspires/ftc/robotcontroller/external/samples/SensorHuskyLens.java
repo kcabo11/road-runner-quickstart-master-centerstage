@@ -207,9 +207,10 @@ public class SensorHuskyLens extends LinearOpMode {
                     telemetry.update();
                 }
 
-                // Testing
+                // Testing Telemetry
                 telemetry.addData("BlockID1: ", "xvalue =" + huskyLens.x);
                 telemetry.addData("BlockID1: ", "xvalue =" + myHuskyLensBlock.x);
+                telemetry.addData("Blockx: ", blocks[i].toString())
                 telemetry.update();
 
                 // ^Huskylens Integration^ ===================================================================
