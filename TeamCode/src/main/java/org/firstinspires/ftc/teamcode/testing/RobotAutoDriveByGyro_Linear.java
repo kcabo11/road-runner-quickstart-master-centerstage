@@ -90,6 +90,7 @@ import java.util.concurrent.TimeUnit;
  */
 
 @Autonomous(name="Test Auto by Gyro", group="Robot")
+//@Disabled
 public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
 
     // Huskylens Integration
@@ -164,7 +165,7 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
     private static START_POSITION startPosition = START_POSITION.UNKNOWN; //WHERE WE ARE ON THE FIELD/ RED CLOSE ETC
 
     private Processor processor;
-    private Processor.Selected purplePixelPath = Processor.Selected.LEFT;
+    private Processor.Selected purplePixelPath = Processor.Selected.RIGHT;
 
     ColorSensor colorSensor;    // Hardware Device Object
 
@@ -185,16 +186,13 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
          */
         rateLimit.expire();
 
-        if (!huskyLens.knock()) {
-            telemetry.addData(">>", "Problem communicating with " + huskyLens.getDeviceName());
-        } else {
-            telemetry.addData(">>", "Press start to continue");
-        }
+//        if (!huskyLens.knock()) {
+//            telemetry.addData(">>", "Problem communicating with " + huskyLens.getDeviceName());
+//        } else {
+//            telemetry.addData(">>", "Press start to continue");
+//        }
 
-        huskyLens.selectAlgorithm(HuskyLens.Algorithm.TAG_RECOGNITION);
-
-        telemetry.update();
-        waitForStart();
+        huskyLens.selectAlgorithm(HuskyLens.Algorithm.COLOR_RECOGNITION);
         // ^Huskylens Integration^ ===================================================================
 
         // DONE: make sure your config has motors with these names (or change them)
@@ -265,12 +263,17 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
 
         // Wait for the game to start (Display Gyro value while waiting)
         while (opModeInInit()) {
-            detectPurplePath();
             telemetry.addData("You selected startPosition of", startPosition.toString());
             telemetry.addData("Camera preview on/off", "3 dots, Camera Stream");
             telemetry.addData(" ","");
             telemetry.addData(">", "Robot Heading = %4.0f", getHeading());
             telemetry.update();
+
+            if (!huskyLens.knock()) {
+                telemetry.addData(">>", "Problem communicating with " + huskyLens.getDeviceName());
+            } else {
+                detectPurplePathHuskylens();
+            }
         }
 
         // Set the encoders for closed loop speed control, and reset the heading.
@@ -287,13 +290,7 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
         //HuskyElapsedTime = new ElapsedTime();
 //        ElapsedTime myElapsedTime;
 
-        HuskyLens.Block[] blocks = huskyLens.blocks();
-        telemetry.addData("Block count", blocks.length);
-        for (int i = 0; i < blocks.length; i++) {
-            telemetry.addData("Block", blocks[i].toString());
-        }
 
-        telemetry.update();
 
         // Pseudocode for Huskylens:
         // Block ID 1 = RED
@@ -354,7 +351,7 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
                 case MIDDLE: {
 
 //                    driveStraight(DRIVE_SPEED, 26, 0.0);    // Drive Forward 28"
-                    driveStraightToLine(DRIVE_SPEED/2, 24, 0.0);
+                    driveStraightToLine(DRIVE_SPEED, 24, 0.0);
                     redLED.setState(true);
                     holdHeading(TURN_SPEED,   0.0, 2);    // Hold  0 Deg heading for .5 seconds
                     greenLED.setState(true);
@@ -1082,10 +1079,44 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
         telemetry.addData("Delta Value:", (processor.satRectLeft - processor.satRectMiddle));
     }
 
-    public void selectStartingPosition() {
+    private void detectPurplePathHuskylens() {
+        HuskyLens.Block[] blocks = huskyLens.blocks();
+        telemetry.addData("Block count", blocks.length);
+        purplePixelPath = Processor.Selected.RIGHT;
+        int colorID = 2;
+        if ((startPosition == START_POSITION.RED_STAGE) || (startPosition == START_POSITION.RED_BACKSTAGE)) {
+            colorID = 1;
+        }
+
+        for (int i = 0; i < blocks.length; i++) {
+            if ((blocks[i].id == colorID) && (blocks[i].width > 20) && (blocks[i].height > 20)) {
+                telemetry.addData("Block", blocks[i].toString());
+                telemetry.addData("TESTING: Huskylens BockID1: ", huskyLens.blocks());
+                telemetry.addData("TESTING: Huskylens Bock Xvalue: ", blocks[i].x);
+                telemetry.addData("TESTING: Huskylens Bock Width: ", blocks[i].width);
+                telemetry.addData("TESTING: Huskylens Bock Height: ", blocks[i].height);
+
+                if (blocks[i].x > 170) {
+                    purplePixelPath = Processor.Selected.MIDDLE;
+                    // run middle
+                }
+                else if (blocks[i].x < 170) {
+                    purplePixelPath = Processor.Selected.LEFT;
+                }
+                else {
+                    purplePixelPath = Processor.Selected.RIGHT;
+                }
+            }
+        }
+
+            telemetry.addData("Purple Pixel Path: ", purplePixelPath.toString());
+    }
+
+
+        public void selectStartingPosition() {
         //******select start pose*****
         while (!isStopRequested()) {
-            telemetry.addLine("Queen Creek Qualifier - Code Initialized");
+            telemetry.addLine("State Tournament - Code Initialized");
             telemetry.addData("---------------------------------------", "");
             telemetry.addLine("Select Starting Position using DPAD Keys");
             telemetry.addData("    Blue Left   ", "(^)");

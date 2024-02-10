@@ -33,13 +33,9 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package org.firstinspires.ftc.robotcontroller.external.samples;
 
 import com.qualcomm.hardware.dfrobot.HuskyLens;
-import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DistanceSensor;
 
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.internal.system.Deadline;
 
 import java.util.concurrent.TimeUnit;
@@ -67,12 +63,16 @@ public class SensorHuskyLens extends LinearOpMode {
 
     private HuskyLens huskyLens;
 
-    HuskyElapsedTime = new ElapsedTime();
-    ElapsedTime myElapsedTime;
+
+    void ElapsedTime() {
+    }
+
+//    ElapsedTime myElapsedTime;
 
     @Override
     public void runOpMode()
     {
+        new SensorHuskyLens();
         huskyLens = hardwareMap.get(HuskyLens.class, "huskylens");
 
         /*
@@ -144,22 +144,20 @@ public class SensorHuskyLens extends LinearOpMode {
             telemetry.addData("Block count", blocks.length);
             for (int i = 0; i < blocks.length; i++) {
                 telemetry.addData("Block", blocks[i].toString());
-                telemetry.addData("Corrdinates: ", blocks.)
+//                telemetry.addData("Corrdinates: ", blocks.);
             }
-
             telemetry.update();
 
             // Huskylens Integration ====================================================================
-//            HuskyElapsedTime = new ElapsedTime();
-//        ElapsedTime myElapsedTime;
 
-            HuskyLens.Block[] blocks = huskyLens.blocks();
+//            HuskyLens.Block[] blocks = huskyLens.blocks();
             telemetry.addData("Block count", blocks.length);
             for (int i = 0; i < blocks.length; i++) {
                 telemetry.addData("Block", blocks[i].toString());
+                telemetry.addData("TESTING: Huskylens BockID2 Xvalue: ", blocks[i].x);
+                telemetry.update();
             }
 
-            telemetry.update();
 
             // Pseudocode for Huskylens:
             // Block ID 1 = RED
@@ -195,22 +193,23 @@ public class SensorHuskyLens extends LinearOpMode {
  */
 
 
-            if (HuskyElapsedTime.seconds() >= 1) {
-                myElapsedTime.reset();
-                HuskyLensBlocks = huskylensAsHuskyLens.blocks();
-                telemetry.addData("Block count", JavaUtil.listLength(myHuskyLensBlocks));
-                for (HuskyLens.Block myHuskyLensBlock_item : myHuskyLensBlocks) {
-                    myHuskyLensBlock = myHuskyLensBlock_item;
-                    telemetry.addData("Block", "id=" + myHuskyLensBlock.id + " size: " +
-                            myHuskyLensBlock.width + "x" + myHuskyLensBlock.height + " position: " +
-                            myHuskyLensBlock.x + "," + myHuskyLensBlock.y;
-                    telemetry.update();
-                }
+//            if (HuskyElapsedTime.seconds() >= 1) {
+//                myElapsedTime.reset();
+//                HuskyLensBlocks = huskylensAsHuskyLens.blocks();
+//                telemetry.addData("Block count", JavaUtil.listLength(myHuskyLensBlocks));
+//                for (HuskyLens.Block myHuskyLensBlock_item : myHuskyLensBlocks) {
+//                    myHuskyLensBlock = myHuskyLensBlock_item;
+//                    telemetry.addData("Block", "id=" + myHuskyLensBlock.id + " size: " +
+//                            myHuskyLensBlock.width + "x" + myHuskyLensBlock.height + " position: " +
+//                            myHuskyLensBlock.x + "," + myHuskyLensBlock.y;
+//                    telemetry.update();
+//                }
+//            }
 
                 // Testing Telemetry
-                telemetry.addData("BlockID1: ", "xvalue =" + huskyLens.x);
-                telemetry.addData("BlockID1: ", "xvalue =" + myHuskyLensBlock.x);
-                telemetry.addData("Blockx: ", blocks[i].toString())
+//                telemetry.addData("BlockID1: ", "xvalue =" + huskyLens.x);
+//                telemetry.addData("BlockID1: ", "xvalue =" + myHuskyLensBlock.x);
+//                telemetry.addData("Blockx: ", blocks[i].toString());
                 telemetry.update();
 
                 // ^Huskylens Integration^ ===================================================================
