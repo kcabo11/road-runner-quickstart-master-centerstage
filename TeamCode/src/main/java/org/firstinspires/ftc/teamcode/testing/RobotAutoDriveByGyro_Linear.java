@@ -18,6 +18,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 import com.qualcomm.robotcore.util.RobotLog;
 
+import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
@@ -38,7 +39,10 @@ import com.qualcomm.robotcore.hardware.DistanceSensor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.internal.system.Deadline;
+import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
+import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
+import java.util.Timer;
 import java.util.concurrent.TimeUnit;
 
 /*
@@ -156,13 +160,11 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
         BLUE_BACKSTAGE,
         BLUE_STAGE,
         RED_BACKSTAGE,
-        RED_STAGE,
-        // ????
-        UNKNOWN
+        RED_STAGE
     }
 
     private VisionPortal cameraPortal;
-    private static START_POSITION startPosition = START_POSITION.UNKNOWN; //WHERE WE ARE ON THE FIELD/ RED CLOSE ETC
+    private static START_POSITION startPosition = START_POSITION.BLUE_BACKSTAGE; //WHERE WE ARE ON THE FIELD/ RED CLOSE ETC
 
     private Processor processor;
     private Processor.Selected purplePixelPath = Processor.Selected.RIGHT;
@@ -174,67 +176,51 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
 
         float hsvValues[] = {0F,0F,0F};
 
-
         // Huskylens Integration ====================================================================
         Deadline rateLimit = new Deadline(READ_PERIOD, TimeUnit.SECONDS);
         huskyLens = hardwareMap.get(HuskyLens.class, "huskylens");
-
-
 
         /*
          * Immediately expire so that the first time through we'll do the read.
          */
         rateLimit.expire();
-
-//        if (!huskyLens.knock()) {
-//            telemetry.addData(">>", "Problem communicating with " + huskyLens.getDeviceName());
-//        } else {
-//            telemetry.addData(">>", "Press start to continue");
-//        }
-
         huskyLens.selectAlgorithm(HuskyLens.Algorithm.COLOR_RECOGNITION);
         // ^Huskylens Integration^ ===================================================================
 
-        // DONE: make sure your config has motors with these names (or change them)
-        //   see https://ftc-docs.firstinspires.org/en/latest/hardware_and_software_configuration/configuring/index.html
         leftFront = hardwareMap.get(DcMotorEx.class, "leftFront");
         leftBack = hardwareMap.get(DcMotorEx.class, "leftBack");
         rightBack = hardwareMap.get(DcMotorEx.class, "rightBack");
         rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
-
         leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-        pixelLiftMotor = hardwareMap.get(DcMotor.class, "pixelLiftMotor");
-        pixelPlacerServo = hardwareMap.get(Servo.class, "pixelPlacerServo");
-
-        pixelLiftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        pixelLiftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-        redLED = hardwareMap.get(DigitalChannel.class, "red");
-        greenLED = hardwareMap.get(DigitalChannel.class, "green");
-        // change LED mode from input to output
-        greenLED.setMode(DigitalChannel.Mode.OUTPUT);
-        redLED.setMode(DigitalChannel.Mode.OUTPUT);
-        redLED.setState(false);
-        greenLED.setState(true);
-        //   leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
-
         leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
         leftBack.setDirection(DcMotorSimple.Direction.REVERSE);
         rightBack.setDirection(DcMotorSimple.Direction.FORWARD);
         rightFront.setDirection(DcMotorSimple.Direction.FORWARD);
 
+        pixelLiftMotor = hardwareMap.get(DcMotor.class, "pixelLiftMotor");
+        pixelPlacerServo = hardwareMap.get(Servo.class, "pixelPlacerServo");
+        pixelLiftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        pixelLiftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        redLED = hardwareMap.get(DigitalChannel.class, "red");
+        greenLED = hardwareMap.get(DigitalChannel.class, "green");
+        greenLED.setMode(DigitalChannel.Mode.OUTPUT);
+        redLED.setMode(DigitalChannel.Mode.OUTPUT);
+        redLED.setState(false);
+        greenLED.setState(true);
+
         intakeLeft = hardwareMap.get(CRServo.class, "intakeLeft");
         intakeRight = hardwareMap.get(CRServo.class, "intakeRight");
         floorSensor = hardwareMap.get(ColorSensor.class, "floorSensor");
-        colorSensor = hardwareMap.get(ColorSensor.class, "floorSensor");
+        colorSensor = hardwareMap.get(ColorSensor.class, "sensorColor");
 
+        //processor = new Processor();
+        //cameraPortal = VisionPortal.easyCreateWithDefaults(hardwareMap.get(WebcamName.class, "Webcam 1"), processor);
 
-        processor = new Processor();
-        cameraPortal = VisionPortal.easyCreateWithDefaults(hardwareMap.get(WebcamName.class, "Webcam 1"), processor);
+        initAprilTag();
 
         // DONE: make sure your config has an IMU with this name (can be BNO or BHI)
         //   see https://ftc-docs.firstinspires.org/en/latest/hardware_and_software_configuration/configuring/index.html
@@ -263,6 +249,7 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
 
         // Wait for the game to start (Display Gyro value while waiting)
         while (opModeInInit()) {
+
             telemetry.addData("You selected startPosition of", startPosition.toString());
             telemetry.addData("Camera preview on/off", "3 dots, Camera Stream");
             telemetry.addData(" ","");
@@ -286,81 +273,19 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
         //          holdHeading() is used after turns to let the heading stabilize
         //          Add a sleep(2000) after any step to keep the telemetry data visible for review
 
-        // Huskylens Integration ====================================================================
-        //HuskyElapsedTime = new ElapsedTime();
-//        ElapsedTime myElapsedTime;
-
-
-
-        // Pseudocode for Huskylens:
-        // Block ID 1 = RED
-        // Block ID 2 = BLUE
-
-/*
-======== Blue Backstage/Frontstage: ======================================
-        MIDDLE:
-        If huskylens [BlockID2] xvalue >= 160 (for >= 1 second)
-        run middle code
-
-        LEFT:
-        If huskylens [BlockID2] xvalue < 160 (for >= 1 second)
-        run left code
-
-        RIGHT:
-        If huskylens ![BlockID2] xvalue (for >= 1 second)
-        run right code
-
-======== Red Backstage/Frontstage: ======================================
-        MIDDLE:
-        If huskylens [BlockID1] xvalue >= 160 (for >= 1 second)
-        run middle code
-
-        LEFT:
-        If huskylens [BlockID1] xvalue < 160 (for >= 1 second)
-        run left code
-
-        RIGHT:
-        If huskylens ![BlockID1] xvalue (for >= 1 second)
-        run right code
-
- */
-
-
-//         if (HuskyElapsedTime.seconds() >= 1) {
-//             myElapsedTime.reset();
-//             HuskyLensBlocks = huskylensAsHuskyLens.blocks();
-//             telemetry.addData("Block count", JavaUtil.listLength(myHuskyLensBlocks));
-//             for (HuskyLens.Block myHuskyLensBlock_item : myHuskyLensBlocks) {
-//             myHuskyLensBlock = myHuskyLensBlock_item;
-//             telemetry.addData("Block", "id=" + myHuskyLensBlock.id + " size: " +
-//             myHuskyLensBlock.width + "x" + myHuskyLensBlock.height + " position: " +
-//             myHuskyLensBlock.x + "," + myHuskyLensBlock.y;
-//         telemetry.update();
-//         }
-
-
-        // ^Huskylens Integration^ ===================================================================
-
         //OVERRIDE FOR TESTING
-        startPosition = START_POSITION.BLUE_BACKSTAGE;
+//        startPosition = START_POSITION.BLUE_BACKSTAGE;
         purplePixelPath = Processor.Selected.MIDDLE;
 
         if (startPosition == START_POSITION.BLUE_BACKSTAGE) {
+            telemetry.addData("Floor Sensor Blue", floorSensor.blue());
             telemetry.addData("Running Blue_Backstage with pixel ", "");
+            telemetry.update();
+//            sleep(2000);
             switch (purplePixelPath) {
                 case MIDDLE: {
-
-//                    driveStraight(DRIVE_SPEED, 26, 0.0);    // Drive Forward 28"
-                    driveStraightToLine(DRIVE_SPEED, 24, 0.0);
-                    redLED.setState(true);
+                    driveStraight(DRIVE_SPEED, 26, 0.0);    // Drive Forward 28"
                     holdHeading(TURN_SPEED,   0.0, 2);    // Hold  0 Deg heading for .5 seconds
-                    greenLED.setState(true);
-                    redLED.setState(false);
-
-
-                    driveStraightToLine(DRIVE_SPEED/2, 10, 0.0);
-                    greenLED.setState(false);
-                    redLED.setState(true);
 
                     // OUTTAKE PIXEL
                     intakeLeft.setPower(.5);
@@ -371,18 +296,19 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
                     intakeRight.setPower(0);
                     sleep(1000);
 
-                    driveStraight(DRIVE_SPEED, -10, 0);    // Drive Backward 10"
+                    driveStraight(DRIVE_SPEED, -5, 0);    // Drive Backward 10"
                     holdHeading(TURN_SPEED,   0, 2);    // Hold  0 Deg heading for 2 seconds
 
-                    turnToHeading(TURN_SPEED, -90); // turn right 90 degrees
+                    turnToHeading(TURN_SPEED, -90); // turn left 90 degrees
                     holdHeading(TURN_SPEED, -90, 2); // hold -90 degrees heading for 2 a second
+
+                    driveStraight(DRIVE_SPEED, -36, -90);    // Drive Forward 10"
+                    holdHeading(TURN_SPEED,   -90, 2);    // Hold  0 Deg heading for 2 seconds
 
                     // OmniDrivetoAprilTag code here
                     // This will drive you to the apriltag
                     // Then you can square up against the line in front of the backdrop here
                     // Once you square, you can move backward to a specified distance and place your pixel
-                    driveStraight(DRIVE_SPEED, -38, -90);    // Drive Forward 10"
-                    holdHeading(TURN_SPEED,   -90, 2);    // Hold  0 Deg heading for 2 seconds
 
                     // Place your pixel here:
                     // First life your pixelliftmotor
@@ -400,6 +326,62 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
                     pixelPlacerServo.setPosition(0);
                     sleep(1000);
                     pixelLiftMotor.setTargetPosition(0);
+
+
+                    //ORIGINAL START
+//                    driveStraight(DRIVE_SPEED, 26, 180);    // Drive Forward 28"
+////                    holdHeading(DRIVE_SPEED, 180, 2);    // Drive Forward 28"
+////                    driveStraightToLine(DRIVE_SPEED, 24, 0.0);
+//                    redLED.setState(true);
+//                    holdHeading(TURN_SPEED,   180, 2);    // Hold  0 Deg heading for .5 seconds
+//                    greenLED.setState(true);
+//                    redLED.setState(false);
+//
+//                    driveStraightToLine(DRIVE_SPEED/2, 10, 180);
+////                  Drive back to place purple pixel on line.  TODO-Sarah
+//                    greenLED.setState(false);
+//                    redLED.setState(true);
+//
+//                    // OUTTAKE PIXEL
+//                    intakeLeft.setPower(.5);
+//                    intakeRight.setPower(-.5);
+//                    sleep(500);
+//                    // STOP OUTTAKE
+//                    intakeLeft.setPower(0);
+//                    intakeRight.setPower(0);
+//                    sleep(1000);
+//
+//                    driveStraight(DRIVE_SPEED, -10, 180);    // Drive Backward 10"
+//                    holdHeading(TURN_SPEED,   180, 2);    // Hold  0 Deg heading for 2 seconds
+//
+//                    turnToHeading(TURN_SPEED, 90); // turn right 90 degrees
+//                    holdHeading(TURN_SPEED, 90, 2); // hold -90 degrees heading for 2 a second
+//
+//                    // OmniDrivetoAprilTag code here
+//                    // This will drive you to the apriltag
+//                    // Then you can square up against the line in front of the backdrop here
+//                    // Once you square, you can move backward to a specified distance and place your pixel
+//                    driveStraight(DRIVE_SPEED, 38, 90);    // Drive Forward 10"
+//                    holdHeading(TURN_SPEED,   90, 2);    // Hold  0 Deg heading for 2 seconds
+//
+//                    // Place your pixel here:
+//                    // First life your pixelliftmotor
+//                    pixelLiftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//                    pixelLiftMotor.setTargetPosition(-484);
+//                    pixelLiftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//                    pixelLiftMotor.setPower(-.5);
+//
+//                    // Flip your pixelplacerservo
+//                    pixelPlacerServo.setPosition(0.9);
+//                    sleep(1000);
+//
+//                    // Come Back down
+//                    pixelPlacerServo.setPosition(0);
+//                    pixelPlacerServo.setPosition(0);
+//                    sleep(1000);
+//                    pixelLiftMotor.setTargetPosition(0);
+                    //ORIGINAL END
+
 
                     telemetry.addData("CENTER", "Complete");
                     telemetry.update();
@@ -429,7 +411,7 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
                     // STOP OUTTAKE
                     intakeLeft.setPower(0);
                     intakeRight.setPower(0);
-                    sleep(1000);
+//                    sleep(1000);
 
                     driveStraight(DRIVE_SPEED, -5, 40);    // Drive Backward 10"
                     holdHeading(TURN_SPEED,   40, 2);    // Hold heading for 2 seconds
@@ -1069,8 +1051,6 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
         }
     }
 
-
-
     private void detectPurplePath() {
         purplePixelPath = processor.getSelection();
         telemetry.addData("Left Saturation", processor.satRectLeft);
@@ -1082,40 +1062,56 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
     private void detectPurplePathHuskylens() {
         HuskyLens.Block[] blocks = huskyLens.blocks();
         telemetry.addData("Block count", blocks.length);
-        purplePixelPath = Processor.Selected.RIGHT;
+        ElapsedTime debounceTimer = new ElapsedTime();
+        debounceTimer.startTime();
+        Processor.Selected newPurplePixelPath = Processor.Selected.RIGHT;
         int colorID = 2;
         if ((startPosition == START_POSITION.RED_STAGE) || (startPosition == START_POSITION.RED_BACKSTAGE)) {
             colorID = 1;
         }
 
         for (int i = 0; i < blocks.length; i++) {
-            if ((blocks[i].id == colorID) && (blocks[i].width > 20) && (blocks[i].height > 20)) {
+            if ((blocks[i].id == colorID) && (blocks[i].width > 25) && (blocks[i].height > 25)
+                    && (blocks[i].width < 50) && (blocks[i].height < 70)) {
                 telemetry.addData("Block", blocks[i].toString());
-                telemetry.addData("TESTING: Huskylens BockID1: ", huskyLens.blocks());
-                telemetry.addData("TESTING: Huskylens Bock Xvalue: ", blocks[i].x);
-                telemetry.addData("TESTING: Huskylens Bock Width: ", blocks[i].width);
-                telemetry.addData("TESTING: Huskylens Bock Height: ", blocks[i].height);
+                telemetry.addData("", huskyLens.blocks());
+                telemetry.addData("Xvalue: ", blocks[i].x);
+                telemetry.addData("Width: ", blocks[i].width);
+                telemetry.addData("Height: ", blocks[i].height);
 
                 if (blocks[i].x > 170) {
+//                    newPurplePixelPath = Processor.Selected.MIDDLE;
                     purplePixelPath = Processor.Selected.MIDDLE;
                     // run middle
                 }
                 else if (blocks[i].x < 170) {
+//                    newPurplePixelPath = Processor.Selected.LEFT;
                     purplePixelPath = Processor.Selected.LEFT;
                 }
                 else {
+//                    newPurplePixelPath = Processor.Selected.RIGHT;
                     purplePixelPath = Processor.Selected.RIGHT;
                 }
+                telemetry.addData("After Evaluation", blocks[i].x);
+
+//                if (newPurplePixelPath == purplePixelPath) {
+//                    debounceTimer.reset();
+//                    telemetry.addData("Resetting debounce timer", blocks[i].x);
+//                }
+//                else if (debounceTimer.seconds() > .5) {
+//                    purplePixelPath = newPurplePixelPath;
+//                    telemetry.addData("Setting one to the other", blocks[i].x);
+//                }
             }
         }
-
-            telemetry.addData("Purple Pixel Path: ", purplePixelPath.toString());
+        telemetry.addData("Debounce Timer", debounceTimer.seconds());
+        telemetry.addData("Latest Purple Pixel Path: ", newPurplePixelPath.toString());
+        telemetry.addData("Locked in Purple Pixel Path: ", purplePixelPath.toString());
     }
 
-
         public void selectStartingPosition() {
-        //******select start pose*****
-        while (!isStopRequested()) {
+        boolean selected = false;
+        while (!isStopRequested() || (selected)) {
             telemetry.addLine("State Tournament - Code Initialized");
             telemetry.addData("---------------------------------------", "");
             telemetry.addLine("Select Starting Position using DPAD Keys");
@@ -1124,28 +1120,31 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
             telemetry.addData("    Red Left    ", "(<)");
             telemetry.addData("    Red Right  ", "(>)");
 
-
             if (gamepad1.dpad_up || gamepad2.dpad_up) {
                 startPosition = START_POSITION.BLUE_BACKSTAGE;
+                selected = true;
                 break;
             }
             if (gamepad1.dpad_down || gamepad2.dpad_down) {
                 startPosition = START_POSITION.BLUE_STAGE;
+                selected = true;
                 break;
             }
             if (gamepad1.dpad_left || gamepad2.dpad_left) {
                 startPosition = START_POSITION.RED_STAGE;
+                selected = true;
                 break;
             }
             if (gamepad1.dpad_right || gamepad2.dpad_right) {
                 startPosition = START_POSITION.RED_BACKSTAGE;
+                selected = true;
                 break;
             }
             telemetry.update();
         }
+
         telemetry.clear();
     }
-
 
     /*
      * ====================================================================================================
@@ -1410,10 +1409,23 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
             maxDriveSpeed = Math.abs(maxDriveSpeed);
             moveRobot(maxDriveSpeed, 0);
 
+            int thresholdColorValue, newColorValue = 0;
+            if ((startPosition == START_POSITION.RED_STAGE) || (startPosition == START_POSITION.RED_BACKSTAGE)) {
+                thresholdColorValue = 2*floorSensor.red();
+            }
+            else
+                thresholdColorValue = 2*floorSensor.blue();
+
             // keep looping while we are still active, and BOTH motors are running.
             while (opModeIsActive() &&
                     (leftFront.isBusy() && rightFront.isBusy())
-                    & floorSensor.blue() < 60 ) {
+                    & newColorValue > thresholdColorValue) {
+
+                if ((startPosition == START_POSITION.RED_STAGE) || (startPosition == START_POSITION.RED_BACKSTAGE)) {
+                    newColorValue = floorSensor.red();
+                }
+                else
+                    newColorValue = floorSensor.blue();
 
                 // Determine required steering to keep on heading
                 turnSpeed = getSteeringCorrection(heading, P_DRIVE_GAIN);
@@ -1436,5 +1448,31 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
             rightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             rightBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
+    }
+
+    /**
+     * Initialize the AprilTag processor.
+     */
+    private AprilTagProcessor aprilTag;              // Used for managing the AprilTag detection process.
+    private AprilTagDetection desiredTag = null;     // Used to hold the data for a detected AprilTag
+
+    private void initAprilTag() {
+        // Create the AprilTag processor by using a builder.
+        aprilTag = new AprilTagProcessor.Builder().build();
+
+        // Adjust Image Decimation to trade-off detection-range for detection-rate.
+        // eg: Some typical detection data using a Logitech C920 WebCam
+        // Decimation = 1 ..  Detect 2" Tag from 10 feet away at 10 Frames per second
+        // Decimation = 2 ..  Detect 2" Tag from 6  feet away at 22 Frames per second
+        // Decimation = 3 ..  Detect 2" Tag from 4  feet away at 30 Frames Per Second
+        // Decimation = 3 ..  Detect 5" Tag from 10 feet away at 30 Frames Per Second
+        // Note: Decimation can be changed on-the-fly to adapt during a match.
+        aprilTag.setDecimation(2);
+
+        // Create the vision portal by using a builder.
+            cameraPortal = new VisionPortal.Builder()
+                    .setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"))
+                    .addProcessor(aprilTag)
+                    .build();
     }
 }

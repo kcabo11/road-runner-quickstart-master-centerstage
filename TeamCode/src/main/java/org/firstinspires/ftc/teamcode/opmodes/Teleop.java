@@ -31,21 +31,16 @@ package org.firstinspires.ftc.teamcode.opmodes;
 
 import android.graphics.Color;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cColorSensor;
-import com.qualcomm.robotcore.util.Range;
-
-import java.util.Timer;
 
 /*
  * This OpMode executes a POV Game style Teleop for a direct drive robot
@@ -79,6 +74,7 @@ public class Teleop extends LinearOpMode {
     public Servo pixelLoaderRight = null;
 
     ColorSensor colorSensor;    // Hardware Device Object
+    ColorSensor floorSensor;    // Hardware Device Object
 
 
     public ModernRoboticsI2cColorSensor frontColorSensor = null;
@@ -96,7 +92,7 @@ public class Teleop extends LinearOpMode {
 
     int planeStateMachine = 1;
     int pixelliftMotorStateMachine = 1;
-    int pixelPlacerServoStateMachine, scaleSpeedStateMachine = 1;
+    int pixelPlacerServoStateMachine = 1, scaleSpeedStateMachine = 1;
     //  WHERE WOULD INTAKE BE PLACED HERE IN THE INITIALIZATION??
     // Initialize the following:
     // Linear slide ~~ servo
@@ -123,6 +119,7 @@ public class Teleop extends LinearOpMode {
         boolean rightStickButtonPushed;
         // hsvValues is an array that will hold the hue, saturation, and value information.
         float hsvValues[] = {0F,0F,0F};
+        float hsvValuesFloor[] = {0F,0F,0F};
         int colorSensorState = 0, pixels = 0;
 
 
@@ -141,7 +138,7 @@ public class Teleop extends LinearOpMode {
         pixelLiftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         pixelLiftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         colorSensor = hardwareMap.get(ColorSensor.class, "sensorColor");
-
+        floorSensor = hardwareMap.get(ColorSensor.class, "floorSensor");
 
         // Get the LED colors and touch sensor from the hardwaremap
         redLED = hardwareMap.get(DigitalChannel.class, "red");
@@ -359,6 +356,7 @@ public class Teleop extends LinearOpMode {
             switch (pixelPlacerServoStateMachine) {
                 case 1: {
                     if (gamepad2.right_bumper) { //check for first button hit {
+                        telemetry.addData("Right Bumper Active",1);
                         pixelPlacerServo.setPosition(0.75);
                         pixelPlacerServoStateMachine = 2;
                     }
@@ -581,7 +579,9 @@ public class Teleop extends LinearOpMode {
             telemetry.addData("DroneLauncher State: ", planeStateMachine);
             telemetry.addData("Default Hue", DEFAULTHUE);
             telemetry.addData("number of pixels", pixels);
-
+            //FOR TEST - CAN BE REMOVED (Floor Sensor)
+            Color.RGBToHSV(floorSensor.red() * 8, floorSensor.green() * 8, floorSensor.blue() * 8, hsvValuesFloor);
+            telemetry.addData("floor color sensor", (hsvValues[0]));
             telemetry.update();
 
             //
