@@ -309,7 +309,6 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
                     turnToHeading(TURN_SPEED, -90); // turn left 90 degrees
                     holdHeading(TURN_SPEED, -90, 1); // hold -90 degrees heading for 2 a second
 
-
 //                    driveStraight(DRIVE_SPEED, -38, -90);    // Drive Forward
 //                    holdHeading(TURN_SPEED,   -90, 1);    // Hold  0 Deg heading for 2 seconds
 
@@ -1530,6 +1529,7 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
      * Positive Yaw is counter-clockwise
      */
     public void moveRobot(double x, double y, double yaw) {
+
         // Calculate wheel powers.
         double rightFrontPower    =  x -y -yaw;
         double leftFrontPower   =  x +y +yaw;
@@ -1547,7 +1547,8 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
             leftBackPower /= max;
             rightBackPower /= max;
         }
-        int precision = 3;
+
+        double precision = 2;
         // Send powers to the wheels.
         leftFront.setPower(-leftFrontPower/precision);
         rightFront.setPower(-rightFrontPower/precision);

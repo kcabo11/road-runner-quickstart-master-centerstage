@@ -239,9 +239,25 @@ public class Teleop extends LinearOpMode {
 //                break;
 //            }
 
-            double r = Math.hypot(-gamepad1.left_stick_x, gamepad1.left_stick_y);
-            double robotAngle = Math.atan2(-gamepad1.left_stick_y, gamepad1.left_stick_x) - Math.PI / 4;
-            double rightX = gamepad1.right_stick_x;
+            int dpad_y = 0, dpad_x = 0;
+            if (gamepad1.dpad_left) {dpad_x = -1;}
+            if (gamepad1.dpad_right) {dpad_x = 1;}
+            if (gamepad1.dpad_up) {dpad_y = 1;}
+            if (gamepad1.dpad_down) {dpad_y = -1;}
+
+            double r, robotAngle, rightX;
+            if (gamepad1.dpad_left || gamepad1.dpad_down || gamepad1.dpad_up || gamepad1.dpad_right) {
+                r = Math.hypot(-dpad_x, dpad_y);
+                robotAngle = Math.atan2(-dpad_y, dpad_x) - Math.PI / 4;
+                rightX = 0;
+                scaleFactor = .7;
+            }
+            else {
+                r = Math.hypot(-gamepad1.left_stick_x, gamepad1.left_stick_y);
+                robotAngle = Math.atan2(-gamepad1.left_stick_y, gamepad1.left_stick_x) - Math.PI / 4;
+                rightX = gamepad1.right_stick_x;
+                scaleFactor = 1;
+            }
             // Default mode: The robot starts with the scaleTurningSpeed set to 1, scaleFactor set to 1, and direction set to forward.
             if (direction == 1) {
                 v1 = (r * Math.cos(robotAngle) - (rightX * scaleTurningSpeed)) * scaleFactor * direction;
