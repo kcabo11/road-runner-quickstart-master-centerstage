@@ -275,7 +275,7 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
 
         //OVERRIDE FOR TESTING
 //        startPosition = START_POSITION.BLUE_BACKSTAGE;
-        purplePixelPath = Processor.Selected.MIDDLE;
+//        purplePixelPath = Processor.Selected.MIDDLE;
 
         if (startPosition == START_POSITION.BLUE_BACKSTAGE) {
             telemetry.addData("Floor Sensor Blue", floorSensor.blue());
@@ -284,8 +284,8 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
 //            sleep(2000);
             switch (purplePixelPath) {
                 case MIDDLE: {
-                    driveStraight(DRIVE_SPEED, 26, 0.0);    // Drive Forward 28"
-                    holdHeading(TURN_SPEED,   0.0, 2);    // Hold  0 Deg heading for .5 seconds
+                    driveStraight(DRIVE_SPEED, 27, 0.0);    // Drive Forward 28"
+                    holdHeading(TURN_SPEED,   0.0, 1);    // Hold  0 Deg heading for .5 seconds
 
                     // OUTTAKE PIXEL
                     intakeLeft.setPower(.5);
@@ -297,13 +297,13 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
                     sleep(1000);
 
                     driveStraight(DRIVE_SPEED, -5, 0);    // Drive Backward 10"
-                    holdHeading(TURN_SPEED,   0, 2);    // Hold  0 Deg heading for 2 seconds
+                    holdHeading(TURN_SPEED,   0, 1);    // Hold  0 Deg heading for 2 seconds
 
                     turnToHeading(TURN_SPEED, -90); // turn left 90 degrees
-                    holdHeading(TURN_SPEED, -90, 2); // hold -90 degrees heading for 2 a second
+                    holdHeading(TURN_SPEED, -90, 1); // hold -90 degrees heading for 2 a second
 
-                    driveStraight(DRIVE_SPEED, -36, -90);    // Drive Forward 10"
-                    holdHeading(TURN_SPEED,   -90, 2);    // Hold  0 Deg heading for 2 seconds
+                    driveStraight(DRIVE_SPEED, -38, -90);    // Drive Forward 10"
+                    holdHeading(TURN_SPEED,   -90, 1);    // Hold  0 Deg heading for 2 seconds
 
                     // OmniDrivetoAprilTag code here
                     // This will drive you to the apriltag
@@ -390,19 +390,19 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
                 case LEFT: {
                     driveStraight(DRIVE_SPEED, 20, 0);    // Drive Forward 15"
                     redLED.setState(true);
-                    holdHeading(TURN_SPEED,   0.0, 2);    // Hold  0 Deg heading for 2 seconds
+                    holdHeading(TURN_SPEED,   0.0, 1);    // Hold  0 Deg heading for 2 seconds
                     greenLED.setState(true);
                     redLED.setState(false);
 
                     turnToHeading(TURN_SPEED, 40); // turn left 40 degrees
-                    holdHeading(TURN_SPEED, 40, 2); // hold heading for 2 a second
+                    holdHeading(TURN_SPEED, 40, 1); // hold heading for 2 a second
                     greenLED.setState(false);
                     redLED.setState(true);
 
 
                     // If necessary, you can utilize the sensor to scan the line before you go forward and place the pixel
                     driveStraight(DRIVE_SPEED, 7, 40);    // Drive Forward 7"
-                    holdHeading(TURN_SPEED,   40, 2);    // Hold  heading for 2 seconds
+                    holdHeading(TURN_SPEED,   40, 1);    // Hold  heading for 2 seconds
 
                     // OUTTAKE PIXEL
                     intakeLeft.setPower(.5);
@@ -414,13 +414,13 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
 //                    sleep(1000);
 
                     driveStraight(DRIVE_SPEED, -5, 40);    // Drive Backward 10"
-                    holdHeading(TURN_SPEED,   40, 2);    // Hold heading for 2 seconds
+                    holdHeading(TURN_SPEED,   40, 1);    // Hold heading for 2 seconds
 
-                    turnToHeading(TURN_SPEED, 90); // turn left 90 degrees
-                    holdHeading(TURN_SPEED, 90, 2); // hold heading for 2 a second
+                    turnToHeading(TURN_SPEED, -90); //
+                    holdHeading(TURN_SPEED, -90, 1); // hold heading for 2 a second
 
-                    driveStraight(DRIVE_SPEED, 29, 90);    // Drive Forward 26"
-                    holdHeading(TURN_SPEED,   90, 2);    // Hold  heading for 2 seconds
+                    driveStraight(DRIVE_SPEED, -29, -90);    // Drive Forward 26"
+                    holdHeading(TURN_SPEED,   -90, 1);    // Hold  heading for 2 seconds
 
                     // ONLY DO THIS IF YOU ARE IN FRONT OF THE BACKDROP
                     // OmniDrivetoAprilTag code here
@@ -429,8 +429,11 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
                     // Once you square, you can move backward to a specified distance and place your pixel
 
                     // Place Pixel!!
-                    turnToHeading(TURN_SPEED, -90); // Make a 180 degree turn
-                    holdHeading(TURN_SPEED, -90, 2); // Hold heading for 2 seconds
+//                    turnToHeading(TURN_SPEED, -90); // Make a 180 degree turn
+//                    holdHeading(TURN_SPEED, -90, 1); // Hold heading for 2 seconds
+
+                    driveStraight(DRIVE_SPEED, -5, -90);    // Drive Backward 2"
+                    holdHeading(TURN_SPEED,   -90, 1);    // Hold  heading for 2 seconds
 
                     // Place your pixel here:
                     // First life your pixelliftmotor
@@ -456,16 +459,16 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
                 case RIGHT: {
                     driveStraight(DRIVE_SPEED, 24, 0.0);    // Drive Forward 26"
                     redLED.setState(true);
-                    holdHeading(TURN_SPEED,   0.0, 2);    // Hold  0 Deg heading for 2 seconds
+                    holdHeading(TURN_SPEED,   0.0, 1);    // Hold  0 Deg heading for 2 seconds
                     greenLED.setState(true);
                     redLED.setState(false);
 
                     // If necessary, you can utilize the sensor to scan the line before you go forward and place the pixel
                     turnToHeading(TURN_SPEED, -90); // turn right 90 degrees
-                    holdHeading(TURN_SPEED, -90, 2); // hold -90 degrees heading for 2 a second
+                    holdHeading(TURN_SPEED, -90, 1); // hold -90 degrees heading for 2 a second
 
                     driveStraightToLine(DRIVE_SPEED/4, 2, -90);    // Drive Forward 2"
-                    holdHeading(TURN_SPEED,   -90, 2);    // Hold heading for 2 seconds
+                    holdHeading(TURN_SPEED,   -90, 1);    // Hold heading for 2 seconds
                     greenLED.setState(false);
                     redLED.setState(true);
 
@@ -483,7 +486,7 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
                     // Then you can square up against the line in front of the backdrop here
                     // Once you square, you can move backward to a specified distance and place your pixel
                     driveStraight(DRIVE_SPEED, -37, -90);    // Drive Backward 38"
-                    holdHeading(TURN_SPEED,   -90, 2);    // Hold heading for 2 seconds
+                    holdHeading(TURN_SPEED,   -90, 1);    // Hold heading for 2 seconds
 
                     // Place your pixel here:
                     // First life your pixelliftmotor
