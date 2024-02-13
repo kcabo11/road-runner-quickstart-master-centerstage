@@ -327,62 +327,6 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
                     sleep(1000);
                     pixelLiftMotor.setTargetPosition(0);
 
-
-                    //ORIGINAL START
-//                    driveStraight(DRIVE_SPEED, 26, 180);    // Drive Forward 28"
-////                    holdHeading(DRIVE_SPEED, 180, 2);    // Drive Forward 28"
-////                    driveStraightToLine(DRIVE_SPEED, 24, 0.0);
-//                    redLED.setState(true);
-//                    holdHeading(TURN_SPEED,   180, 2);    // Hold  0 Deg heading for .5 seconds
-//                    greenLED.setState(true);
-//                    redLED.setState(false);
-//
-//                    driveStraightToLine(DRIVE_SPEED/2, 10, 180);
-////                  Drive back to place purple pixel on line.  TODO-Sarah
-//                    greenLED.setState(false);
-//                    redLED.setState(true);
-//
-//                    // OUTTAKE PIXEL
-//                    intakeLeft.setPower(.5);
-//                    intakeRight.setPower(-.5);
-//                    sleep(500);
-//                    // STOP OUTTAKE
-//                    intakeLeft.setPower(0);
-//                    intakeRight.setPower(0);
-//                    sleep(1000);
-//
-//                    driveStraight(DRIVE_SPEED, -10, 180);    // Drive Backward 10"
-//                    holdHeading(TURN_SPEED,   180, 2);    // Hold  0 Deg heading for 2 seconds
-//
-//                    turnToHeading(TURN_SPEED, 90); // turn right 90 degrees
-//                    holdHeading(TURN_SPEED, 90, 2); // hold -90 degrees heading for 2 a second
-//
-//                    // OmniDrivetoAprilTag code here
-//                    // This will drive you to the apriltag
-//                    // Then you can square up against the line in front of the backdrop here
-//                    // Once you square, you can move backward to a specified distance and place your pixel
-//                    driveStraight(DRIVE_SPEED, 38, 90);    // Drive Forward 10"
-//                    holdHeading(TURN_SPEED,   90, 2);    // Hold  0 Deg heading for 2 seconds
-//
-//                    // Place your pixel here:
-//                    // First life your pixelliftmotor
-//                    pixelLiftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-//                    pixelLiftMotor.setTargetPosition(-484);
-//                    pixelLiftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//                    pixelLiftMotor.setPower(-.5);
-//
-//                    // Flip your pixelplacerservo
-//                    pixelPlacerServo.setPosition(0.9);
-//                    sleep(1000);
-//
-//                    // Come Back down
-//                    pixelPlacerServo.setPosition(0);
-//                    pixelPlacerServo.setPosition(0);
-//                    sleep(1000);
-//                    pixelLiftMotor.setTargetPosition(0);
-                    //ORIGINAL END
-
-
                     telemetry.addData("CENTER", "Complete");
                     telemetry.update();
                     break;
@@ -464,11 +408,11 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
                     redLED.setState(false);
 
                     // If necessary, you can utilize the sensor to scan the line before you go forward and place the pixel
-                    turnToHeading(TURN_SPEED, -90); // turn right 90 degrees
-                    holdHeading(TURN_SPEED, -90, 1); // hold -90 degrees heading for 2 a second
+                    turnToHeading(TURN_SPEED, -80); // turn right 90 degrees
+                    holdHeading(TURN_SPEED, -80, 1); // hold -90 degrees heading for 2 a second
 
-                    driveStraightToLine(DRIVE_SPEED/4, 2, -90);    // Drive Forward 2"
-                    holdHeading(TURN_SPEED,   -90, 1);    // Hold heading for 2 seconds
+                    driveStraightToLine(DRIVE_SPEED/4, 2, -80);    // Drive Forward 2"
+                    holdHeading(TURN_SPEED,   -80, 1);    // Hold heading for 2 seconds
                     greenLED.setState(false);
                     redLED.setState(true);
 
@@ -485,7 +429,7 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
                     // This will drive you to the apriltag
                     // Then you can square up against the line in front of the backdrop here
                     // Once you square, you can move backward to a specified distance and place your pixel
-                    driveStraight(DRIVE_SPEED, -37, -90);    // Drive Backward 38"
+                    driveStraight(DRIVE_SPEED, -40, -90);    // Drive Backward 38"
                     holdHeading(TURN_SPEED,   -90, 1);    // Hold heading for 2 seconds
 
                     // Place your pixel here:
@@ -1412,23 +1356,29 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
             maxDriveSpeed = Math.abs(maxDriveSpeed);
             moveRobot(maxDriveSpeed, 0);
 
-            int thresholdColorValue, newColorValue = 0;
+            int thresholdColorValue = 0, newColorValue = 0;
             if ((startPosition == START_POSITION.RED_STAGE) || (startPosition == START_POSITION.RED_BACKSTAGE)) {
-                thresholdColorValue = 2*floorSensor.red();
+                thresholdColorValue = 100+floorSensor.red();
             }
             else
-                thresholdColorValue = 2*floorSensor.blue();
+                thresholdColorValue = 100+floorSensor.blue();
+
+            telemetry.addData("threshold color value", thresholdColorValue);
+            telemetry.update();
+            sleep(3000);
 
             // keep looping while we are still active, and BOTH motors are running.
             while (opModeIsActive() &&
                     (leftFront.isBusy() && rightFront.isBusy())
-                    & newColorValue > thresholdColorValue) {
+                    && (newColorValue < thresholdColorValue)) {
 
                 if ((startPosition == START_POSITION.RED_STAGE) || (startPosition == START_POSITION.RED_BACKSTAGE)) {
                     newColorValue = floorSensor.red();
                 }
                 else
                     newColorValue = floorSensor.blue();
+
+                RobotLog.aa(RobotLog.TAG, "newColorValue: " + newColorValue);
 
                 // Determine required steering to keep on heading
                 turnSpeed = getSteeringCorrection(heading, P_DRIVE_GAIN);
@@ -1474,7 +1424,7 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
 
         // Create the vision portal by using a builder.
             cameraPortal = new VisionPortal.Builder()
-                    .setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"))
+                    .setCamera(hardwareMap.get(WebcamName.class, "Webcam 2"))
                     .addProcessor(aprilTag)
                     .build();
     }

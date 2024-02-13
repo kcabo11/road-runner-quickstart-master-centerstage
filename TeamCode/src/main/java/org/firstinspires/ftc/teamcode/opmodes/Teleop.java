@@ -557,28 +557,28 @@ public class Teleop extends LinearOpMode {
             telemetry.addData("rightBack: ", rightBack.getCurrentPosition());
             telemetry.addData("rightFront: ", rightFront.getCurrentPosition());
 
-//            telemetry.addData("v1", v1);
-//            telemetry.addData("v2", v2);
-//            telemetry.addData("v3", v3);
-//            telemetry.addData("v4", v4);
+            telemetry.addData("v1", v1);
+            telemetry.addData("v2", v2);
+            telemetry.addData("v3", v3);
+            telemetry.addData("v4", v4);
 
 
-//            telemetry.addData("pixelLiftMotor pos: ", pixelLiftMotor.getCurrentPosition());
-//            telemetry.addData("pixelLiftMotor pwr: ", pixelLiftMotor.getPower());
-//            telemetry.addData("liftMotor pwr: ", liftMotor.getPower());
-//            telemetry.addData("DPAD UP", gamepad2.dpad_up);
-//            telemetry.addData("DPAD DOWN", gamepad2.dpad_down);
-//            telemetry.addData("gamepad2.b", gamepad2.b);
-////            telemetry.addData("gamepad2.x", gamepad2.x);
+            telemetry.addData("pixelLiftMotor pos: ", pixelLiftMotor.getCurrentPosition());
+            telemetry.addData("pixelLiftMotor pwr: ", pixelLiftMotor.getPower());
+            telemetry.addData("liftMotor pwr: ", liftMotor.getPower());
+            telemetry.addData("DPAD UP", gamepad2.dpad_up);
+            telemetry.addData("DPAD DOWN", gamepad2.dpad_down);
+            telemetry.addData("gamepad2.b", gamepad2.b);
+//            telemetry.addData("gamepad2.x", gamepad2.x);
             telemetry.addData("gamepad2.left_bumper", gamepad2.left_bumper);
             telemetry.addData("gamepad2.right_bumper", gamepad2.right_bumper);
-//            telemetry.addData("pixelliftMotor Encoder Position: ", pixelLiftMotor.getCurrentPosition());
-//            telemetry.addData("pixelliftMotor State Value: ", pixelliftMotorStateMachine);
-//            telemetry.addData("pixelPlacerServo State Value: ", pixelPlacerServoStateMachine);
-//            telemetry.addData("pixelPlacerServo Position: ", pixelPlacerServo.getPosition());
-//            telemetry.addData("DroneLauncher Position: ", DroneLauncher.getPosition());
-//            telemetry.addData("DroneLauncher State: ", planeStateMachine);
-//            telemetry.addData("Default Hue", DEFAULTHUE);
+            telemetry.addData("pixelliftMotor Encoder Position: ", pixelLiftMotor.getCurrentPosition());
+            telemetry.addData("pixelliftMotor State Value: ", pixelliftMotorStateMachine);
+            telemetry.addData("pixelPlacerServo State Value: ", pixelPlacerServoStateMachine);
+            telemetry.addData("pixelPlacerServo Position: ", pixelPlacerServo.getPosition());
+            telemetry.addData("DroneLauncher Position: ", DroneLauncher.getPosition());
+            telemetry.addData("DroneLauncher State: ", planeStateMachine);
+            telemetry.addData("Default Hue", DEFAULTHUE);
             telemetry.addData("number of pixels", pixels);
             //FOR TEST - CAN BE REMOVED (Floor Sensor)
             Color.RGBToHSV(floorSensor.red() * 8, floorSensor.green() * 8, floorSensor.blue() * 8, hsvValuesFloor);
