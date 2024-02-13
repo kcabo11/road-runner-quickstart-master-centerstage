@@ -576,6 +576,8 @@ public class Teleop extends LinearOpMode {
                 case 4: { //Pixel Lift
                     if (pixelliftMotorStateMachine == 1)
                     {
+                        redLED.setState(false);
+                        greenLED.setState(false);
                         colorSensorState = 0;
                     }
                 }
