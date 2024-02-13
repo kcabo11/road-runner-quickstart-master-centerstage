@@ -340,6 +340,21 @@ public class Teleop extends LinearOpMode {
                 }
             }
 
+            // HALF SPEED OPTION
+            // Needs to be tested
+            if (gamepad1.dpad_up) {
+                leftFront.setPower(v1/2);
+                rightFront.setPower(v1/2);
+                leftBack.setPower(v1/2);
+                rightBack.setPower(v1/2);
+            }
+            else {
+                leftFront.setPower(v1);
+                rightFront.setPower(v1);
+                leftBack.setPower(v1);
+                rightBack.setPower(v1);
+            }
+
             //moving frontright changes the front left value
             //front left changes the right front value
             //left back changes left back
