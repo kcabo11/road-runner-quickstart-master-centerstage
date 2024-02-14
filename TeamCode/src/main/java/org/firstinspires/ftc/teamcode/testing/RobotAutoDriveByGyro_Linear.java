@@ -2,11 +2,8 @@ package org.firstinspires.ftc.teamcode.testing;
 
 import android.util.Size;
 
-import com.acmerobotics.roadrunner.SafeTrajectoryBuilder;
-import com.acmerobotics.roadrunner.ftc.FlightRecorder;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.ColorSensor;
@@ -18,14 +15,11 @@ import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
-import com.qualcomm.robotcore.util.RobotLog;
 
-import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.ExposureControl;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.GainControl;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
-import org.firstinspires.ftc.teamcode.MecanumDrive;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.vision.VisionPortal;
@@ -35,19 +29,12 @@ import org.firstinspires.ftc.teamcode.utils.Processor;
 //package org.firstinspires.ftc.robotcontroller.external.samples;
 
 import com.qualcomm.hardware.dfrobot.HuskyLens;
-import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DistanceSensor;
 
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.internal.system.Deadline;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
 import java.util.List;
-import java.util.Timer;
 import java.util.concurrent.TimeUnit;
 
 /*
@@ -273,7 +260,7 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
         // Set the encoders for closed loop speed control, and reset the heading.
         leftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        //imu.resetYaw();
+        imu.resetYaw();
 
         // Step through each leg of the path,
         // Notes:   Reverse movement is obtained by setting a negative distance (not speed)
@@ -308,6 +295,7 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
                     driveStraight(DRIVE_SPEED, -5, 0);    // Drive Backward 10"
                     holdHeading(TURN_SPEED,   0, 1);    // Hold  0 Deg heading for 2 seconds
 
+                    //overturn so the camera squarly sees the QR codes
                     turnToHeading(TURN_SPEED, -90); // turn left 90 degrees
                     holdHeading(TURN_SPEED, -90, 1); // hold -90 degrees heading for 2 a second
 
@@ -318,10 +306,11 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
                     // This will drive you to the apriltag
                     // Then you can square up against the line in front of the backdrop here
                     // Once you square, you can move backward to a specified distance and place your pixel
-                    driveToAprilTag(5);
 
-                    driveStraight(DRIVE_SPEED, -5, -90);    // Drive Forward
-                    holdHeading(TURN_SPEED,   -90, 1);    // Hold  0 Deg heading for 2 seconds
+                    driveToAprilTag((5));
+
+//                    driveStraight(DRIVE_SPEED, -5, -90);    // Drive Forward
+//                    holdHeading(TURN_SPEED,   -90, 1);    // Hold  0 Deg heading for 2 seconds
 
 
                     // Place your pixel here:
@@ -1381,7 +1370,7 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
     }
 
     // Adjust these numbers to suit your robot.
-    final double DESIRED_DISTANCE = 2.0; //  this is how close the camera should get to the target (inches)
+    final double DESIRED_DISTANCE = 4.0; //  this is how close the camera should get to the target (inches)
 
     //  Set the GAIN constants to control the relationship between the measured position error, and how much power is
     //  applied to the drive motors to correct the error.
@@ -1393,11 +1382,12 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
     final double MAX_AUTO_SPEED = 0.5;   //  Clip the approach speed to this max value (adjust for your robot)
     final double MAX_AUTO_STRAFE= 0.5;   //  Clip the approach speed to this max value (adjust for your robot)
     final double MAX_AUTO_TURN  = 0.3;   //  Clip the turn speed to this max value (adjust for your robot)
-
+    boolean stopped = false;
     private void driveToAprilTag(double duration_in_seconds) {
         ElapsedTime timer = new ElapsedTime();
         timer.reset();
-        while (opModeIsActive() && (timer.seconds() < duration_in_seconds)) {
+        //while (opModeIsActive()) {// && (timer.seconds() < duration_in_seconds)) {
+         do {
             boolean targetFound = false;
             desiredTag = null;
             double drive = 0;        // Desired forward power/speed (-1 to +1)
@@ -1427,15 +1417,12 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
 
             // Tell the driver what we see, and what to do.
             if (targetFound) {
-
                 telemetry.addData("\n>", "HOLD Left-Bumper to Drive to Target\n");
                 telemetry.addData("Desired ID", desiredTagId);
                 telemetry.addData("Found", "ID %d (%s)", desiredTag.id, desiredTag.metadata.name);
                 telemetry.addData("Range", "%5.1f inches", desiredTag.ftcPose.range);
                 telemetry.addData("Bearing", "%3.0f degrees", desiredTag.ftcPose.bearing);
                 telemetry.addData("Yaw", "%3.0f degrees", desiredTag.ftcPose.yaw);
-            } else {
-                telemetry.addData("\n>", "Didn't find the QR Code!\n");
             }
 
             // If Left Bumper is being pressed, AND we have found the desired target, Drive to target Automatically .
@@ -1459,7 +1446,12 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
             // Apply desired axes motions to the drivetrain.
             moveRobot(drive, strafe, turn);
             sleep(10);
-        }
+            if (targetFound == false) {
+                stopped = true;
+                telemetry.addData("Didn't find QR Code!", 1);
+            }
+
+        } while (!stopped && opModeIsActive());
     }
 
     /**
@@ -1470,8 +1462,10 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
      * Positive Y is strafe left
      * <p>
      * Positive Yaw is counter-clockwise
+     *
+     * @return
      */
-    public void moveRobot(double x, double y, double yaw) {
+    public boolean moveRobot(double x, double y, double yaw) {
 
         // Calculate wheel powers.
         double rightFrontPower    =  x -y -yaw;
@@ -1491,12 +1485,22 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
             rightBackPower /= max;
         }
 
-        double precision = 2;//2.3;
+        double precision = 2.2;
         // Send powers to the wheels.
         leftFront.setPower(-leftFrontPower/precision);
         rightFront.setPower(-rightFrontPower/precision);
         leftBack.setPower(-leftBackPower/precision);
         rightBack.setPower(-rightBackPower/precision);
+
+        //Consider the robot done once all powers are 0;
+        return ((-leftFrontPower/precision)<.01) &&
+            ((-leftBackPower/precision)<.01) &&
+            ((-rightFrontPower/precision)<.01) &&
+            ((-rightBackPower/precision)<.01) &&
+            ((-leftFrontPower/precision)>-.01) &&
+            ((-leftBackPower/precision)>-.01) &&
+            ((-rightFrontPower/precision)>-.01) &&
+            ((-rightBackPower/precision)>-.01);
     }
     /*
      Manually set the camera gain and exposure.
