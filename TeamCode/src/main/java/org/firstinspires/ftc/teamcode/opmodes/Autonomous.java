@@ -622,8 +622,9 @@ public class Autonomous extends LinearOpMode {
             switch (purplePixelPath) {
                 case MIDDLE: {
                     // Requires Testing
-                    driveStraight(DRIVE_SPEED, 26, 0.0);    // Drive Forward 28"
-                    holdHeading(TURN_SPEED,   0.0, 2);    // Hold  0 Deg heading for .5 seconds
+                    driveStraight(DRIVE_SPEED, 46, 0.0);    // Drive Forward 28"
+                    holdHeading(TURN_SPEED,   0.0, .5);    // Hold  0 Deg heading for .5 seconds
+                    turnToHeading(.5, 180);
 
                     // OUTTAKE PIXEL
                     intakeLeft.setPower(.5);
@@ -632,40 +633,46 @@ public class Autonomous extends LinearOpMode {
                     // STOP OUTTAKE
                     intakeLeft.setPower(0);
                     intakeRight.setPower(0);
-                    sleep(1000);
+                    sleep(50);
 
-                    driveStraight(DRIVE_SPEED, -10, 0);    // Drive Backward 10"
-                    holdHeading(TURN_SPEED,   0, 2);    // Hold  0 Deg heading for 2 seconds
+                    //Turn torward truss
+                    driveStraight(DRIVE_SPEED, -5, 180);    // Drive Forward 28"
+                    turnToHeading(.5, 90);
+
+                    driveStraight(.5, 24, 90);    // Drive Backward 10"
+                    holdHeading(TURN_SPEED,   90, .5);    // Hold  0 Deg heading for 2 seconds
+                    turnToHeading(.5, 70);
 
                     // IN CASE OF EMERGENCY:
                     // If your code interferes with your alliance, then comment the rest of this code out, and keep the upper portion
                     // That way, you can just place your purple pixel and pull back, ready for TeleOp
                     // If you are not going to interfere with your alliance, keep the following code to park
-                    turnToHeading(TURN_SPEED, -90); // turn right 90 degrees
-                    holdHeading(TURN_SPEED, -90, 2); // hold 90 degrees heading for 2 second
+//                    turnToHeading(TURN_SPEED, -90); // turn right 90 degrees
+//                    holdHeading(TURN_SPEED, -90, 2); // hold 90 degrees heading for 2 second
 
                     // OmniDrivetoAprilTag code here
+                    driveToAprilTag(5);
                     // This will drive you to the apriltag
                     // Then you can square up against the line in front of the backdrop here
                     // Once you square, you can move backward to a specified distance and place your pixel
-                    driveStraight(DRIVE_SPEED, 15, -90);    // Drive Forward 15"
-                    holdHeading(TURN_SPEED,   -90, 2);    // Hold  0 Deg heading for 2 seconds
-
-                    turnToHeading(TURN_SPEED, 0); // turn right 90 degrees
-                    holdHeading(TURN_SPEED, 0, 2); // hold heading for 2 a second
-
-                    driveStraight(DRIVE_SPEED, 30, 0);    // Drive Forward 30"
-                    holdHeading(TURN_SPEED,   0, 2);    // Hold  0 Deg heading for 2 seconds
-
-                    turnToHeading(TURN_SPEED, 90); // turn left 90 degrees
-                    holdHeading(TURN_SPEED, 90, 2); // hold heading for 2 a second
-
-                    driveStraight(DRIVE_SPEED, 60, 90);    // Drive Forward 60" to park in backstage
-                    holdHeading(TURN_SPEED,   90, 2);    // Hold  0 Deg heading for 2 seconds
-
-                    // Place Pixel!!
-                    turnToHeading(TURN_SPEED, -90); // Make a 180 degree turn
-                    holdHeading(TURN_SPEED, -90, 2); // Hold heading for 2 seconds
+//                    driveStraight(DRIVE_SPEED, 15, -90);    // Drive Forward 15"
+//                    holdHeading(TURN_SPEED,   -90, 2);    // Hold  0 Deg heading for 2 seconds
+//
+//                    turnToHeading(TURN_SPEED, 0); // turn right 90 degrees
+//                    holdHeading(TURN_SPEED, 0, 2); // hold heading for 2 a second
+//
+//                    driveStraight(DRIVE_SPEED, 30, 0);    // Drive Forward 30"
+//                    holdHeading(TURN_SPEED,   0, 2);    // Hold  0 Deg heading for 2 seconds
+//
+//                    turnToHeading(TURN_SPEED, 90); // turn left 90 degrees
+//                    holdHeading(TURN_SPEED, 90, 2); // hold heading for 2 a second
+//
+//                    driveStraight(DRIVE_SPEED, 60, 90);    // Drive Forward 60" to park in backstage
+//                    holdHeading(TURN_SPEED,   90, 2);    // Hold  0 Deg heading for 2 seconds
+//
+//                    // Place Pixel!!
+//                    turnToHeading(TURN_SPEED, -90); // Make a 180 degree turn
+//                    holdHeading(TURN_SPEED, -90, 2); // Hold heading for 2 seconds
 
                     // Place your pixel here:
                     // First life your pixelliftmotor
@@ -794,8 +801,9 @@ public class Autonomous extends LinearOpMode {
             switch (purplePixelPath) {
                 case MIDDLE: {
                     // Requires Testing
-                    driveStraight(DRIVE_SPEED, 26, 0.0);    // Drive Forward 28"
-                    holdHeading(TURN_SPEED,   0.0, 2);    // Hold  0 Deg heading for .5 seconds
+                    driveStraight(DRIVE_SPEED, 50, 0.0);    // Drive Forward 28"
+                    holdHeading(TURN_SPEED,   0.0, .5);    // Hold  0 Deg heading for .5 seconds
+                    turnToHeading(.5, 180);
 
                     // OUTTAKE PIXEL
                     intakeLeft.setPower(.5);
@@ -804,40 +812,108 @@ public class Autonomous extends LinearOpMode {
                     // STOP OUTTAKE
                     intakeLeft.setPower(0);
                     intakeRight.setPower(0);
-                    sleep(1000);
+                    sleep(50);
 
-                    driveStraight(DRIVE_SPEED, -10, 0);    // Drive Backward 10"
-                    holdHeading(TURN_SPEED,   0, 2);    // Hold  0 Deg heading for 2 seconds
+                    //Turn torward truss
+                    driveStraight(DRIVE_SPEED, -5, 180);    // Drive Forward 28"
+                    turnToHeading(.5, 90);
+                    holdHeading(.5,   90, .5);    // Hold  0 Deg heading for 2 seconds
+
+                    driveStraight(.5, -50, 90);    // Drive Backward 10"
+                    holdHeading(TURN_SPEED,   90, .5);    // Hold  0 Deg heading for 2 seconds
+                    turnToHeading(.5, 60);
+                    holdHeading(TURN_SPEED,   getHeading(), .5);    // Hold  0 Deg heading for 2 seconds
 
                     // IN CASE OF EMERGENCY:
                     // If your code interferes with your alliance, then comment the rest of this code out, and keep the upper portion
                     // That way, you can just place your purple pixel and pull back, ready for TeleOp
                     // If you are not going to interfere with your alliance, keep the following code to park
-                    turnToHeading(TURN_SPEED, 90); // turn left 90 degrees
-                    holdHeading(TURN_SPEED, 90, 2); // hold 90 degrees heading for 2 second
+//                    turnToHeading(TURN_SPEED, -90); // turn right 90 degrees
+//                    holdHeading(TURN_SPEED, -90, 2); // hold 90 degrees heading for 2 second
 
-                    driveStraight(DRIVE_SPEED, 15, 90);    // Drive Forward 15"
-                    holdHeading(TURN_SPEED,   90, 2);    // Hold  0 Deg heading for 2 seconds
-
-                    turnToHeading(TURN_SPEED, 0); // turn right 90 degrees
-                    holdHeading(TURN_SPEED, 0, 2); // hold heading for 2 a second
-
-                    driveStraight(DRIVE_SPEED, 30, 0);    // Drive Forward 30"
-                    holdHeading(TURN_SPEED,   0, 2);    // Hold  0 Deg heading for 2 seconds
-
-                    turnToHeading(TURN_SPEED, -90); // turn right 90 degrees
-                    holdHeading(TURN_SPEED, -90, 2); // hold heading for 2 a second
-
-                    driveStraight(DRIVE_SPEED, 60, -90);    // Drive Forward 60" to park in backstage
-                    holdHeading(TURN_SPEED,   -90, 2);    // Hold  0 Deg heading for 2 seconds
+                    TURN_GAIN = .02;
                     // OmniDrivetoAprilTag code here
+                    driveToAprilTag(5);
+
+                    // Place your pixel here:
+                    // First life your pixelliftmotor
+                    pixelLiftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                    pixelLiftMotor.setTargetPosition(-484);
+                    pixelLiftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    pixelLiftMotor.setPower(-.5);
+
+                    // Flip your pixelplacerservo and drive back a little, then strafe out of the way.
+                    pixelPlacerServo.setPosition(0.9);
+                    sleep(1000);
+                    driveStraight(.5, 5, getHeading());    // Drive Backward 10"
+                    strafeLeft(.2, 3);
+
+                    // Come Back down
+                    pixelPlacerServo.setPosition(0);
+                    sleep(1000);
+                    pixelLiftMotor.setTargetPosition(0);
+
+                    telemetry.addData("CENTER", "Complete");
+                    telemetry.update();
+
+                    telemetry.addData("CENTER", "Complete");
+                    telemetry.update();
+                    break;
+                }
+                case LEFT: {
+
+                    // Requires Testing
+                    driveStraight(DRIVE_SPEED, 46, 0.0);    // Drive Forward 28"
+                    holdHeading(TURN_SPEED,   0.0, .5);    // Hold  0 Deg heading for .5 seconds
+                    turnToHeading(.5, 180);
+
+                    // OUTTAKE PIXEL
+                    intakeLeft.setPower(.5);
+                    intakeRight.setPower(-.5);
+                    sleep(500);
+                    // STOP OUTTAKE
+                    intakeLeft.setPower(0);
+                    intakeRight.setPower(0);
+                    sleep(50);
+
+                    //Turn torward truss
+                    driveStraight(DRIVE_SPEED, -5, 180);    // Drive Forward 28"
+                    turnToHeading(.5, 90);
+
+                    driveStraight(.5, 24, 90);    // Drive Backward 10"
+                    holdHeading(TURN_SPEED,   90, .5);    // Hold  0 Deg heading for 2 seconds
+                    turnToHeading(.5, 70);
+
+                    // IN CASE OF EMERGENCY:
+                    // If your code interferes with your alliance, then comment the rest of this code out, and keep the upper portion
+                    // That way, you can just place your purple pixel and pull back, ready for TeleOp
+                    // If you are not going to interfere with your alliance, keep the following code to park
+//                    turnToHeading(TURN_SPEED, -90); // turn right 90 degrees
+//                    holdHeading(TURN_SPEED, -90, 2); // hold 90 degrees heading for 2 second
+
+                    // OmniDrivetoAprilTag code here
+                    driveToAprilTag(5);
                     // This will drive you to the apriltag
                     // Then you can square up against the line in front of the backdrop here
                     // Once you square, you can move backward to a specified distance and place your pixel
-
-                    // Place Pixel!!
-                    turnToHeading(TURN_SPEED, 90); // Make a 180 degree turn
-                    holdHeading(TURN_SPEED, 90, 2); // Hold heading for 2 seconds
+//                    driveStraight(DRIVE_SPEED, 15, -90);    // Drive Forward 15"
+//                    holdHeading(TURN_SPEED,   -90, 2);    // Hold  0 Deg heading for 2 seconds
+//
+//                    turnToHeading(TURN_SPEED, 0); // turn right 90 degrees
+//                    holdHeading(TURN_SPEED, 0, 2); // hold heading for 2 a second
+//
+//                    driveStraight(DRIVE_SPEED, 30, 0);    // Drive Forward 30"
+//                    holdHeading(TURN_SPEED,   0, 2);    // Hold  0 Deg heading for 2 seconds
+//
+//                    turnToHeading(TURN_SPEED, 90); // turn left 90 degrees
+//                    holdHeading(TURN_SPEED, 90, 2); // hold heading for 2 a second
+//
+//                    driveStraight(DRIVE_SPEED, 60, 90);    // Drive Forward 60" to park in backstage
+//                    holdHeading(TURN_SPEED,   90, 2);    // Hold  0 Deg heading for 2 seconds
+//
+//                    // Place Pixel!!
+//                    turnToHeading(TURN_SPEED, -90); // Make a 180 degree turn
+//                    holdHeading(TURN_SPEED, -90, 2); // Hold heading for 2 seconds
 
                     // Place your pixel here:
                     // First life your pixelliftmotor
@@ -859,71 +935,6 @@ public class Autonomous extends LinearOpMode {
                     telemetry.addData("CENTER", "Complete");
                     telemetry.update();
                     break;
-                }
-                case LEFT: {
-                    // Requires Modification
-                    driveStraight(DRIVE_SPEED, 20, 0);    // Drive Forward 20"
-                    holdHeading(TURN_SPEED,   0.0, 2);    // Hold  0 Deg heading for 2 seconds
-                    turnToHeading(TURN_SPEED, 40); // turn left 40 degrees
-                    holdHeading(TURN_SPEED, 40, 2); // hold heading for 2 a second
-                    driveStraight(DRIVE_SPEED, 5, 40);    // Drive Forward 5"
-                    holdHeading(TURN_SPEED,   40, 2);    // Hold  heading for 2 seconds
-
-                    // OUTTAKE PIXEL
-                    intakeLeft.setPower(.5);
-                    intakeRight.setPower(-.5);
-                    sleep(500);
-                    // STOP OUTTAKE
-                    intakeLeft.setPower(0);
-                    intakeRight.setPower(0);
-                    sleep(1000);
-
-                    driveStraight(DRIVE_SPEED, -7, 40);    // Drive Backward 7"
-                    holdHeading(TURN_SPEED,   40, 2);    // Hold heading for 2 seconds
-
-                    // IN CASE OF EMERGENCY:
-                    // If your code interferes with your alliance, then comment the rest of this code out, and keep the upper portion
-                    // That way, you can just place your purple pixel and pull back, ready for TeleOp
-                    // If you are not going to interfere with your alliance, keep the following code to park
-                    turnToHeading(TURN_SPEED, 0); // turn right 90 degrees
-                    holdHeading(TURN_SPEED, 0, 2); // hold heading for 2 a second
-
-                    driveStraight(DRIVE_SPEED, 30, 0);    // Drive Forward 26"
-                    holdHeading(TURN_SPEED,   0, 2);    // Hold  heading for 2 seconds
-
-                    turnToHeading(TURN_SPEED, -90); // turn right 90 degrees
-                    holdHeading(TURN_SPEED, -90, 2); // hold heading for 2 a second
-
-                    // OmniDrivetoAprilTag code here
-                    // This will drive you to the apriltag
-                    // Then you can square up against the line in front of the backdrop here
-                    // Once you square, you can move backward to a specified distance and place your pixel
-                    driveStraight(DRIVE_SPEED, 45, -90);    // Drive Forward 45"
-                    holdHeading(TURN_SPEED,   -90, 2);    // Hold  heading for 2 seconds
-
-                    // Place Pixel!!
-                    turnToHeading(TURN_SPEED, 90); // Make a 180 degree turn
-                    holdHeading(TURN_SPEED, 90, 2); // Hold heading for 2 seconds
-
-                    // Place your pixel here:
-                    // First life your pixelliftmotor
-                    pixelLiftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                    pixelLiftMotor.setTargetPosition(-484);
-                    pixelLiftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    pixelLiftMotor.setPower(-.5);
-
-                    // Flip your pixelplacerservo
-                    pixelPlacerServo.setPosition(0.9);
-                    sleep(1000);
-
-                    // Come Back down
-                    pixelPlacerServo.setPosition(0);
-                    pixelPlacerServo.setPosition(0);
-                    sleep(1000);
-                    pixelLiftMotor.setTargetPosition(0);
-
-                    telemetry.addData("LEFT Complete", "");
-                    telemetry.update();
                 }
                 case RIGHT: {
                     // Requries Testing
@@ -1362,9 +1373,9 @@ public class Autonomous extends LinearOpMode {
     //  Set the GAIN constants to control the relationship between the measured position error, and how much power is
     //  applied to the drive motors to correct the error.
     //  Drive = Error * Gain    Make these values smaller for smoother control, or larger for a more aggressive response.
-    final double SPEED_GAIN  =  0.1;//0.02  ;   //  Forward Speed Control "Gain". eg: Ramp up to 50% power at a 25 inch error.   (0.50 / 25.0)
-    final double STRAFE_GAIN =  -.2;//0.015 ;   //  Strafe Speed Control "Gain".  eg: Ramp up to 25% power at a 25 degree Yaw error.   (0.25 / 25.0)
-    final double TURN_GAIN   =  0.01  ;   //  Turn Control "Gain".  eg: Ramp up to 25% power at a 25 degree error. (0.25 / 25.0)
+    double SPEED_GAIN  =  0.1;//0.02  ;   //  Forward Speed Control "Gain". eg: Ramp up to 50% power at a 25 inch error.   (0.50 / 25.0)
+    double STRAFE_GAIN =  -.2;//0.015 ;   //  Strafe Speed Control "Gain".  eg: Ramp up to 25% power at a 25 degree Yaw error.   (0.25 / 25.0)
+    double TURN_GAIN   =  0.01  ;   //  Turn Control "Gain".  eg: Ramp up to 25% power at a 25 degree error. (0.25 / 25.0)
 
     final double MAX_AUTO_SPEED = 0.5;   //  Clip the approach speed to this max value (adjust for your robot)
     final double MAX_AUTO_STRAFE= 0.5;   //  Clip the approach speed to this max value (adjust for your robot)
