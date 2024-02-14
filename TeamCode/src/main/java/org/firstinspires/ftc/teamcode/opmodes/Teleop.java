@@ -239,18 +239,18 @@ public class Teleop extends LinearOpMode {
 //                break;
 //            }
 
-            int dpad_y = 0, dpad_x = 0;
+            double dpad_y = 0, dpad_x = 0;
             if (gamepad1.dpad_left) {dpad_x = -1;}
             if (gamepad1.dpad_right) {dpad_x = 1;}
-            if (gamepad1.dpad_up) {dpad_y = 1;}
-            if (gamepad1.dpad_down) {dpad_y = -1;}
+            if (gamepad1.dpad_up) {dpad_y = -.6;}
+            if (gamepad1.dpad_down) {dpad_y = .6;}
 
             double r, robotAngle, rightX;
             if (gamepad1.dpad_left || gamepad1.dpad_down || gamepad1.dpad_up || gamepad1.dpad_right) {
                 r = Math.hypot(-dpad_x, dpad_y);
                 robotAngle = Math.atan2(-dpad_y, dpad_x) - Math.PI / 4;
                 rightX = 0;
-                scaleFactor = .7;
+                scaleFactor = .4;
             }
             else {
                 r = Math.hypot(-gamepad1.left_stick_x, gamepad1.left_stick_y);
@@ -387,7 +387,7 @@ public class Teleop extends LinearOpMode {
                 }
                 case 3: {
                     if (gamepad2.right_bumper) {
-                        pixelPlacerServo.setPosition(0.9);
+                        pixelPlacerServo.setPosition(1);
                         pixelPlacerServoStateMachine = 4;
                     }
                     break;
@@ -540,7 +540,7 @@ public class Teleop extends LinearOpMode {
 
             switch (colorSensorState) {
                 case 0: {
-                    if ((hsvValues[0] > (DEFAULTHUE + 2)) || (hsvValues[0] < (DEFAULTHUE - 2))) {
+                    if ((hsvValues[0] > (DEFAULTHUE * 1.1))) { // || (hsvValues[0] < (DEFAULTHUE - 2))) {
                         //A pixel has been seen
                         pixels++;
                         colorSensorState = 1;
@@ -550,14 +550,14 @@ public class Teleop extends LinearOpMode {
                     break;
                 }
                 case 1: {
-                    if ((hsvValues[0] < (DEFAULTHUE + 2)) && (hsvValues[0] > (DEFAULTHUE - 2))) {
+                    if ((hsvValues[0] < (DEFAULTHUE * 1.1)) && (hsvValues[0] > (DEFAULTHUE * 0.9))) {
                         //A pixel has been seen
                         colorSensorState = 2;
                     }
                     break;
                 }
                 case 2: {
-                    if ((hsvValues[0] > (DEFAULTHUE + 2)) || (hsvValues[0] < (DEFAULTHUE - 2))) {
+                    if ((hsvValues[0] > (DEFAULTHUE * 1.1))) { // || (hsvValues[0] < (DEFAULTHUE - 2))) {
                         pixels++;
                         colorSensorState = 3;
                         redLED.setState(false);
@@ -622,6 +622,10 @@ public class Teleop extends LinearOpMode {
             telemetry.addData("floor color sensor", (hsvValues[0]));
             telemetry.addData("colorSensorState: ", colorSensorState);
             telemetry.addData("hsvValues: ",hsvValues[0]);
+            telemetry.addData("Blue: ", colorSensor.blue());
+            telemetry.addData("Green: ", colorSensor.green());
+            telemetry.addData("Red: ", colorSensor.red());
+
             telemetry.update();
 
             //

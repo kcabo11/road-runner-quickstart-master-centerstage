@@ -283,6 +283,7 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
         //OVERRIDE FOR TESTING
 //        startPosition = START_POSITION.BLUE_BACKSTAGE;
         purplePixelPath = Processor.Selected.MIDDLE;
+        desiredTagId = 2;
 
         if (startPosition == START_POSITION.BLUE_BACKSTAGE) {
             telemetry.addData("Floor Sensor Blue", floorSensor.blue());
@@ -291,6 +292,7 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
 //            sleep(2000);
             switch (purplePixelPath) {
                 case MIDDLE: {
+                    desiredTagId = 1;
                     driveStraight(DRIVE_SPEED, 27, 0.0);    // Drive Forward 28"
                     holdHeading(TURN_SPEED,   0.0, 1);    // Hold  0 Deg heading for .5 seconds
 
@@ -316,7 +318,11 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
                     // This will drive you to the apriltag
                     // Then you can square up against the line in front of the backdrop here
                     // Once you square, you can move backward to a specified distance and place your pixel
-                    driveToAprilTag();
+                    driveToAprilTag(5);
+
+                    driveStraight(DRIVE_SPEED, -5, -90);    // Drive Forward
+                    holdHeading(TURN_SPEED,   -90, 1);    // Hold  0 Deg heading for 2 seconds
+
 
                     // Place your pixel here:
                     // First life your pixelliftmotor
@@ -340,6 +346,7 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
                     break;
                 }
                 case LEFT: {
+                    desiredTagId = 1;
                     driveStraight(DRIVE_SPEED, 20, 0);    // Drive Forward 15"
                     redLED.setState(true);
                     holdHeading(TURN_SPEED,   0.0, 1);    // Hold  0 Deg heading for 2 seconds
@@ -379,11 +386,10 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
                     // This will drive you to the apriltag
                     // Then you can square up against the line in front of the backdrop here
                     // Once you square, you can move backward to a specified distance and place your pixel
+                    driveToAprilTag(5);
+                    strafeLeft(2);
 
                     // Place Pixel!!
-//                    turnToHeading(TURN_SPEED, -90); // Make a 180 degree turn
-//                    holdHeading(TURN_SPEED, -90, 1); // Hold heading for 2 seconds
-
                     driveStraight(DRIVE_SPEED, -5, -90);    // Drive Backward 2"
                     holdHeading(TURN_SPEED,   -90, 1);    // Hold  heading for 2 seconds
 
@@ -409,6 +415,7 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
                     break;
                 }
                 case RIGHT: {
+                    desiredTagId = 2;
                     driveStraight(DRIVE_SPEED, 24, 0.0);    // Drive Forward 26"
                     redLED.setState(true);
                     holdHeading(TURN_SPEED,   0.0, 1);    // Hold  0 Deg heading for 2 seconds
@@ -437,8 +444,9 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
                     // This will drive you to the apriltag
                     // Then you can square up against the line in front of the backdrop here
                     // Once you square, you can move backward to a specified distance and place your pixel
-                    driveStraight(DRIVE_SPEED, -40, -90);    // Drive Backward 38"
-                    holdHeading(TURN_SPEED,   -90, 1);    // Hold heading for 2 seconds
+//                    driveStraight(DRIVE_SPEED, -40, -90);    // Drive Backward 38"
+//                    holdHeading(TURN_SPEED,   -90, 1);    // Hold heading for 2 seconds
+                    driveToAprilTag(5);
 
                     // Place your pixel here:
                     // First life your pixelliftmotor
@@ -468,8 +476,9 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
             telemetry.addData("Running Red_Backstage with pixel ", "");
             switch (purplePixelPath) {
                 case MIDDLE: {
-                    driveStraight(DRIVE_SPEED, 26, 0.0);    // Drive Forward 28"
-                    holdHeading(TURN_SPEED,   0.0, 2);    // Hold  0 Deg heading for .5 seconds
+                    desiredTagId = 2;
+                    driveStraight(DRIVE_SPEED, 27, 0.0);    // Drive Forward 28"
+                    holdHeading(TURN_SPEED,   0.0, 1);    // Hold  0 Deg heading for .5 seconds
 
                     // OUTTAKE PIXEL
                     intakeLeft.setPower(.5);
@@ -484,15 +493,19 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
                     holdHeading(TURN_SPEED,   0, 2);    // Hold  0 Deg heading for 2 seconds
 
                     turnToHeading(TURN_SPEED, 90); // turn left 90 degrees
-                    holdHeading(TURN_SPEED, 90, 2); // hold -90 degrees heading for 2 a second
+                    holdHeading(TURN_SPEED, 90, 1); // hold -90 degrees heading for 2 a second
 
-                    driveStraight(DRIVE_SPEED, -36, 90);    // Drive Forward 10"
-                    holdHeading(TURN_SPEED,   90, 2);    // Hold  0 Deg heading for 2 seconds
+                    driveStraight(DRIVE_SPEED, -10, 90);    // Drive Forward 10"
+                    holdHeading(TURN_SPEED,   90, 1);    // Hold  0 Deg heading for 2 seconds
 
                     // OmniDrivetoAprilTag code here
                     // This will drive you to the apriltag
                     // Then you can square up against the line in front of the backdrop here
                     // Once you square, you can move backward to a specified distance and place your pixel
+                    driveToAprilTag(8);
+
+                    driveStraight(DRIVE_SPEED, -5, 90);    // Drive Backward 5"
+                    holdHeading(TURN_SPEED,   90, 2);    // Hold  0 Deg heading for 2 seconds
 
                     // Place your pixel here:
                     // First life your pixelliftmotor
@@ -539,8 +552,10 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
                     // This will drive you to the apriltag
                     // Then you can square up against the line in front of the backdrop here
                     // Once you square, you can move backward to a specified distance and place your pixel
-                    driveStraight(DRIVE_SPEED, -35, 90);    // Drive Backward 38"
-                    holdHeading(TURN_SPEED,   90, 2);    // Hold heading for 2 seconds
+//                    driveStraight(DRIVE_SPEED, -35, 90);    // Drive Backward 38"
+//                    holdHeading(TURN_SPEED,   90, 2);    // Hold heading for 2 seconds
+                    driveToAprilTag(5);
+                    strafeLeft(2);
 
                     // Place your pixel here:
                     // First life your pixelliftmotor
@@ -573,7 +588,7 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
                     // If necessary, you can utilize the sensor to scan the line before you go forward and place the pixel
                     driveStraight(DRIVE_SPEED, 5, -45);    // Drive Forward 5"
                     holdHeading(TURN_SPEED,   -45, 2);    // Hold  heading for 2 seconds
-                    //
+
                     // OUTTAKE PIXEL
                     intakeLeft.setPower(.5);
                     intakeRight.setPower(-.5);
@@ -601,6 +616,7 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
                     // This will drive you to the apriltag
                     // Then you can square up against the line in front of the backdrop here
                     // Once you square, you can move backward to a specified distance and place your pixel
+                    driveToAprilTag(5);
 
                     // Place your pixel here:
                     // First life your pixelliftmotor
@@ -618,7 +634,6 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
                     pixelPlacerServo.setPosition(0);
                     sleep(1000);
                     pixelLiftMotor.setTargetPosition(0);
-
 
                     telemetry.addData("LEFT Complete", "");
                     telemetry.update();
@@ -1442,7 +1457,7 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
     }
 
     // Adjust these numbers to suit your robot.
-    final double DESIRED_DISTANCE = 4.0; //  this is how close the camera should get to the target (inches)
+    final double DESIRED_DISTANCE = 2.0; //  this is how close the camera should get to the target (inches)
 
     //  Set the GAIN constants to control the relationship between the measured position error, and how much power is
     //  applied to the drive motors to correct the error.
@@ -1455,8 +1470,10 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
     final double MAX_AUTO_STRAFE= 0.5;   //  Clip the approach speed to this max value (adjust for your robot)
     final double MAX_AUTO_TURN  = 0.3;   //  Clip the turn speed to this max value (adjust for your robot)
 
-    private void driveToAprilTag() {
-        while (opModeIsActive()) {
+    private void driveToAprilTag(double duration_in_seconds) {
+        ElapsedTime timer = new ElapsedTime();
+        timer.reset();
+        while (opModeIsActive() && (timer.seconds() < duration_in_seconds)) {
             boolean targetFound = false;
             desiredTag = null;
             double drive = 0;        // Desired forward power/speed (-1 to +1)
@@ -1486,7 +1503,9 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
 
             // Tell the driver what we see, and what to do.
             if (targetFound) {
+
                 telemetry.addData("\n>", "HOLD Left-Bumper to Drive to Target\n");
+                telemetry.addData("Desired ID", desiredTagId);
                 telemetry.addData("Found", "ID %d (%s)", desiredTag.id, desiredTag.metadata.name);
                 telemetry.addData("Range", "%5.1f inches", desiredTag.ftcPose.range);
                 telemetry.addData("Bearing", "%3.0f degrees", desiredTag.ftcPose.bearing);
@@ -1548,7 +1567,7 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
             rightBackPower /= max;
         }
 
-        double precision = 2;
+        double precision = 2;//2.3;
         // Send powers to the wheels.
         leftFront.setPower(-leftFrontPower/precision);
         rightFront.setPower(-rightFrontPower/precision);
@@ -1590,6 +1609,29 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
             GainControl gainControl = visionPortal.getCameraControl(GainControl.class);
             gainControl.setGain(gain);
             sleep(20);
+        }
+    }
+
+    private void strafeLeft(double duration_in_seconds) {
+        ElapsedTime timer = new ElapsedTime();
+        timer.reset();
+
+        while (timer.seconds() < duration_in_seconds) {
+            leftFront.setPower(.5);
+            leftBack.setPower(-.5);
+            rightFront.setPower(-.5);
+            rightBack.setPower(.5);
+        }
+    }
+    private void strafeRight(double duration_in_seconds) {
+        ElapsedTime timer = new ElapsedTime();
+        timer.reset();
+
+        while (timer.seconds() < duration_in_seconds) {
+            leftFront.setPower(-.5);
+            leftBack.setPower(.5);
+            rightFront.setPower(.5);
+            rightBack.setPower(-.5);
         }
     }
 
