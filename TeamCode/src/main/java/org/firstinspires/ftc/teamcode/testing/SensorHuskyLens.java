@@ -65,6 +65,7 @@ import java.util.concurrent.TimeUnit;
 @TeleOp(name = "Sensor: HuskyLens", group = "Sensor")
 //@Disabled
 @Config
+@Disabled
 public class SensorHuskyLens extends LinearOpMode {
 
     private final int READ_PERIOD = 1;
