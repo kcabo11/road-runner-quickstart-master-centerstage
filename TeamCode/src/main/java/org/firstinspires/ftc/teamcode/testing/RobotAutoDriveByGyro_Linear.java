@@ -282,7 +282,7 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
 
         //OVERRIDE FOR TESTING
 //        startPosition = START_POSITION.BLUE_BACKSTAGE;
-//        purplePixelPath = Processor.Selected.MIDDLE;
+        purplePixelPath = Processor.Selected.MIDDLE;
 
         if (startPosition == START_POSITION.BLUE_BACKSTAGE) {
             telemetry.addData("Floor Sensor Blue", floorSensor.blue());
@@ -334,11 +334,6 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
                     pixelPlacerServo.setPosition(0);
                     sleep(1000);
                     pixelLiftMotor.setTargetPosition(0);
-
-                    // Turn Sensors off
-                    colorSensor.close();
-                    floorSensor.close();
-                    huskyLens.close();
 
                     telemetry.addData("CENTER", "Complete");
                     telemetry.update();
