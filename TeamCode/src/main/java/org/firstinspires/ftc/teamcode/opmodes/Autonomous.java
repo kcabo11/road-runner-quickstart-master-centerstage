@@ -289,28 +289,16 @@ public class Autonomous extends LinearOpMode {
                     // STOP OUTTAKE
                     intakeLeft.setPower(0);
                     intakeRight.setPower(0);
-                    sleep(1000);
+                    sleep(50);
 
-                    driveStraight(DRIVE_SPEED, -5, 0);    // Drive Backward 10"
+                    driveStraight(.5, -5, 0);    // Drive Backward 10"
                     holdHeading(TURN_SPEED,   0, 1);    // Hold  0 Deg heading for 2 seconds
 
                     //overturn so the camera squarly sees the QR codes
                     turnToHeading(TURN_SPEED, -90); // turn left 90 degrees
                     holdHeading(TURN_SPEED, -90, 1); // hold -90 degrees heading for 2 a second
 
-//                    driveStraight(DRIVE_SPEED, -38, -90);    // Drive Forward
-//                    holdHeading(TURN_SPEED,   -90, 1);    // Hold  0 Deg heading for 2 seconds
-
-                    // OmniDrivetoAprilTag code here
-                    // This will drive you to the apriltag
-                    // Then you can square up against the line in front of the backdrop here
-                    // Once you square, you can move backward to a specified distance and place your pixel
-
                     driveToAprilTag((5));
-
-//                    driveStraight(DRIVE_SPEED, -5, -90);    // Drive Forward
-//                    holdHeading(TURN_SPEED,   -90, 1);    // Hold  0 Deg heading for 2 seconds
-
 
                     // Place your pixel here:
                     // First life your pixelliftmotor
@@ -319,12 +307,13 @@ public class Autonomous extends LinearOpMode {
                     pixelLiftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     pixelLiftMotor.setPower(-.5);
 
-                    // Flip your pixelplacerservo
+                    // Flip your pixelplacerservo and drive back a little, then strafe out of the way.
                     pixelPlacerServo.setPosition(0.9);
                     sleep(1000);
+                    driveStraight(.5, -5, getHeading());    // Drive Backward 10"
+                    strafeRight(.2, 3);
 
                     // Come Back down
-                    pixelPlacerServo.setPosition(0);
                     pixelPlacerServo.setPosition(0);
                     sleep(1000);
                     pixelLiftMotor.setTargetPosition(0);
@@ -375,7 +364,6 @@ public class Autonomous extends LinearOpMode {
                     // Then you can square up against the line in front of the backdrop here
                     // Once you square, you can move backward to a specified distance and place your pixel
                     driveToAprilTag(5);
-                    strafeLeft(2);
 
                     // Place Pixel!!
                     driveStraight(DRIVE_SPEED, -5, -90);    // Drive Backward 2"
@@ -543,7 +531,7 @@ public class Autonomous extends LinearOpMode {
 //                    driveStraight(DRIVE_SPEED, -35, 90);    // Drive Backward 38"
 //                    holdHeading(TURN_SPEED,   90, 2);    // Hold heading for 2 seconds
                     driveToAprilTag(5);
-                    strafeLeft(2);
+                    strafeLeft(.3, 2);
 
                     // Place your pixel here:
                     // First life your pixelliftmotor
@@ -1539,26 +1527,26 @@ public class Autonomous extends LinearOpMode {
         }
     }
 
-    private void strafeLeft(double duration_in_seconds) {
+    private void strafeLeft(double speed, double duration_in_seconds) {
         ElapsedTime timer = new ElapsedTime();
         timer.reset();
 
         while (timer.seconds() < duration_in_seconds) {
-            leftFront.setPower(.5);
-            leftBack.setPower(-.5);
-            rightFront.setPower(-.5);
-            rightBack.setPower(.5);
+            leftFront.setPower(speed);
+            leftBack.setPower(-speed);
+            rightFront.setPower(-speed);
+            rightBack.setPower(speed);
         }
     }
-    private void strafeRight(double duration_in_seconds) {
+    private void strafeRight(double speed, double duration_in_seconds) {
         ElapsedTime timer = new ElapsedTime();
         timer.reset();
 
         while (timer.seconds() < duration_in_seconds) {
-            leftFront.setPower(-.5);
-            leftBack.setPower(.5);
-            rightFront.setPower(.5);
-            rightBack.setPower(-.5);
+            leftFront.setPower(-speed);
+            leftBack.setPower(speed);
+            rightFront.setPower(speed);
+            rightBack.setPower(-speed);
         }
     }
 
