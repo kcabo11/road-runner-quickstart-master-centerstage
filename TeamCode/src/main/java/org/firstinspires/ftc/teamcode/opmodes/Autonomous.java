@@ -310,7 +310,7 @@ public class Autonomous extends LinearOpMode {
                     // Flip your pixelplacerservo and drive back a little, then strafe out of the way.
                     pixelPlacerServo.setPosition(0.9);
                     sleep(1000);
-                    driveStraight(.5, -5, getHeading());    // Drive Backward 10"
+                    driveStraight(.5, 5, getHeading());    // Drive Backward 10"
                     strafeRight(.2, 3);
 
                     // Come Back down
