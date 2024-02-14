@@ -335,6 +335,11 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
                     sleep(1000);
                     pixelLiftMotor.setTargetPosition(0);
 
+                    // Turn Sensors off
+                    colorSensor.close();
+                    floorSensor.close();
+                    huskyLens.close();
+
                     telemetry.addData("CENTER", "Complete");
                     telemetry.update();
                     break;

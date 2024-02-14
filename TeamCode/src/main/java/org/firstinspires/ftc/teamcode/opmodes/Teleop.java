@@ -340,20 +340,6 @@ public class Teleop extends LinearOpMode {
                 }
             }
 
-            // HALF SPEED OPTION
-            // Needs to be tested
-            if (gamepad1.dpad_up) {
-                leftFront.setPower(v1/2);
-                rightFront.setPower(v1/2);
-                leftBack.setPower(v1/2);
-                rightBack.setPower(v1/2);
-            }
-            else {
-                leftFront.setPower(v1);
-                rightFront.setPower(v1);
-                leftBack.setPower(v1);
-                rightBack.setPower(v1);
-            }
 
             //moving frontright changes the front left value
             //front left changes the right front value
@@ -513,13 +499,13 @@ public class Teleop extends LinearOpMode {
             if (gamepad1.left_trigger > 0) {
                 stage1Intake.setPower(.5);
                 stage2Intake.setPower(.5);
-                intakeMotor.setPower(.5);
+                intakeMotor.setPower(.4);
             }
             //Intake in
             else if (gamepad1.right_trigger > 0) {
                 stage1Intake.setPower(-.5);
                 stage2Intake.setPower(-.5);
-                intakeMotor.setPower(-.5);
+                intakeMotor.setPower(-.4);
             } else {
 //                intakeLeft.setPower(0);
 //                intakeRight.setPower(0);
@@ -574,8 +560,12 @@ public class Teleop extends LinearOpMode {
                     break;
                 }
                 case 4: { //Pixel Lift
-                    if (pixelliftMotorStateMachine == 1)
+                    if (pixelliftMotorStateMachine == 0)
                     {
+//                        // set LED off
+//                        redLED.setState(false);
+//                        greenLED.setState(false);
+                        // reset back to case 0
                         colorSensorState = 0;
                     }
                 }
