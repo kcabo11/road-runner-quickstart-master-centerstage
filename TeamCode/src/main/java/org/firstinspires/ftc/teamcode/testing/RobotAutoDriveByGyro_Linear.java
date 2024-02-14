@@ -426,7 +426,7 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
                     turnToHeading(TURN_SPEED, -80); // turn right 90 degrees
                     holdHeading(TURN_SPEED, -80, 1); // hold -90 degrees heading for 2 a second
 
-                    driveStraightToLine(DRIVE_SPEED/4, 2, -80);    // Drive Forward 2"
+                    //driveStraightToLine(DRIVE_SPEED/4, 2, -80);    // Drive Forward 2"
                     holdHeading(TURN_SPEED,   -80, 1);    // Hold heading for 2 seconds
                     greenLED.setState(false);
                     redLED.setState(true);
@@ -1351,82 +1351,6 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
     public double getHeading() {
         YawPitchRollAngles orientation = imu.getRobotYawPitchRollAngles();
         return orientation.getYaw(AngleUnit.DEGREES);
-    }
-
-
-    public void driveStraightToLine(double maxDriveSpeed,
-                              double distance,
-                              double heading) {
-
-        // Ensure that the OpMode is still active
-        if (opModeIsActive()) {
-
-            // Determine new target position, and pass to motor controller
-            int moveCounts = (int)(distance * COUNTS_PER_INCH);
-            leftTarget = leftFront.getCurrentPosition() + moveCounts;
-            rightTarget = rightFront.getCurrentPosition() + moveCounts;
-
-            // Set Target FIRST, then turn on RUN_TO_POSITION
-            leftFront.setTargetPosition(leftTarget);
-            leftBack.setTargetPosition(leftTarget);
-            rightFront.setTargetPosition(rightTarget);
-            rightBack.setTargetPosition(rightTarget);
-
-            leftFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            leftBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            rightFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            rightBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-            // Set the required driving speed  (must be positive for RUN_TO_POSITION)
-            // Start driving straight, and then enter the control loop
-            maxDriveSpeed = Math.abs(maxDriveSpeed);
-            moveRobot(maxDriveSpeed, 0);
-
-            int thresholdColorValue = 0, newColorValue = 0;
-            if ((startPosition == START_POSITION.RED_STAGE) || (startPosition == START_POSITION.RED_BACKSTAGE)) {
-                thresholdColorValue = 100+floorSensor.red();
-            }
-            else
-                thresholdColorValue = 100+floorSensor.blue();
-
-            telemetry.addData("threshold color value", thresholdColorValue);
-            telemetry.update();
-            sleep(3000);
-
-            // keep looping while we are still active, and BOTH motors are running.
-            while (opModeIsActive() &&
-                    (leftFront.isBusy() && rightFront.isBusy())
-                    && (newColorValue < thresholdColorValue)) {
-
-                if ((startPosition == START_POSITION.RED_STAGE) || (startPosition == START_POSITION.RED_BACKSTAGE)) {
-                    newColorValue = floorSensor.red();
-                }
-                else
-                    newColorValue = floorSensor.blue();
-
-                RobotLog.aa(RobotLog.TAG, "newColorValue: " + newColorValue);
-
-                // Determine required steering to keep on heading
-                turnSpeed = getSteeringCorrection(heading, P_DRIVE_GAIN);
-
-                // if driving in reverse, the motor correction also needs to be reversed
-                if (distance < 0)
-                    turnSpeed *= -1.0;
-
-                // Apply the turning correction to the current driving speed.
-                moveRobot(driveSpeed, turnSpeed);
-
-                // Display drive status for the driver.
-                sendTelemetry(true);
-            }
-
-            // Stop all motion & Turn off RUN_TO_POSITION
-            moveRobot(0, 0);
-            leftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            leftBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            rightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            rightBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        }
     }
 
     /**
