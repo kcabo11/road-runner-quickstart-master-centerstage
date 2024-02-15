@@ -829,7 +829,8 @@ public class Autonomous extends LinearOpMode {
                     aprilTag.setDecimation(2);
 
                     //TEST
-                    strafeLeft(.2, 3);
+//                    moveByGyro(0, 3);
+                    strafeRight(.3, 2);
                     sleep(10000);
                     //TEST
 
@@ -1593,9 +1594,9 @@ public class Autonomous extends LinearOpMode {
 
         while (timer.seconds() < durationSeconds) {
             double kspeed = interpolateCoefficient();
-            leftFront.setPower(-speed*kspeed);
+            leftFront.setPower(-speed);
             leftBack.setPower(kspeed*speed);
-            rightFront.setPower(speed*kspeed);
+            rightFront.setPower(speed);
             rightBack.setPower(kspeed*-speed);
             telemetry.addData("kspeed", kspeed);
             telemetry.update();
@@ -1607,10 +1608,14 @@ public class Autonomous extends LinearOpMode {
         timer.reset();
 
         while (timer.seconds() < durationSeconds) {
+            double kspeed = interpolateCoefficient();
             leftFront.setPower(speed);
-            leftBack.setPower(1.90*-speed);
+            leftBack.setPower(kspeed*-speed);
             rightFront.setPower(-speed);
-            rightBack.setPower(1.90*speed);
+            rightBack.setPower(kspeed*speed);
+            telemetry.addData("kspeed", kspeed);
+            telemetry.update();
+            sleep(10);
         }
     }
 
@@ -1627,17 +1632,22 @@ public class Autonomous extends LinearOpMode {
     }
 
     void moveByGyro(double heading, double duration){
-        double requestedHeading = Math.toRadians(heading);
+        double originalHeading = Math.toRadians(getHeading());
         ElapsedTime timer = new ElapsedTime();
         timer.reset();
-        double maxPower = .3;
+        double maxPower = .5;
+        double gain = .005;
 
         while (timer.seconds() < duration) {
-            double radiansIMU = Math.toRadians(getHeading());
-            double leftFrontPower = Math.sin(requestedHeading - radiansIMU  + (Math.PI / 4));
-            double rightFrontPower = Math.cos(requestedHeading - radiansIMU  + (Math.PI / 4));
-            double leftBackPower = Math.cos(requestedHeading - radiansIMU  + (Math.PI / 4));
-            double rightBackPower = Math.sin(requestedHeading - radiansIMU  + (Math.PI / 4));
+            double error = originalHeading - getHeading();
+//            double leftFrontPower = Math.sin(requestedHeading - radiansIMU  + (Math.PI / 4));
+//            double rightFrontPower = Math.cos(requestedHeading - radiansIMU  + (Math.PI / 4));
+//            double leftBackPower = Math.cos(requestedHeading - radiansIMU  + (Math.PI / 4));
+//            double rightBackPower = Math.sin(requestedHeading - radiansIMU  + (Math.PI / 4));
+            double leftFrontPower = maxPower - (error * gain);
+            double rightFrontPower = maxPower + (error * gain);
+            double leftBackPower = maxPower + (error * gain);
+            double rightBackPower = maxPower - (error * gain);
 
             double max = Math.max(Math.abs(leftFrontPower), Math.abs(rightFrontPower));
             max = Math.max(max, Math.abs(leftBackPower));
@@ -1655,10 +1665,10 @@ public class Autonomous extends LinearOpMode {
             rightBackPower*= maxPower;
             rightFrontPower*= maxPower;
 
-            rightBack.setPower(rightBackPower);
+            rightBack.setPower(-rightBackPower);
             leftBack.setPower(leftBackPower);
             rightFront.setPower(rightFrontPower);
-            leftFront.setPower(leftFrontPower);
+            leftFront.setPower(-leftFrontPower);
 
             telemetry.addData("rightBackPower", rightBackPower);
             telemetry.addData("rightFrontPower", rightFrontPower);
