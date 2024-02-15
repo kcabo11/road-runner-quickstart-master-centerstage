@@ -828,6 +828,11 @@ public class Autonomous extends LinearOpMode {
                 case MIDDLE: {
                     aprilTag.setDecimation(2);
 
+                    //TEST
+                    strafeLeft(.2, 3);
+                    sleep(10000);
+                    //TEST
+
                     // Requires Testing
                     driveStraight(DRIVE_SPEED, 49, 0.0);    // Drive Forward 28"
                     holdHeading(TURN_SPEED,   0.0, .5);    // Hold  0 Deg heading for .5 seconds
@@ -1585,13 +1590,16 @@ public class Autonomous extends LinearOpMode {
     private void strafeLeft(double speed, double durationSeconds) {
         ElapsedTime timer = new ElapsedTime();
         timer.reset();
-        double kspeed = interpolateCoefficient();
 
         while (timer.seconds() < durationSeconds) {
-            leftFront.setPower(-speed);
+            double kspeed = interpolateCoefficient();
+            leftFront.setPower(-speed*kspeed);
             leftBack.setPower(kspeed*speed);
-            rightFront.setPower(speed);
+            rightFront.setPower(speed*kspeed);
             rightBack.setPower(kspeed*-speed);
+            telemetry.addData("kspeed", kspeed);
+            telemetry.update();
+            sleep(10);
         }
     }
     private void strafeRight(double speed, double durationSeconds) {
@@ -1609,13 +1617,58 @@ public class Autonomous extends LinearOpMode {
     public double interpolateCoefficient () {
         double voltageMin = 12.5;
         double voltageMax = 13.5;
-        double coefficientMin = 1.82;
+        double coefficientMin = 1.8;
         double coefficientMax = 1.9;
         double voltage = hardwareMap.voltageSensor.iterator().next().getVoltage();
 
         double t = (voltage-voltageMin) / (voltageMax - voltageMin);
         double interpolatedCoefficient = coefficientMin + (1-t) * (coefficientMax - coefficientMin);
         return interpolatedCoefficient;
+    }
+
+    void moveByGyro(double heading, double duration){
+        double requestedHeading = Math.toRadians(heading);
+        ElapsedTime timer = new ElapsedTime();
+        timer.reset();
+        double maxPower = .3;
+
+        while (timer.seconds() < duration) {
+            double radiansIMU = Math.toRadians(getHeading());
+            double leftFrontPower = Math.sin(requestedHeading - radiansIMU  + (Math.PI / 4));
+            double rightFrontPower = Math.cos(requestedHeading - radiansIMU  + (Math.PI / 4));
+            double leftBackPower = Math.cos(requestedHeading - radiansIMU  + (Math.PI / 4));
+            double rightBackPower = Math.sin(requestedHeading - radiansIMU  + (Math.PI / 4));
+
+            double max = Math.max(Math.abs(leftFrontPower), Math.abs(rightFrontPower));
+            max = Math.max(max, Math.abs(leftBackPower));
+            max = Math.max(max, Math.abs(rightBackPower));
+
+            if (max > 1) {
+                leftFrontPower /= max;
+                rightFrontPower /= max;
+                leftBackPower /= max;
+                rightBackPower /= max;
+            }
+
+            leftBackPower *= maxPower;
+            leftFrontPower *= maxPower;
+            rightBackPower*= maxPower;
+            rightFrontPower*= maxPower;
+
+            rightBack.setPower(rightBackPower);
+            leftBack.setPower(leftBackPower);
+            rightFront.setPower(rightFrontPower);
+            leftFront.setPower(leftFrontPower);
+
+            telemetry.addData("rightBackPower", rightBackPower);
+            telemetry.addData("rightFrontPower", rightFrontPower);
+            telemetry.addData("leftBackPower", leftBackPower);
+            telemetry.addData("leftFrontPower", leftFrontPower);
+            telemetry.addData("requestedHeading", heading);
+            telemetry.addData("imuHeading", getHeading());
+            telemetry.update();
+            sleep(10);
+        }
     }
 
     private void driveStraightToLine () {
