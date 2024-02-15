@@ -145,6 +145,7 @@ public class Autonomous extends LinearOpMode {
     // Decrease these numbers if the heading does not settle on the correct value (eg: very agile robot with omni wheels)
     static final double     P_TURN_GAIN            = 0.02;     // Larger is more responsive, but also less stable
     static final double     P_DRIVE_GAIN           = 0.03;     // Larger is more responsive, but also less stable
+    double gyroAngle = 0;
 
     enum START_POSITION {
         //IN RELATION TO BACKBOARD
@@ -268,8 +269,8 @@ public class Autonomous extends LinearOpMode {
 
         //OVERRIDE FOR TESTING
 //        startPosition = START_POSITION.BLUE_BACKSTAGE;
-        purplePixelPath = Processor.Selected.MIDDLE;
-        desiredTagId = 2;
+        purplePixelPath = Processor.Selected.LEFT;
+//        desiredTagId = 2;
 
         if (startPosition == START_POSITION.BLUE_BACKSTAGE) {
             telemetry.addData("Floor Sensor Blue", floorSensor.blue());
@@ -323,68 +324,79 @@ public class Autonomous extends LinearOpMode {
                     break;
                 }
                 case LEFT: {
-                    desiredTagId = 1;
-                    driveStraight(DRIVE_SPEED, 20, 0);    // Drive Forward 15"
-                    redLED.setState(true);
-                    holdHeading(TURN_SPEED,   0.0, 1);    // Hold  0 Deg heading for 2 seconds
-                    greenLED.setState(true);
-                    redLED.setState(false);
+//                    desiredTagId = 3;
+//                    driveStraight(DRIVE_SPEED, 20, 0);    // Drive Forward 15"
+//                    redLED.setState(true);
+//                    holdHeading(TURN_SPEED,   0.0, 1);    // Hold  0 Deg heading for 2 seconds
+//                    greenLED.setState(true);
+//                    redLED.setState(false);
+//
+//                    turnToHeading(TURN_SPEED, 40); // turn left 40 degrees
+//                    holdHeading(TURN_SPEED, 40, 1); // hold heading for 2 a second
+//                    greenLED.setState(false);
+//                    redLED.setState(true);
+//                    // If necessary, you can utilize the sensor to scan the line before you go forward and place the pixel
+//                    driveStraight(DRIVE_SPEED, 7, 40);    // Drive Forward 7"
+//                    holdHeading(TURN_SPEED,   40, 1);    // Hold  heading for 2 seconds
+//
+//                    // OUTTAKE PIXEL
+//                    intakeLeft.setPower(.5);
+//                    intakeRight.setPower(-.5);
+//                    sleep(500);
+//                    // STOP OUTTAKE
+//                    intakeLeft.setPower(0);
+//                    intakeRight.setPower(0);
+////                    sleep(1000);
+//
+//                    driveStraight(DRIVE_SPEED, -6, 40);    // Drive Backward 10"
+//                    holdHeading(TURN_SPEED,   40, 1);    // Hold heading for 2 seconds
+//
+//                    turnToHeading(TURN_SPEED, -90); //
+//                    holdHeading(TURN_SPEED, -90, 1); // hold heading for 2 a second
+//
+//                    driveStraight(DRIVE_SPEED, -5, -90);    // Drive Forward 26"
+//                    holdHeading(TURN_SPEED,   -90, .5);    // Hold  heading for 2 seconds
 
-                    turnToHeading(TURN_SPEED, 40); // turn left 40 degrees
-                    holdHeading(TURN_SPEED, 40, 1); // hold heading for 2 a second
-                    greenLED.setState(false);
-                    redLED.setState(true);
-
-
-                    // If necessary, you can utilize the sensor to scan the line before you go forward and place the pixel
-                    driveStraight(DRIVE_SPEED, 7, 40);    // Drive Forward 7"
-                    holdHeading(TURN_SPEED,   40, 1);    // Hold  heading for 2 seconds
-
-                    // OUTTAKE PIXEL
-                    intakeLeft.setPower(.5);
-                    intakeRight.setPower(-.5);
-                    sleep(500);
-                    // STOP OUTTAKE
-                    intakeLeft.setPower(0);
-                    intakeRight.setPower(0);
-//                    sleep(1000);
-
-                    driveStraight(DRIVE_SPEED, -5, 40);    // Drive Backward 10"
-                    holdHeading(TURN_SPEED,   40, 1);    // Hold heading for 2 seconds
-
-                    turnToHeading(TURN_SPEED, -90); //
-                    holdHeading(TURN_SPEED, -90, 1); // hold heading for 2 a second
-
-                    driveStraight(DRIVE_SPEED, -29, -90);    // Drive Forward 26"
-                    holdHeading(TURN_SPEED,   -90, 1);    // Hold  heading for 2 seconds
+                    // Alternate Route:
+//                    strafeLeft(.5,0.005,1);
+//                driveStraight(DRIVE_SPEED, 23, 0);
+//                holdHeading(TURN_SPEED,0,1);
+//
+//                turnToHeading(TURN_SPEED,-90);
+//                holdHeading(TURN_SPEED,-90,1);
+//
+//                driveStraight(DRIVE_SPEED, 3,-90);
 
                     // ONLY DO THIS IF YOU ARE IN FRONT OF THE BACKDROP
                     // OmniDrivetoAprilTag code here
                     // This will drive you to the apriltag
                     // Then you can square up against the line in front of the backdrop here
                     // Once you square, you can move backward to a specified distance and place your pixel
-                    driveToAprilTag(5);
+
+//                    driveToAprilTag((5));
+                    strafeLeft(.5, 0.1,2);
+                    //sleep(1000);
 
                     // Place Pixel!!
-                    driveStraight(DRIVE_SPEED, -5, -90);    // Drive Backward 2"
-                    holdHeading(TURN_SPEED,   -90, 1);    // Hold  heading for 2 seconds
+//                    driveStraight(DRIVE_SPEED, -5, -90);    // Drive Backward 2"
+//                    holdHeading(TURN_SPEED,   -90, 1);    // Hold  heading for 2 seconds
 
                     // Place your pixel here:
                     // First life your pixelliftmotor
-                    pixelLiftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                    pixelLiftMotor.setTargetPosition(-484);
-                    pixelLiftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    pixelLiftMotor.setPower(-.5);
-
-                    // Flip your pixelplacerservo
-                    pixelPlacerServo.setPosition(0.9);
-                    sleep(1000);
-
-                    // Come Back down
-                    pixelPlacerServo.setPosition(0);
-                    pixelPlacerServo.setPosition(0);
-                    sleep(1000);
-                    pixelLiftMotor.setTargetPosition(0);
+//                    pixelLiftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//                    pixelLiftMotor.setTargetPosition(-484);
+//                    pixelLiftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//                    pixelLiftMotor.setPower(-.5);
+//
+//                    // Flip your pixelplacerservo
+//                    pixelPlacerServo.setPosition(0.9);
+//                    sleep(1000);
+//
+//                    // Come Back down
+//                    pixelPlacerServo.setPosition(0);
+//                    pixelPlacerServo.setPosition(0);
+//                    sleep(1000);
+//                    pixelLiftMotor.setTargetPosition(0);
 
                     telemetry.addData("LEFT Complete", "");
                     telemetry.update();
@@ -452,7 +464,7 @@ public class Autonomous extends LinearOpMode {
             telemetry.addData("Running Red_Backstage with pixel ", "");
             switch (purplePixelPath) {
                 case MIDDLE: {
-                    desiredTagId = 2;
+                    desiredTagId = 1;
                     driveStraight(DRIVE_SPEED, 27, 0.0);    // Drive Forward 28"
                     holdHeading(TURN_SPEED,   0.0, 1);    // Hold  0 Deg heading for .5 seconds
 
@@ -471,17 +483,17 @@ public class Autonomous extends LinearOpMode {
                     turnToHeading(TURN_SPEED, 90); // turn left 90 degrees
                     holdHeading(TURN_SPEED, 90, 1); // hold -90 degrees heading for 2 a second
 
-                    driveStraight(DRIVE_SPEED, -10, 90);    // Drive Forward 10"
-                    holdHeading(TURN_SPEED,   90, 1);    // Hold  0 Deg heading for 2 seconds
+//                    driveStraight(DRIVE_SPEED, -10, 90);    // Drive Forward 10"
+//                    holdHeading(TURN_SPEED,   90, 1);    // Hold  0 Deg heading for 2 seconds
 
                     // OmniDrivetoAprilTag code here
                     // This will drive you to the apriltag
                     // Then you can square up against the line in front of the backdrop here
                     // Once you square, you can move backward to a specified distance and place your pixel
-                    driveToAprilTag(8);
+                    driveToAprilTag((5));
 
-                    driveStraight(DRIVE_SPEED, -5, 90);    // Drive Backward 5"
-                    holdHeading(TURN_SPEED,   90, 2);    // Hold  0 Deg heading for 2 seconds
+//                    driveStraight(DRIVE_SPEED, -5, 90);    // Drive Backward 5"
+//                    holdHeading(TURN_SPEED,   90, 2);    // Hold  0 Deg heading for 2 seconds
 
                     // Place your pixel here:
                     // First life your pixelliftmotor
@@ -531,7 +543,7 @@ public class Autonomous extends LinearOpMode {
 //                    driveStraight(DRIVE_SPEED, -35, 90);    // Drive Backward 38"
 //                    holdHeading(TURN_SPEED,   90, 2);    // Hold heading for 2 seconds
                     driveToAprilTag(5);
-                    strafeLeft(.3, 2);
+                    strafeLeft(.3, 0.005,2);
 
                     // Place your pixel here:
                     // First life your pixelliftmotor
@@ -622,7 +634,7 @@ public class Autonomous extends LinearOpMode {
             switch (purplePixelPath) {
                 case MIDDLE: {
                     // Requires Testing
-                    driveStraight(DRIVE_SPEED, 46, 0.0);    // Drive Forward 28"
+                    driveStraight(DRIVE_SPEED, 50, 0.0);    // Drive Forward 28"
                     holdHeading(TURN_SPEED,   0.0, .5);    // Hold  0 Deg heading for .5 seconds
                     turnToHeading(.5, 180);
 
@@ -637,11 +649,13 @@ public class Autonomous extends LinearOpMode {
 
                     //Turn torward truss
                     driveStraight(DRIVE_SPEED, -5, 180);    // Drive Forward 28"
-                    turnToHeading(.5, 90);
+                    turnToHeading(.5, -90);
+                    holdHeading(.5,   -90, .5);    // Hold  0 Deg heading for 2 seconds
 
-                    driveStraight(.5, 24, 90);    // Drive Backward 10"
-                    holdHeading(TURN_SPEED,   90, .5);    // Hold  0 Deg heading for 2 seconds
-                    turnToHeading(.5, 70);
+                    driveStraight(.5, -50, -90);    // Drive Backward 10"
+                    holdHeading(TURN_SPEED,   -90, .5);    // Hold  0 Deg heading for 2 seconds
+                    turnToHeading(.5, -60);
+                    holdHeading(TURN_SPEED,getHeading(),.5);
 
                     // IN CASE OF EMERGENCY:
                     // If your code interferes with your alliance, then comment the rest of this code out, and keep the upper portion
@@ -650,6 +664,7 @@ public class Autonomous extends LinearOpMode {
 //                    turnToHeading(TURN_SPEED, -90); // turn right 90 degrees
 //                    holdHeading(TURN_SPEED, -90, 2); // hold 90 degrees heading for 2 second
 
+                    TURN_GAIN = .02;
                     // OmniDrivetoAprilTag code here
                     driveToAprilTag(5);
                     // This will drive you to the apriltag
@@ -846,7 +861,7 @@ public class Autonomous extends LinearOpMode {
                     pixelPlacerServo.setPosition(0.9);
                     sleep(1000);
                     driveStraight(.5, 5, getHeading());    // Drive Backward 10"
-                    strafeLeft(.2, 3);
+                    strafeLeft(.2, 0.005,3);
 
                     // Come Back down
                     pixelPlacerServo.setPosition(0);
@@ -1538,20 +1553,23 @@ public class Autonomous extends LinearOpMode {
         }
     }
 
-    private void strafeLeft(double speed, double duration_in_seconds) {
+    private void strafeLeft(double speed, double kp, double duration_in_seconds) {
         ElapsedTime timer = new ElapsedTime();
         timer.reset();
+        gyroAngle = getHeading();
+        kp = .1;
 
         while (timer.seconds() < duration_in_seconds) {
-            leftFront.setPower(speed);
-            leftBack.setPower(-speed);
-            rightFront.setPower(-speed);
-            rightBack.setPower(speed);
+            leftFront.setPower(speed + kp * -gyroAngle);
+            leftBack.setPower(-speed + kp * -gyroAngle);
+            rightFront.setPower(-speed + kp * gyroAngle);
+            rightBack.setPower(speed + kp * -gyroAngle);
         }
     }
     private void strafeRight(double speed, double duration_in_seconds) {
         ElapsedTime timer = new ElapsedTime();
         timer.reset();
+        double kp = 0.005;
 
         while (timer.seconds() < duration_in_seconds) {
             leftFront.setPower(-speed);
