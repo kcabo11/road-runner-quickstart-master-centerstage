@@ -11,6 +11,8 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
+import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
@@ -106,7 +108,7 @@ public class Autonomous extends LinearOpMode {
     public CRServo intakeRight = null;
     public DcMotor pixelLiftMotor = null;
     public Servo pixelPlacerServo = null;
-    public ColorSensor floorSensor = null;
+    public NormalizedColorSensor floorSensor = null;
 
     private double          headingError  = 0;
 
@@ -207,7 +209,7 @@ public class Autonomous extends LinearOpMode {
 
         intakeLeft = hardwareMap.get(CRServo.class, "intakeLeft");
         intakeRight = hardwareMap.get(CRServo.class, "intakeRight");
-        floorSensor = hardwareMap.get(ColorSensor.class, "floorSensor");
+        floorSensor = hardwareMap.get(NormalizedColorSensor.class, "floorSensor");
         colorSensor = hardwareMap.get(ColorSensor.class, "sensorColor");
 
         //processor = new Processor();
@@ -273,7 +275,6 @@ public class Autonomous extends LinearOpMode {
 //        desiredTagId = 2;
 
         if (startPosition == START_POSITION.BLUE_BACKSTAGE) {
-            telemetry.addData("Floor Sensor Blue", floorSensor.blue());
             telemetry.addData("Running Blue_Backstage with pixel ", "");
             telemetry.update();
 //            sleep(2000);
@@ -382,7 +383,7 @@ public class Autonomous extends LinearOpMode {
                     // Once you square, you can move backward to a specified distance and place your pixel
 
 //                    driveToAprilTag((5));
-                    strafeLeft(.5, 0.1,2);
+                    strafeLeft(.2,2);
                     //sleep(1000);
 
                     // Place Pixel!!
@@ -553,7 +554,7 @@ public class Autonomous extends LinearOpMode {
 //                    driveStraight(DRIVE_SPEED, -35, 90);    // Drive Backward 38"
 //                    holdHeading(TURN_SPEED,   90, 2);    // Hold heading for 2 seconds
                     driveToAprilTag(5);
-                    strafeLeft(.3, 0.005,2);
+                    strafeLeft(.3, 2);
 
                     // Place your pixel here:
                     // First life your pixelliftmotor
@@ -825,7 +826,7 @@ public class Autonomous extends LinearOpMode {
             telemetry.addData("Running Red_Frontstage with pixel ", "");
             switch (purplePixelPath) {
                 case MIDDLE: {
-                    aprilTag.setDecimation(1);
+                    aprilTag.setDecimation(2);
 
                     // Requires Testing
                     driveStraight(DRIVE_SPEED, 49, 0.0);    // Drive Forward 28"
@@ -844,23 +845,24 @@ public class Autonomous extends LinearOpMode {
                     sleep(50);
 
                     sleep(500);
-                    driveStraight(DRIVE_SPEED, -20, 179);    // Drive Forward 28"
+                    driveStraight(DRIVE_SPEED, -6, 179);    // Drive Forward 28"
                     holdHeading(TURN_SPEED,   179, 1);    // Hold  0 Deg heading for .5 seconds
 
-                    driveStraight(DRIVE_SPEED, 10, 180);    // Drive Forward 28"
-                    holdHeading(TURN_SPEED,   180, .5);    // Hold  0 Deg heading for .5 seconds
+//                    driveStraight(DRIVE_SPEED, 10, 180);    // Drive Forward 28"
+//                    holdHeading(TURN_SPEED,   180, .5);    // Hold  0 Deg heading for .5 seconds
 
                     //Turn torward truss
                     turnToHeading(.5, 90);
                     holdHeading(.5,   90, .5);    // Hold  0 Deg heading for 2 seconds
+                    driveStraight(.5, -80, 90);    // Drive Backward 10"
+                    holdHeading(TURN_SPEED,   90, .5);    // Hold  0 Deg heading for 2 seconds
+                    strafeLeft(.2, 1.8);
 
-                    driveStraight(.5, -65, 100);    // Drive Backward 10"
-                    holdHeading(TURN_SPEED,   100, .5);    // Hold  0 Deg heading for 2 seconds
-                    turnToHeading(.5, 50);
-                    holdHeading(TURN_SPEED,   getHeading(), .5);    // Hold  0 Deg heading for 2 seconds
+//                    turnToHeading(.5, 50);
+//                    holdHeading(TURN_SPEED,   getHeading(), .5);    // Hold  0 Deg heading for 2 seconds
 
-                    driveStraight(DRIVE_SPEED, -15, 40);    // Drive Forward 28"
-                    holdHeading(TURN_SPEED,   40, .5);    // Hold  0 Deg heading for .5 seconds
+//                    driveStraight(DRIVE_SPEED, -15, 40);    // Drive Forward 28"
+//                    holdHeading(TURN_SPEED,   40, .5);    // Hold  0 Deg heading for .5 seconds
 
                     // IN CASE OF EMERGENCY:
                     // If your code interferes with your alliance, then comment the rest of this code out, and keep the upper portion
@@ -885,7 +887,7 @@ public class Autonomous extends LinearOpMode {
                     pixelPlacerServo.setPosition(0.9);
                     sleep(1500);
                     driveStraight(.5, 5, getHeading());    // Drive Backward 10"
-                    strafeLeft(.2, 0.005,1);
+                    strafeLeft(.2, 1);
 
                     // Come Back down
                     pixelPlacerServo.setPosition(0);
@@ -902,6 +904,10 @@ public class Autonomous extends LinearOpMode {
                     driveStraight(DRIVE_SPEED, 46, 0.0);    // Drive Forward 28"
                     holdHeading(TURN_SPEED,   0.0, .5);    // Hold  0 Deg heading for .5 seconds
                     turnToHeading(.5, 180);
+                    holdHeading(TURN_SPEED,   180.0, .5);    // Hold  0 Deg heading for .5 seconds
+                    driveStraightToLine();
+                    driveStraight(DRIVE_SPEED, -2, 0.0);    // Drive Forward 28"
+
 
                     // OUTTAKE PIXEL
                     intakeLeft.setPower(.5);
@@ -1576,30 +1582,72 @@ public class Autonomous extends LinearOpMode {
         }
     }
 
-    private void strafeLeft(double speed, double kp, double duration_in_seconds) {
+    private void strafeLeft(double speed, double durationSeconds) {
         ElapsedTime timer = new ElapsedTime();
         timer.reset();
-        gyroAngle = getHeading();
-        kp = .1;
+        double kspeed = interpolateCoefficient();
 
-        while (timer.seconds() < duration_in_seconds) {
-            leftFront.setPower(speed + kp * -gyroAngle);
-            leftBack.setPower(-speed + kp * -gyroAngle);
-            rightFront.setPower(-speed + kp * gyroAngle);
-            rightBack.setPower(speed + kp * -gyroAngle);
-        }
-    }
-    private void strafeRight(double speed, double duration_in_seconds) {
-        ElapsedTime timer = new ElapsedTime();
-        timer.reset();
-        double kp = 0.005;
-
-        while (timer.seconds() < duration_in_seconds) {
+        while (timer.seconds() < durationSeconds) {
             leftFront.setPower(-speed);
-            leftBack.setPower(speed);
+            leftBack.setPower(kspeed*speed);
             rightFront.setPower(speed);
-            rightBack.setPower(-speed);
+            rightBack.setPower(kspeed*-speed);
+        }
+    }
+    private void strafeRight(double speed, double durationSeconds) {
+        ElapsedTime timer = new ElapsedTime();
+        timer.reset();
+
+        while (timer.seconds() < durationSeconds) {
+            leftFront.setPower(speed);
+            leftBack.setPower(1.90*-speed);
+            rightFront.setPower(-speed);
+            rightBack.setPower(1.90*speed);
         }
     }
 
+    public double interpolateCoefficient () {
+        double voltageMin = 12.5;
+        double voltageMax = 13.5;
+        double coefficientMin = 1.82;
+        double coefficientMax = 1.9;
+        double voltage = hardwareMap.voltageSensor.iterator().next().getVoltage();
+
+        double t = (voltage-voltageMin) / (voltageMax - voltageMin);
+        double interpolatedCoefficient = coefficientMin + (1-t) * (coefficientMax - coefficientMin);
+        return interpolatedCoefficient;
+    }
+
+    private void driveStraightToLine () {
+        double WHITE_THRESHOLD = 55;
+        // Some sensors allow you to set your light sensor gain for optimal sensitivity...
+        // See the SensorColor sample in this folder for how to determine the optimal gain.
+        // A gain of 15 causes a Rev Color Sensor V2 to produce an Alpha value of 1.0 at about 1.5" above the floor.
+        floorSensor.setGain(15);
+
+        // Start the robot moving forward, and then begin looking for a white line.
+        leftFront.setPower(.15);
+        leftBack.setPower(.15);
+        rightFront.setPower(.15);
+        rightBack.setPower(.15);
+
+        // run until the white line is seen OR the driver presses STOP;
+        while (opModeIsActive() && (getBrightness() < WHITE_THRESHOLD)) {
+            sleep(5);
+        }
+
+        leftFront.setPower(0);
+        leftBack.setPower(0);
+        rightFront.setPower(0);
+        rightBack.setPower(0);
+
+    }
+    // to obtain reflected light, read the normalized values from the color sensor.  Return the Alpha channel.
+    double getBrightness() {
+        NormalizedRGBA colors = floorSensor.getNormalizedColors();
+        telemetry.addData("Light Level (0 to 1)",  "%4.2f", colors.alpha);
+        telemetry.update();
+
+        return colors.alpha;
+    }
 }
