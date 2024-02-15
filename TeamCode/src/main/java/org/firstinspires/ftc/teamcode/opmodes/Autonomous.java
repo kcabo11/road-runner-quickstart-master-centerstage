@@ -269,7 +269,7 @@ public class Autonomous extends LinearOpMode {
 
         //OVERRIDE FOR TESTING
 //        startPosition = START_POSITION.BLUE_BACKSTAGE;
-        purplePixelPath = Processor.Selected.LEFT;
+        purplePixelPath = Processor.Selected.MIDDLE;
 //        desiredTagId = 2;
 
         if (startPosition == START_POSITION.BLUE_BACKSTAGE) {
@@ -293,12 +293,15 @@ public class Autonomous extends LinearOpMode {
                     sleep(50);
 
                     driveStraight(.5, -5, 0);    // Drive Backward 10"
-                    holdHeading(TURN_SPEED,   0, 1);    // Hold  0 Deg heading for 2 seconds
+                    holdHeading(.5,   0, 1);    // Hold  0 Deg heading for 2 seconds
 
                     //overturn so the camera squarly sees the QR codes
-                    turnToHeading(TURN_SPEED, -90); // turn left 90 degrees
-                    holdHeading(TURN_SPEED, -90, 1); // hold -90 degrees heading for 2 a second
+                    turnToHeading(.5, -90); // turn left 90 degrees
+                    holdHeading(.5, -90, 1); // hold -90 degrees heading for 2 a second
 
+
+                    precision = 2;
+                    TURN_GAIN = .3;
                     driveToAprilTag((5));
 
                     // Place your pixel here:
@@ -310,7 +313,7 @@ public class Autonomous extends LinearOpMode {
 
                     // Flip your pixelplacerservo and drive back a little, then strafe out of the way.
                     pixelPlacerServo.setPosition(0.9);
-                    sleep(1000);
+                    sleep(1500);
                     driveStraight(.5, 5, getHeading());    // Drive Backward 10"
                     strafeRight(.2, 3);
 
@@ -357,15 +360,20 @@ public class Autonomous extends LinearOpMode {
 //                    driveStraight(DRIVE_SPEED, -5, -90);    // Drive Forward 26"
 //                    holdHeading(TURN_SPEED,   -90, .5);    // Hold  heading for 2 seconds
 
-                    // Alternate Route:
+                      { // Alternate Route:
 //                    strafeLeft(.5,0.005,1);
-//                driveStraight(DRIVE_SPEED, 23, 0);
-//                holdHeading(TURN_SPEED,0,1);
+//                    driveStraight(DRIVE_SPEED, 23, 0);
+//                    holdHeading(TURN_SPEED,0,1);
 //
-//                turnToHeading(TURN_SPEED,-90);
-//                holdHeading(TURN_SPEED,-90,1);
+//                    turnToHeading(TURN_SPEED,-90);
+//                    holdHeading(TURN_SPEED,-90,1);
 //
-//                driveStraight(DRIVE_SPEED, 3,-90);
+//                    driveStraight(DRIVE_SPEED, 3,-90);
+//                    holdHeading(TURN_SPEED,-90,1);
+//
+//                    driveToAprilTag((5));
+//                    // Place Pixel After this ^
+                }
 
                     // ONLY DO THIS IF YOU ARE IN FRONT OF THE BACKDROP
                     // OmniDrivetoAprilTag code here
@@ -434,7 +442,9 @@ public class Autonomous extends LinearOpMode {
                     // Once you square, you can move backward to a specified distance and place your pixel
 //                    driveStraight(DRIVE_SPEED, -40, -90);    // Drive Backward 38"
 //                    holdHeading(TURN_SPEED,   -90, 1);    // Hold heading for 2 seconds
-                    driveToAprilTag(5);
+                    precision = 2;
+                    TURN_GAIN = .3;
+                    driveToAprilTag((5));
 
                     // Place your pixel here:
                     // First life your pixelliftmotor
@@ -815,10 +825,14 @@ public class Autonomous extends LinearOpMode {
             telemetry.addData("Running Red_Frontstage with pixel ", "");
             switch (purplePixelPath) {
                 case MIDDLE: {
+                    aprilTag.setDecimation(1);
+
                     // Requires Testing
-                    driveStraight(DRIVE_SPEED, 50, 0.0);    // Drive Forward 28"
+                    driveStraight(DRIVE_SPEED, 49, 0.0);    // Drive Forward 28"
                     holdHeading(TURN_SPEED,   0.0, .5);    // Hold  0 Deg heading for .5 seconds
                     turnToHeading(.5, 180);
+                    holdHeading(TURN_SPEED,   180, .5);    // Hold  0 Deg heading for .5 seconds
+                    sleep(500);
 
                     // OUTTAKE PIXEL
                     intakeLeft.setPower(.5);
@@ -829,15 +843,24 @@ public class Autonomous extends LinearOpMode {
                     intakeRight.setPower(0);
                     sleep(50);
 
+                    sleep(500);
+                    driveStraight(DRIVE_SPEED, -20, 179);    // Drive Forward 28"
+                    holdHeading(TURN_SPEED,   179, 1);    // Hold  0 Deg heading for .5 seconds
+
+                    driveStraight(DRIVE_SPEED, 10, 180);    // Drive Forward 28"
+                    holdHeading(TURN_SPEED,   180, .5);    // Hold  0 Deg heading for .5 seconds
+
                     //Turn torward truss
-                    driveStraight(DRIVE_SPEED, -5, 180);    // Drive Forward 28"
                     turnToHeading(.5, 90);
                     holdHeading(.5,   90, .5);    // Hold  0 Deg heading for 2 seconds
 
-                    driveStraight(.5, -50, 90);    // Drive Backward 10"
-                    holdHeading(TURN_SPEED,   90, .5);    // Hold  0 Deg heading for 2 seconds
-                    turnToHeading(.5, 60);
+                    driveStraight(.5, -65, 100);    // Drive Backward 10"
+                    holdHeading(TURN_SPEED,   100, .5);    // Hold  0 Deg heading for 2 seconds
+                    turnToHeading(.5, 50);
                     holdHeading(TURN_SPEED,   getHeading(), .5);    // Hold  0 Deg heading for 2 seconds
+
+                    driveStraight(DRIVE_SPEED, -15, 40);    // Drive Forward 28"
+                    holdHeading(TURN_SPEED,   40, .5);    // Hold  0 Deg heading for .5 seconds
 
                     // IN CASE OF EMERGENCY:
                     // If your code interferes with your alliance, then comment the rest of this code out, and keep the upper portion
@@ -845,10 +868,11 @@ public class Autonomous extends LinearOpMode {
                     // If you are not going to interfere with your alliance, keep the following code to park
 //                    turnToHeading(TURN_SPEED, -90); // turn right 90 degrees
 //                    holdHeading(TURN_SPEED, -90, 2); // hold 90 degrees heading for 2 second
-
-                    TURN_GAIN = .02;
+                    SPEED_GAIN  =  0.2;//0.02  ;   //  Forward Speed Control "Gain". eg: Ramp up to 50% power at a 25 inch error.   (0.50 / 25.0)
+                    STRAFE_GAIN =  -.4;//0.015 ;   //  Strafe Speed Control "Gain".  eg: Ramp up to 25% power at a 25 degree Yaw error.   (0.25 / 25.0)
+                    TURN_GAIN = .04;
                     // OmniDrivetoAprilTag code here
-                    driveToAprilTag(5);
+                    driveToAprilTag(8);
 
                     // Place your pixel here:
                     // First life your pixelliftmotor
@@ -859,17 +883,14 @@ public class Autonomous extends LinearOpMode {
 
                     // Flip your pixelplacerservo and drive back a little, then strafe out of the way.
                     pixelPlacerServo.setPosition(0.9);
-                    sleep(1000);
+                    sleep(1500);
                     driveStraight(.5, 5, getHeading());    // Drive Backward 10"
-                    strafeLeft(.2, 0.005,3);
+                    strafeLeft(.2, 0.005,1);
 
                     // Come Back down
                     pixelPlacerServo.setPosition(0);
                     sleep(1000);
                     pixelLiftMotor.setTargetPosition(0);
-
-                    telemetry.addData("CENTER", "Complete");
-                    telemetry.update();
 
                     telemetry.addData("CENTER", "Complete");
                     telemetry.update();
@@ -1394,7 +1415,7 @@ public class Autonomous extends LinearOpMode {
 
     final double MAX_AUTO_SPEED = 0.5;   //  Clip the approach speed to this max value (adjust for your robot)
     final double MAX_AUTO_STRAFE= 0.5;   //  Clip the approach speed to this max value (adjust for your robot)
-    final double MAX_AUTO_TURN  = 0.3;   //  Clip the turn speed to this max value (adjust for your robot)
+    final double MAX_AUTO_TURN  = .5;//0.3;   //  Clip the turn speed to this max value (adjust for your robot)
     boolean stopped = false;
     private void driveToAprilTag(double duration_in_seconds) {
         ElapsedTime timer = new ElapsedTime();
@@ -1478,6 +1499,8 @@ public class Autonomous extends LinearOpMode {
      *
      * @return
      */
+
+    double precision = 2.3;
     public boolean moveRobot(double x, double y, double yaw) {
 
         // Calculate wheel powers.
@@ -1498,7 +1521,7 @@ public class Autonomous extends LinearOpMode {
             rightBackPower /= max;
         }
 
-        double precision = 2.3;
+
         // Send powers to the wheels.
         leftFront.setPower(-leftFrontPower/precision);
         rightFront.setPower(-rightFrontPower/precision);
