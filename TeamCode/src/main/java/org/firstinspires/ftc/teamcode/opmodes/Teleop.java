@@ -402,6 +402,7 @@ public class Teleop extends LinearOpMode {
             if (gamepad2.left_bumper) {
                 pixelPlacerServo.setPosition(0);
                 pixelliftMotorStateMachine = 1;
+                pixelPlacerServoStateMachine = 1;
             }
 
             /******************************************
