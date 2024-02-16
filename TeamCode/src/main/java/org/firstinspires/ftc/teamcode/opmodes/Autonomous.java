@@ -649,7 +649,6 @@ public class Autonomous extends LinearOpMode {
         else if (startPosition == START_POSITION.BLUE_STAGE) {
             telemetry.addData("Running Red_Frontstage with pixel ", purplePixelPath.toString());
             telemetry.update();
-            purplePixelPath = Processor.Selected.LEFT;
             switch (purplePixelPath) {
                 case MIDDLE: {
                     telemetry.addData("Center Spike Mark", 1);
