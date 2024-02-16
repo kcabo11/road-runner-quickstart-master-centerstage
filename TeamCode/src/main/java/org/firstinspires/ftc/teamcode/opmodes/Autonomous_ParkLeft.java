@@ -88,7 +88,7 @@ import java.util.concurrent.TimeUnit;
 
 @com.qualcomm.robotcore.eventloop.opmode.Autonomous(name="Autonomous", group="Robot")
 //@Disabled
-public class Autonomous extends LinearOpMode {
+public class Autonomous_ParkLeft extends LinearOpMode {
 
     // Huskylens Integration
     private final int READ_PERIOD = 1;
@@ -300,7 +300,6 @@ public class Autonomous extends LinearOpMode {
                     turnToHeading(.5, -90); // turn left 90 degrees
                     holdHeading(.5, -90, 1); // hold -90 degrees heading for 2 a second
 
-
                     precision = 2;
                     TURN_GAIN = .3;
                     driveToAprilTag((5));
@@ -325,10 +324,9 @@ public class Autonomous extends LinearOpMode {
                     sleep(1000);
                     pixelLiftMotor.setTargetPosition(0);
 
-                    driveStraight(.5, -20, 0);    // Drive Backward 10"
+                    driveStraight(.5, -15, 0);    // Drive Backward 10"
                     turnToHeading(.5, 0); // turn left 90 degrees
                     holdHeading(.5, 0, 1); // hold -90 degrees heading for 2 a second
-
 
                     telemetry.addData("CENTER", "Complete");
                     telemetry.update();
@@ -419,7 +417,7 @@ public class Autonomous extends LinearOpMode {
                     sleep(1000);
                     pixelLiftMotor.setTargetPosition(0);
 
-                    driveStraight(.5, -20, 0);    // Drive Backward 10"
+                    driveStraight(.5, -15, 0);    // Drive Backward 10"
                     turnToHeading(.5, 0); // turn left 90 degrees
                     holdHeading(.5, 0, 1); // hold -90 degrees heading for 2 a second
 
@@ -480,7 +478,7 @@ public class Autonomous extends LinearOpMode {
                     sleep(1000);
                     pixelLiftMotor.setTargetPosition(0);
 
-                    driveStraight(.5, -20, 0);    // Drive Backward 10"
+                    driveStraight(.5, -15, 0);    // Drive Backward 10"
                     turnToHeading(.5, 0); // turn left 90 degrees
                     holdHeading(.5, 0, 1); // hold -90 degrees heading for 2 a second
 
@@ -540,6 +538,10 @@ public class Autonomous extends LinearOpMode {
                     sleep(1000);
                     pixelLiftMotor.setTargetPosition(0);
 
+                    driveStraight(.5, 15, 0);    // Drive Backward 10"
+                    turnToHeading(.5, 0); // turn left 90 degrees
+                    holdHeading(.5, 0, 1); // hold -90 degrees heading for 2 a second
+
                     telemetry.addData("CENTER", "Complete");
                     telemetry.update();
                     break;
@@ -592,6 +594,10 @@ public class Autonomous extends LinearOpMode {
                     pixelPlacerServo.setPosition(0);
                     sleep(1000);
                     pixelLiftMotor.setTargetPosition(0);
+
+                    driveStraight(.5, 15, 0);    // Drive Backward 10"
+                    turnToHeading(.5, 0); // turn left 90 degrees
+                    holdHeading(.5, 0, 1); // hold -90 degrees heading for 2 a second
 
                     telemetry.addData("LEFT Complete", "");
                     telemetry.update();
@@ -653,6 +659,10 @@ public class Autonomous extends LinearOpMode {
                     pixelPlacerServo.setPosition(0);
                     sleep(1000);
                     pixelLiftMotor.setTargetPosition(0);
+
+                    driveStraight(.5, 15, 0);    // Drive Backward 10"
+                    turnToHeading(.5, 0); // turn left 90 degrees
+                    holdHeading(.5, 0, 1); // hold -90 degrees heading for 2 a second
 
                     telemetry.addData("LEFT Complete", "");
                     telemetry.update();
@@ -726,6 +736,10 @@ public class Autonomous extends LinearOpMode {
                     pixelPlacerServo.setPosition(0);
                     sleep(1000);
                     pixelLiftMotor.setTargetPosition(0);
+
+                    driveStraight(.5, -15, 0);    // Drive Backward 10"
+                    turnToHeading(.5, 0); // turn left 90 degrees
+                    holdHeading(.5, 0, 1); // hold -90 degrees heading for 2 a second
 
                     telemetry.addData("CENTER", "Complete");
                     telemetry.update();
@@ -818,6 +832,10 @@ public class Autonomous extends LinearOpMode {
                     sleep(1000);
                     pixelLiftMotor.setTargetPosition(0);
 
+                    driveStraight(.5, -15, 0);    // Drive Backward 10"
+                    turnToHeading(.5, 0); // turn left 90 degrees
+                    holdHeading(.5, 0, 1); // hold -90 degrees heading for 2 a second
+
                     telemetry.addData("LEFT Complete", "");
                     telemetry.update();
                     break;
@@ -901,6 +919,10 @@ public class Autonomous extends LinearOpMode {
                     sleep(1000);
                     pixelLiftMotor.setTargetPosition(0);
 
+                    driveStraight(.5, -15, 0);    // Drive Backward 10"
+                    turnToHeading(.5, 0); // turn left 90 degrees
+                    holdHeading(.5, 0, 1); // hold -90 degrees heading for 2 a second
+
                     telemetry.addData("RIGHT Complete", "");
                     telemetry.update();
                     break;
@@ -969,6 +991,10 @@ public class Autonomous extends LinearOpMode {
                     pixelPlacerServo.setPosition(0);
                     sleep(1000);
                     pixelLiftMotor.setTargetPosition(0);
+
+                    driveStraight(.5, 15, 0);    // Drive Backward 10"
+                    turnToHeading(.5, 0); // turn left 90 degrees
+                    holdHeading(.5, 0, 1); // hold -90 degrees heading for 2 a second
 
                     telemetry.addData("CENTER", "Complete");
                     telemetry.update();
@@ -1060,6 +1086,10 @@ public class Autonomous extends LinearOpMode {
                     sleep(1000);
                     pixelLiftMotor.setTargetPosition(0);
 
+                    driveStraight(.5, 15, 0);    // Drive Backward 10"
+                    turnToHeading(.5, 0); // turn left 90 degrees
+                    holdHeading(.5, 0, 1); // hold -90 degrees heading for 2 a second
+
                     telemetry.addData("LEFT Complete", "");
                     telemetry.update();
                     break;
@@ -1146,6 +1176,10 @@ public class Autonomous extends LinearOpMode {
                     pixelPlacerServo.setPosition(0);
                     sleep(1000);
                     pixelLiftMotor.setTargetPosition(0);
+
+                    driveStraight(.5, 15, 0);    // Drive Backward 10"
+                    turnToHeading(.5, 0); // turn left 90 degrees
+                    holdHeading(.5, 0, 1); // hold -90 degrees heading for 2 a second
 
                     telemetry.addData("RIGHT Complete", "");
                     telemetry.update();
