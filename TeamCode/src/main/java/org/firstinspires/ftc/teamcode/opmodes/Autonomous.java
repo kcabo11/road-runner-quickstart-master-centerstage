@@ -829,9 +829,12 @@ public class Autonomous extends LinearOpMode {
             }
         }
         else if (startPosition == START_POSITION.RED_STAGE) {
-            telemetry.addData("Running Red_Frontstage with pixel ", "");
+            telemetry.addData("Running Red_Frontstage with pixel ", purplePixelPath.toString());
+            telemetry.update();
             switch (purplePixelPath) {
                 case MIDDLE: {
+                    telemetry.addData("Center Spike Mark", 1);
+                    telemetry.update();
                     desiredTagId = 1;
                     driveStraight(DRIVE_SPEED, 47, 0.0);    // Drive Forward 28"
                     holdHeading(TURN_SPEED,   0.0, .5);    // Hold  0 Deg heading for .5 seconds
@@ -893,37 +896,47 @@ public class Autonomous extends LinearOpMode {
                     break;
                 }
                 case LEFT: {
-                    driveStraight(DRIVE_SPEED, 20, 0);    // Drive Forward 15"
+                    telemetry.addData("Left Spike Mark", 1);
+                    telemetry.update();
+//                    sleep(1000);
+
+                    desiredTagId = 1;
+                    driveStraight(DRIVE_SPEED, 24, 0.0);    // Drive Forward 26"
                     redLED.setState(true);
                     holdHeading(TURN_SPEED,   0.0, 1);    // Hold  0 Deg heading for 2 seconds
                     greenLED.setState(true);
                     redLED.setState(false);
 
-                    turnToHeading(TURN_SPEED, 40); // turn left 40 degrees
-                    holdHeading(TURN_SPEED, 40, 1); // hold heading for 2 a second
+                    // If necessary, you can utilize the sensor to scan the line before you go forward and place the pixel
+                    turnToHeading(TURN_SPEED, 80); // turn right 90 degrees
+                    holdHeading(TURN_SPEED, 80, 1); // hold -90 degrees heading for 2 a second
+
+                    driveStraight(DRIVE_SPEED, 2, 80);
+                    holdHeading(TURN_SPEED,   80, 1);    // Hold heading for 2 seconds
                     greenLED.setState(false);
                     redLED.setState(true);
-                    // If necessary, you can utilize the sensor to scan the line before you go forward and place the pixel
-                    driveStraight(DRIVE_SPEED, 7, 40);    // Drive Forward 7"
-                    holdHeading(TURN_SPEED,   40, 1);    // Hold  heading for 2 seconds
 
-                    // OUTTAKE PIXEL
+                    // OUTTAKE HERE
                     intakeLeft.setPower(.5);
                     intakeRight.setPower(-.5);
                     sleep(500);
                     // STOP OUTTAKE
                     intakeLeft.setPower(0);
                     intakeRight.setPower(0);
-//                    sleep(1000);
+                    sleep(500);
 
-                    driveStraight(DRIVE_SPEED, -6, 40);    // Drive Backward 10"
-                    holdHeading(TURN_SPEED,   40, 1);    // Hold heading for 2 seconds
+                    driveStraight(DRIVE_SPEED, -6, 80);
+                    holdHeading(TURN_SPEED,   80, 1);    // Hold heading for 2 seconds
+                    turnToHeading(TURN_SPEED, 15); // turn right 90 degrees
+                    holdHeading(TURN_SPEED, 15, 0.1); // hold -90 degrees heading for 2 a second
 
-                    turnToHeading(TURN_SPEED, 0); // turn left 40 degrees
-                    holdHeading(TURN_SPEED, 0, 1); // hold heading for 2 a second
+                    // IN CASE OF EMERGENCY:
+                    // If your code interferes with your alliance, then comment the rest of this code out, and keep the upper portion
+                    // That way, you can just place your purple pixel and pull back, ready for TeleOp
+                    // If you are not going to interfere with your alliance, keep the following code to park
 
-                    driveStraight(DRIVE_SPEED, 30, 0);    // Drive Forward 30"
-                    holdHeading(TURN_SPEED,   0, 1);    // Hold  heading for 2 seconds
+                    driveStraight(DRIVE_SPEED, 30, 15);    // Drive Forward 30"
+                    holdHeading(TURN_SPEED,   15, 1);    // Hold  heading for 2 seconds
 
                     //Turn toward truss
                     turnToHeading(.5, 90);
@@ -934,7 +947,7 @@ public class Autonomous extends LinearOpMode {
                     turnToHeading(.5, 0);
                     holdHeading(TURN_SPEED,   0, .5);    // Hold  0 Deg heading for .5 seconds
 
-                    driveStraight(DRIVE_SPEED, -30, 0);    // Drive Backward 35"
+                    driveStraight(DRIVE_SPEED, -20, 0);    // Drive Backward 35"
                     holdHeading(TURN_SPEED,   0, .5);    // Hold  0 Deg heading for .5 seconds
                     turnToHeading(.5, 85);
                     holdHeading(.5,   85, .5);
@@ -946,28 +959,41 @@ public class Autonomous extends LinearOpMode {
                     sleep(500);
                     driveToAprilTag(5);
 
+                    strafeRight(.3, .3, true);
+
+                    // Place Pixel!!
+                    turnToHeading(TURN_SPEED, 90); // Make a 180 degree turn
+                    holdHeading(TURN_SPEED, 90, 1); // Hold heading for 2 seconds
+
+//                    strafeRight(.3, .1, true);
+                    // Place Pixel!!
+//                    turnToHeading(TURN_SPEED, 90); // Make a 180 degree turn
+//                    holdHeading(TURN_SPEED, 90, 1); // Hold heading for 2 seconds
+
                     // Place your pixel here:
                     // First life your pixelliftmotor
                     pixelLiftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                    pixelLiftMotor.setTargetPosition(-484);
+                    pixelLiftMotor.setTargetPosition(-400);
                     pixelLiftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     pixelLiftMotor.setPower(-.5);
 
                     // Flip your pixelplacerservo
                     pixelPlacerServo.setPosition(0.9);
                     sleep(1000);
-
                     // Come Back down
                     pixelPlacerServo.setPosition(0);
                     pixelPlacerServo.setPosition(0);
                     sleep(1000);
                     pixelLiftMotor.setTargetPosition(0);
 
-                    telemetry.addData("CENTER", "Complete");
+                    telemetry.addData("LEFT Complete", "");
                     telemetry.update();
                     break;
                 }
                 case RIGHT: {
+                    telemetry.addData("Right Spike Mark", 1);
+                    telemetry.update();
+
                     desiredTagId = 2;
                     driveStraight(DRIVE_SPEED, 24, 0.0);    // Drive Forward 26"
                     redLED.setState(true);
