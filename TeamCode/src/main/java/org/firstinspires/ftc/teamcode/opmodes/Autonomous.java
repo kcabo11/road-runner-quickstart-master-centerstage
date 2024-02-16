@@ -278,6 +278,7 @@ public class Autonomous extends LinearOpMode {
             telemetry.addData("Running Blue_Backstage with pixel ", "");
             telemetry.update();
 //            sleep(2000);
+            purplePixelPath = Processor.Selected.MIDDLE;
             switch (purplePixelPath) {
                 case MIDDLE: {
                     desiredTagId = 1;
@@ -315,13 +316,20 @@ public class Autonomous extends LinearOpMode {
                     // Flip your pixelplacerservo and drive back a little, then strafe out of the way.
                     pixelPlacerServo.setPosition(0.9);
                     sleep(1500);
+
                     driveStraight(.5, 5, getHeading());    // Drive Backward 10"
-                    strafeRight(.2, 3, true);
+                    turnToHeading(.5, 0); // turn left 90 degrees
+                    holdHeading(.5, 0, 1); // hold -90 degrees heading for 2 a second
 
                     // Come Back down
                     pixelPlacerServo.setPosition(0);
                     sleep(1000);
                     pixelLiftMotor.setTargetPosition(0);
+
+                    driveStraight(.5, -20, 0);    // Drive Backward 10"
+                    turnToHeading(.5, 0); // turn left 90 degrees
+                    holdHeading(.5, 0, 1); // hold -90 degrees heading for 2 a second
+
 
                     telemetry.addData("CENTER", "Complete");
                     telemetry.update();
