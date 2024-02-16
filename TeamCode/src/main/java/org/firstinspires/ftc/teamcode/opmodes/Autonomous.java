@@ -278,7 +278,6 @@ public class Autonomous extends LinearOpMode {
             telemetry.addData("Running Blue_Backstage with pixel ", "");
             telemetry.update();
 //            sleep(2000);
-            purplePixelPath = Processor.Selected.LEFT;
             switch (purplePixelPath) {
                 case MIDDLE: {
                     desiredTagId = 1;
@@ -434,17 +433,13 @@ public class Autonomous extends LinearOpMode {
                     driveStraight(DRIVE_SPEED, 24, 0.0);    // Drive Forward 26"
                     redLED.setState(true);
                     holdHeading(TURN_SPEED,   0.0, 1);    // Hold  0 Deg heading for 2 seconds
-                    greenLED.setState(true);
-                    redLED.setState(false);
 
                     // If necessary, you can utilize the sensor to scan the line before you go forward and place the pixel
                     turnToHeading(TURN_SPEED, -80); // turn right 90 degrees
                     holdHeading(TURN_SPEED, -80, 1); // hold -90 degrees heading for 2 a second
 
-                    //driveStraightToLine(DRIVE_SPEED/4, 2, -80);    // Drive Forward 2"
+                    driveStraight(DRIVE_SPEED, 3, -80);
                     holdHeading(TURN_SPEED,   -80, 1);    // Hold heading for 2 seconds
-                    greenLED.setState(false);
-                    redLED.setState(true);
 
                     // OUTTAKE HERE
                     intakeLeft.setPower(.5);
@@ -476,11 +471,18 @@ public class Autonomous extends LinearOpMode {
                     pixelPlacerServo.setPosition(0.9);
                     sleep(1000);
 
+                    driveStraight(.5, 5, getHeading());    // Drive Backward 10"
+                    turnToHeading(.5, 0); // turn left 90 degrees
+                    holdHeading(.5, 0, 1); // hold -90 degrees heading for 2 a second
+
                     // Come Back down
-                    pixelPlacerServo.setPosition(0);
                     pixelPlacerServo.setPosition(0);
                     sleep(1000);
                     pixelLiftMotor.setTargetPosition(0);
+
+                    driveStraight(.5, -20, 0);    // Drive Backward 10"
+                    turnToHeading(.5, 0); // turn left 90 degrees
+                    holdHeading(.5, 0, 1); // hold -90 degrees heading for 2 a second
 
 
                     telemetry.addData("RIGHT Complete", "");
