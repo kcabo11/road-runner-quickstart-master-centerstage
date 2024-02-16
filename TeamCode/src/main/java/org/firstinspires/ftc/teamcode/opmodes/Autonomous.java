@@ -278,7 +278,7 @@ public class Autonomous extends LinearOpMode {
             telemetry.addData("Running Blue_Backstage with pixel ", "");
             telemetry.update();
 //            sleep(2000);
-            purplePixelPath = Processor.Selected.MIDDLE;
+            purplePixelPath = Processor.Selected.LEFT;
             switch (purplePixelPath) {
                 case MIDDLE: {
                     desiredTagId = 1;
@@ -338,15 +338,10 @@ public class Autonomous extends LinearOpMode {
                 case LEFT: {
                     desiredTagId = 1;
                     driveStraight(DRIVE_SPEED, 20, 0);    // Drive Forward 15"
-                    redLED.setState(true);
                     holdHeading(TURN_SPEED,   0.0, 1);    // Hold  0 Deg heading for 2 seconds
-                    greenLED.setState(true);
-                    redLED.setState(false);
 
                     turnToHeading(TURN_SPEED, 40); // turn left 40 degrees
                     holdHeading(TURN_SPEED, 40, 1); // hold heading for 2 a second
-                    greenLED.setState(false);
-                    redLED.setState(true);
                     // If necessary, you can utilize the sensor to scan the line before you go forward and place the pixel
                     driveStraight(DRIVE_SPEED, 7, 40);    // Drive Forward 7"
                     holdHeading(TURN_SPEED,   40, 1);    // Hold  heading for 2 seconds
@@ -366,31 +361,31 @@ public class Autonomous extends LinearOpMode {
                     turnToHeading(TURN_SPEED, -90); //
                     holdHeading(TURN_SPEED, -90, 1); // hold heading for 2 a second
 
-                    driveStraight(DRIVE_SPEED, -5, -90);    // Drive Forward 26"
+                    driveStraight(DRIVE_SPEED, -20, -90);    // Drive Forward 26"
                     holdHeading(TURN_SPEED,   -90, .5);    // Hold  heading for 2 seconds
 
-                      { // Alternate Route:
-                    strafeLeft(.4,.75, true);
-                    sleep(3500);
-                    driveStraight(DRIVE_SPEED, 23, 0);
-                    holdHeading(TURN_SPEED,0,1);
-
-                    turnToHeading(TURN_SPEED,-90);
-                    holdHeading(TURN_SPEED,-90,1);
-
-                    driveStraight(DRIVE_SPEED, 3,-90);
-                    holdHeading(TURN_SPEED,-90,1);
-
-                    intakeLeft.setPower(.5);
-                    intakeRight.setPower(-.5);
-                    sleep(500);
-                    intakeLeft.setPower(0);
-                    intakeRight.setPower(0);
-                    sleep(500);
-
-                    driveToAprilTag((5));
-                    // Place Pixel After this ^
-                }
+//                      { // Alternate Route:
+//                    strafeLeft(.4,.75, true);
+//                    sleep(3500);
+//                    driveStraight(DRIVE_SPEED, 23, 0);
+//                    holdHeading(TURN_SPEED,0,1);
+//
+//                    turnToHeading(TURN_SPEED,-90);
+//                    holdHeading(TURN_SPEED,-90,1);
+//
+//                    driveStraight(DRIVE_SPEED, 3,-90);
+//                    holdHeading(TURN_SPEED,-90,1);
+//
+//                    intakeLeft.setPower(.5);
+//                    intakeRight.setPower(-.5);
+//                    sleep(500);
+//                    intakeLeft.setPower(0);
+//                    intakeRight.setPower(0);
+//                    sleep(500);
+//
+//                    driveToAprilTag((5));
+//                    // Place Pixel After this ^
+//                }
 
                     // ONLY DO THIS IF YOU ARE IN FRONT OF THE BACKDROP
                     // OmniDrivetoAprilTag code here
@@ -399,12 +394,12 @@ public class Autonomous extends LinearOpMode {
                     // Once you square, you can move backward to a specified distance and place your pixel
 
                     driveToAprilTag((5));
-                    strafeLeft(.2,2, true);
-                    //sleep(1000);
+                    strafeRight(.3, .3, true);
 
                     // Place Pixel!!
-                    driveStraight(DRIVE_SPEED, -5, -90);    // Drive Backward 2"
-                    holdHeading(TURN_SPEED,   -90, 1);    // Hold  heading for 2 seconds
+                    turnToHeading(TURN_SPEED, -90); // Make a 180 degree turn
+                    holdHeading(TURN_SPEED, -90, 1); // Hold heading for 2 seconds
+
 
                     // Place your pixel here:
                     // First life your pixelliftmotor
@@ -415,11 +410,20 @@ public class Autonomous extends LinearOpMode {
 //                    // Flip your pixelplacerservo
                     pixelPlacerServo.setPosition(0.9);
                     sleep(1000);
-//                    // Come Back down
-                    pixelPlacerServo.setPosition(0);
+
+                    driveStraight(.5, 5, getHeading());    // Drive Backward 10"
+                    turnToHeading(.5, 0); // turn left 90 degrees
+                    holdHeading(.5, 0, 1); // hold -90 degrees heading for 2 a second
+
+                    // Come Back down
                     pixelPlacerServo.setPosition(0);
                     sleep(1000);
                     pixelLiftMotor.setTargetPosition(0);
+
+                    driveStraight(.5, -20, 0);    // Drive Backward 10"
+                    turnToHeading(.5, 0); // turn left 90 degrees
+                    holdHeading(.5, 0, 1); // hold -90 degrees heading for 2 a second
+
 
                     telemetry.addData("LEFT Complete", "");
                     telemetry.update();
