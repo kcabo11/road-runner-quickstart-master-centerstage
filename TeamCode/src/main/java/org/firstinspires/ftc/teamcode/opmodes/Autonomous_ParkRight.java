@@ -808,7 +808,7 @@ public class Autonomous_ParkRight extends LinearOpMode {
                     // That way, you can just place your purple pixel and pull back, ready for TeleOp
                     // If you are not going to interfere with your alliance, keep the following code to park
 
-                    driveStraight(DRIVE_SPEED, 30, 345);    // Drive Forward 30"
+                    driveStraight(DRIVE_SPEED, 28, 345);    // Drive Forward 30"
                     holdHeading(TURN_SPEED,   345, 1);    // Hold  heading for 2 seconds
 
                     //Turn toward truss
@@ -956,10 +956,11 @@ public class Autonomous_ParkRight extends LinearOpMode {
                 case MIDDLE: {
                     telemetry.addData("Center Spike Mark", 1);
                     telemetry.update();
-                    desiredTagId = 4;
+                    desiredTagId = 1;
                     driveStraight(DRIVE_SPEED, 47, 0.0);    // Drive Forward 28"
                     holdHeading(TURN_SPEED,   0.0, .5);    // Hold  0 Deg heading for .5 seconds
 
+                    turnToHeading(.5, 180);
                     holdHeading(TURN_SPEED,   180, 1);    // Hold  0 Deg heading for .5 seconds
 
                     // OUTTAKE PIXEL
@@ -995,6 +996,9 @@ public class Autonomous_ParkRight extends LinearOpMode {
                     sleep(500);
                     driveToAprilTag(5);
 
+                    turnToHeading(TURN_SPEED, 90); // Make a 180 degree turn
+                    holdHeading(TURN_SPEED, 90, 1); // Hold heading for 2 seconds
+
                     // Place your pixel here:
                     // First life your pixelliftmotor
                     pixelLiftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -1022,7 +1026,7 @@ public class Autonomous_ParkRight extends LinearOpMode {
                     telemetry.update();
 //                    sleep(1000);
 
-                    desiredTagId = 4;
+                    desiredTagId = 1;
                     driveStraight(DRIVE_SPEED, 24, 0.0);    // Drive Forward 26"
                     redLED.setState(true);
                     holdHeading(TURN_SPEED,   0.0, 1);    // Hold  0 Deg heading for 2 seconds
@@ -1111,19 +1115,19 @@ public class Autonomous_ParkRight extends LinearOpMode {
                     telemetry.addData("Right Spike Mark", 1);
                     telemetry.update();
 
-                    desiredTagId = 5;
+                    desiredTagId = 2;
                     driveStraight(DRIVE_SPEED, 24, 0.0);    // Drive Forward 26"
                     redLED.setState(true);
-                    holdHeading(TURN_SPEED,   0.0, 1);    // Hold  0 Deg heading for 2 seconds
+                    holdHeading(TURN_SPEED,   0.0, .5);    // Hold  0 Deg heading for 2 seconds
                     greenLED.setState(true);
                     redLED.setState(false);
 
                     // If necessary, you can utilize the sensor to scan the line before you go forward and place the pixel
                     turnToHeading(TURN_SPEED, -80); // turn right 90 degrees
-                    holdHeading(TURN_SPEED, -80, 1); // hold -90 degrees heading for 2 a second
+                    holdHeading(TURN_SPEED, -80, .5); // hold -90 degrees heading for 2 a second
 
-                    driveStraight(DRIVE_SPEED, 3, -80);
-                    holdHeading(TURN_SPEED,   -80, 1);    // Hold heading for 2 seconds
+                    driveStraight(DRIVE_SPEED, 2, -80);
+                    holdHeading(TURN_SPEED,   -80, .5);    // Hold heading for 2 seconds
                     greenLED.setState(false);
                     redLED.setState(true);
 
@@ -1137,7 +1141,7 @@ public class Autonomous_ParkRight extends LinearOpMode {
                     sleep(1000);
 
                     driveStraight(DRIVE_SPEED, -5, -80);
-                    holdHeading(TURN_SPEED,   -80, 1);    // Hold heading for 2 seconds
+                    holdHeading(TURN_SPEED,   -80, .5);    // Hold heading for 2 seconds
                     turnToHeading(TURN_SPEED, 0); // turn right 90 degrees
                     holdHeading(TURN_SPEED, 0, 0); // hold -90 degrees heading for 2 a second
 
@@ -1146,8 +1150,8 @@ public class Autonomous_ParkRight extends LinearOpMode {
                     // That way, you can just place your purple pixel and pull back, ready for TeleOp
                     // If you are not going to interfere with your alliance, keep the following code to park
 
-                    driveStraight(DRIVE_SPEED, 30, 0);    // Drive Forward 30"
-                    holdHeading(TURN_SPEED,   0, 1);    // Hold  heading for 2 seconds
+                    driveStraight(DRIVE_SPEED, 28, 0);    // Drive Forward 30"
+                    holdHeading(TURN_SPEED,   0, .5);    // Hold  heading for 2 seconds
 
                     //Turn toward truss
                     turnToHeading(.5, 90);
