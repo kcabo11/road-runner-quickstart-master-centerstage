@@ -956,7 +956,7 @@ public class Autonomous_ParkRight extends LinearOpMode {
                 case MIDDLE: {
                     telemetry.addData("Center Spike Mark", 1);
                     telemetry.update();
-                    desiredTagId = 1;
+                    desiredTagId = 4;
                     driveStraight(DRIVE_SPEED, 47, 0.0);    // Drive Forward 28"
                     holdHeading(TURN_SPEED,   0.0, .5);    // Hold  0 Deg heading for .5 seconds
 
@@ -1026,7 +1026,7 @@ public class Autonomous_ParkRight extends LinearOpMode {
                     telemetry.update();
 //                    sleep(1000);
 
-                    desiredTagId = 1;
+                    desiredTagId = 4;
                     driveStraight(DRIVE_SPEED, 24, 0.0);    // Drive Forward 26"
                     redLED.setState(true);
                     holdHeading(TURN_SPEED,   0.0, 1);    // Hold  0 Deg heading for 2 seconds
@@ -1115,7 +1115,7 @@ public class Autonomous_ParkRight extends LinearOpMode {
                     telemetry.addData("Right Spike Mark", 1);
                     telemetry.update();
 
-                    desiredTagId = 2;
+                    desiredTagId = 5;
                     driveStraight(DRIVE_SPEED, 24, 0.0);    // Drive Forward 26"
                     redLED.setState(true);
                     holdHeading(TURN_SPEED,   0.0, .5);    // Hold  0 Deg heading for 2 seconds
