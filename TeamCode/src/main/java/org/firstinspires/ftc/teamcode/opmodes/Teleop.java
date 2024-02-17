@@ -431,8 +431,8 @@ public class Teleop extends LinearOpMode {
             if (gamepad2.dpad_down){
                 pixelPlacerServoStateMachine = 1; //reset the pixel placer state machine so it goes to mid on the next placement.
                 if (pixelLiftMotor.getCurrentPosition() > -700) {
-                    pixelPlacerServo.setPosition(0);
-                    sleep(1000);
+//                    pixelPlacerServo.setPosition(0);
+                    //sleep(1300);
                     pixelLiftMotor.setTargetPosition(0);
                     pixelLiftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     pixelLiftMotor.setPower(-.5);
@@ -443,7 +443,7 @@ public class Teleop extends LinearOpMode {
                     pixelLiftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     pixelLiftMotor.setPower(-.5);
                     pixelliftMotorStateMachine = 1;
-                    pixelPlacerServo.setPosition(0);
+//                    pixelPlacerServo.setPosition(0);
                 }
             }
 
@@ -590,49 +590,49 @@ public class Teleop extends LinearOpMode {
             // ==================================== TELEMETRY =========================================
             // Send telemetry message to signify robot running;
 
-            telemetry.addData("leftFront: ", leftFront.getCurrentPosition());
-            telemetry.addData("leftBack: ", leftBack.getCurrentPosition());
-            telemetry.addData("rightBack: ", rightBack.getCurrentPosition());
-            telemetry.addData("rightFront: ", rightFront.getCurrentPosition());
-
-            telemetry.addData("v1", v1);
-            telemetry.addData("v2", v2);
-            telemetry.addData("v3", v3);
-            telemetry.addData("v4", v4);
-
-
-            telemetry.addData("pixelLiftMotor pos: ", pixelLiftMotor.getCurrentPosition());
-            telemetry.addData("pixelLiftMotor pwr: ", pixelLiftMotor.getPower());
-            telemetry.addData("liftMotor pwr: ", liftMotor.getPower());
-            telemetry.addData("DPAD UP", gamepad2.dpad_up);
-            telemetry.addData("DPAD DOWN", gamepad2.dpad_down);
-            telemetry.addData("gamepad2.b", gamepad2.b);
-//            telemetry.addData("gamepad2.x", gamepad2.x);
-            telemetry.addData("gamepad2.left_bumper", gamepad2.left_bumper);
-            telemetry.addData("gamepad2.right_bumper", gamepad2.right_bumper);
-            telemetry.addData("pixelliftMotor Encoder Position: ", pixelLiftMotor.getCurrentPosition());
-            telemetry.addData("pixelliftMotor State Value: ", pixelliftMotorStateMachine);
-            telemetry.addData("pixelPlacerServo State Value: ", pixelPlacerServoStateMachine);
-            telemetry.addData("pixelPlacerServo Position: ", pixelPlacerServo.getPosition());
-            telemetry.addData("DroneLauncher Position: ", DroneLauncher.getPosition());
-            telemetry.addData("DroneLauncher State: ", planeStateMachine);
-            telemetry.addData("Default Hue", DEFAULTHUE);
-            telemetry.addData("number of pixels", pixels);
-            //FOR TEST - CAN BE REMOVED (Floor Sensor)
-            Color.RGBToHSV(floorSensor.red() * 8, floorSensor.green() * 8, floorSensor.blue() * 8, hsvValuesFloor);
-            telemetry.addData("floor color sensor", (hsvValues[0]));
-            telemetry.addData("colorSensorState: ", colorSensorState);
-            telemetry.addData("hsvValues: ",hsvValues[0]);
-            telemetry.addData("Blue: ", colorSensor.blue());
-            telemetry.addData("Green: ", colorSensor.green());
-            telemetry.addData("Red: ", colorSensor.red());
-
-            telemetry.update();
+//            telemetry.addData("leftFront: ", leftFront.getCurrentPosition());
+//            telemetry.addData("leftBack: ", leftBack.getCurrentPosition());
+//            telemetry.addData("rightBack: ", rightBack.getCurrentPosition());
+//            telemetry.addData("rightFront: ", rightFront.getCurrentPosition());
+//
+//            telemetry.addData("v1", v1);
+//            telemetry.addData("v2", v2);
+//            telemetry.addData("v3", v3);
+//            telemetry.addData("v4", v4);
+//
+//
+//            telemetry.addData("pixelLiftMotor pos: ", pixelLiftMotor.getCurrentPosition());
+//            telemetry.addData("pixelLiftMotor pwr: ", pixelLiftMotor.getPower());
+//            telemetry.addData("liftMotor pwr: ", liftMotor.getPower());
+//            telemetry.addData("DPAD UP", gamepad2.dpad_up);
+//            telemetry.addData("DPAD DOWN", gamepad2.dpad_down);
+//            telemetry.addData("gamepad2.b", gamepad2.b);
+////            telemetry.addData("gamepad2.x", gamepad2.x);
+//            telemetry.addData("gamepad2.left_bumper", gamepad2.left_bumper);
+//            telemetry.addData("gamepad2.right_bumper", gamepad2.right_bumper);
+//            telemetry.addData("pixelliftMotor Encoder Position: ", pixelLiftMotor.getCurrentPosition());
+//            telemetry.addData("pixelliftMotor State Value: ", pixelliftMotorStateMachine);
+//            telemetry.addData("pixelPlacerServo State Value: ", pixelPlacerServoStateMachine);
+//            telemetry.addData("pixelPlacerServo Position: ", pixelPlacerServo.getPosition());
+//            telemetry.addData("DroneLauncher Position: ", DroneLauncher.getPosition());
+//            telemetry.addData("DroneLauncher State: ", planeStateMachine);
+//            telemetry.addData("Default Hue", DEFAULTHUE);
+//            telemetry.addData("number of pixels", pixels);
+//            //FOR TEST - CAN BE REMOVED (Floor Sensor)
+//            Color.RGBToHSV(floorSensor.red() * 8, floorSensor.green() * 8, floorSensor.blue() * 8, hsvValuesFloor);
+//            telemetry.addData("floor color sensor", (hsvValues[0]));
+//            telemetry.addData("colorSensorState: ", colorSensorState);
+//            telemetry.addData("hsvValues: ",hsvValues[0]);
+//            telemetry.addData("Blue: ", colorSensor.blue());
+//            telemetry.addData("Green: ", colorSensor.green());
+//            telemetry.addData("Red: ", colorSensor.red());
+//
+//            telemetry.update();
 
             //
 
             // Pace this loop so jaw action is reasonable speed.
-            sleep(50);
+            //sleep(50);
         }
     }
 }

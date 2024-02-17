@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.opmodes;
 import android.util.Size;
 
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.ColorSensor;
@@ -86,8 +87,8 @@ import java.util.concurrent.TimeUnit;
  *  Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  */
 
-@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name="Autonomous", group="Robot")
-//@Disabled
+@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name="Autonomous_ParkLeft", group="Robot")
+@Disabled
 public class Autonomous_ParkLeft extends LinearOpMode {
 
     // Huskylens Integration
@@ -408,7 +409,8 @@ public class Autonomous_ParkLeft extends LinearOpMode {
                     pixelPlacerServo.setPosition(0.9);
                     sleep(1000);
 
-                    driveStraight(.5, 5, getHeading());    // Drive Backward 10"
+                    driveStraight(+
+                            .5, 5, getHeading());    // Drive Backward 10"
                     turnToHeading(.5, 0); // turn left 90 degrees
                     holdHeading(.5, 0, 1); // hold -90 degrees heading for 2 a second
 
