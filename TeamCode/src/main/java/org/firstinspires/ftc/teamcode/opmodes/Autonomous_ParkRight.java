@@ -584,14 +584,14 @@ public class Autonomous_ParkRight extends LinearOpMode {
                     // Once you square, you can move backward to a specified distance and place your pixel
 //                    driveStraight(DRIVE_SPEED, -35, 90);    // Drive Backward 38"
 //                    holdHeading(TURN_SPEED,   90, 2);    // Hold heading for 2 seconds
-                    precision = 2;
+                    precision = 2.5;
                     TURN_GAIN = .3;
                     driveToAprilTag(5);
 
                     turnToHeading(TURN_SPEED, 90); // turn left 90 degrees
                     holdHeading(TURN_SPEED, 90, 1); // hold 90 degrees heading for 2 a second
 
-                    strafeRight(.3, .3, true);
+                    strafeRight(.3, .1, true);
 
                     // Place Pixel!!
                     turnToHeading(TURN_SPEED, 90); // Make a 180 degree turn
@@ -661,7 +661,7 @@ public class Autonomous_ParkRight extends LinearOpMode {
                     turnToHeading(TURN_SPEED, 90); // make a 180 degree turn
                     holdHeading(TURN_SPEED, 90, 1); // hold heading for 2 a second
 
-                    driveStraight(DRIVE_SPEED, -8, 90);    // Drive Forward 26"
+                    driveStraight(DRIVE_SPEED, -6, 90);    // Drive Forward 26"
                     holdHeading(TURN_SPEED,   90, 1);    // Hold  heading for 2 seconds
                     // OmniDrivetoAprilTag code here
                     // This will drive you to the apriltag
@@ -691,7 +691,7 @@ public class Autonomous_ParkRight extends LinearOpMode {
                     sleep(1000);
                     pixelLiftMotor.setTargetPosition(0);
 
-                    driveStraight(.5, -20, 0);    // Drive Backward 10"
+                    driveStraight(.5, -15, 0);    // Drive Backward 10"
                     turnToHeading(.5, 0); // turn left 90 degrees
                     holdHeading(.5, 0, 1); // hold -90 degrees heading for 2 a second
 
@@ -730,13 +730,13 @@ public class Autonomous_ParkRight extends LinearOpMode {
                     //Turn torward truss
                     turnToHeading(.5, 270);
                     holdHeading(.5,   270, .5);    // Hold  0 Deg heading for 2 seconds
-                    driveStraight(.5, -75, 270);    // Drive Backward 10"
+                    driveStraight(.5, -72, 270);    // Drive Backward 10"
                     holdHeading(TURN_SPEED,   270, .5);    // Hold  0 Deg heading for 2 seconds
 
                     turnToHeading(.5, 180);
                     holdHeading(TURN_SPEED,   180, .5);    // Hold  0 Deg heading for .5 seconds
 
-                    driveStraight(DRIVE_SPEED, 20, 180);    // Drive Backward 35"
+                    driveStraight(DRIVE_SPEED, 23, 180);    // Drive Backward 35"
                     holdHeading(TURN_SPEED,   180, .5);    // Hold  0 Deg heading for .5 seconds
                     turnToHeading(.5, 270);
                     holdHeading(.5,   270, .5);
@@ -798,7 +798,7 @@ public class Autonomous_ParkRight extends LinearOpMode {
                     intakeRight.setPower(0);
                     sleep(500);
 
-                    driveStraight(DRIVE_SPEED, -6, 280);
+                    driveStraight(DRIVE_SPEED, -5, 280);
                     holdHeading(TURN_SPEED,   280, 1);    // Hold heading for 2 seconds
                     turnToHeading(TURN_SPEED, 345); // turn right 90 degrees
                     holdHeading(TURN_SPEED, 345, 0.1); // hold -90 degrees heading for 2 a second
@@ -895,7 +895,7 @@ public class Autonomous_ParkRight extends LinearOpMode {
                     // That way, you can just place your purple pixel and pull back, ready for TeleOp
                     // If you are not going to interfere with your alliance, keep the following code to park
 
-                    driveStraight(DRIVE_SPEED, 24, 0);    // Drive Forward 30"
+                    driveStraight(DRIVE_SPEED, 25, 0);    // Drive Forward 30"
                     holdHeading(TURN_SPEED,   0, 1);    // Hold  heading for 2 seconds
 
                     //Turn toward truss
@@ -1221,7 +1221,7 @@ public class Autonomous_ParkRight extends LinearOpMode {
         if (blocks.length > 0) {
             for (int i = 0; i < blocks.length; i++) {
                 if ((blocks[i].id == colorID) && (blocks[i].width > 10) && (blocks[i].height > 10)
-                        && (blocks[i].width < 50) && (blocks[i].height < 70)) {
+                        && (blocks[i].width < 50) && (blocks[i].height < 70)  && (blocks[i].y < 180)) {
                     telemetry.addData("Block", blocks[i].toString());
                     telemetry.addData("", huskyLens.blocks());
                     telemetry.addData("Xvalue: ", blocks[i].x);
@@ -1550,7 +1550,7 @@ public class Autonomous_ParkRight extends LinearOpMode {
     }
 
     // Adjust these numbers to suit your robot.
-    final double DESIRED_DISTANCE = 2.0; //  this is how close the camera should get to the target (inches)
+    final double DESIRED_DISTANCE = 4.0; //  this is how close the camera should get to the target (inches)
 
     //  Set the GAIN constants to control the relationship between the measured position error, and how much power is
     //  applied to the drive motors to correct the error.

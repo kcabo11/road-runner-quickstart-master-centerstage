@@ -242,8 +242,8 @@ public class Teleop extends LinearOpMode {
             double dpad_y = 0, dpad_x = 0;
             if (gamepad1.dpad_left) {dpad_x = -1;}
             if (gamepad1.dpad_right) {dpad_x = 1;}
-            if (gamepad1.dpad_up) {dpad_y = -.6;}
-            if (gamepad1.dpad_down) {dpad_y = .6;}
+            if (gamepad1.dpad_up) {dpad_y = -1;}
+            if (gamepad1.dpad_down) {dpad_y = 1;}
 
             double r, robotAngle, rightX;
             if (gamepad1.dpad_left || gamepad1.dpad_down || gamepad1.dpad_up || gamepad1.dpad_right) {
@@ -264,19 +264,19 @@ public class Teleop extends LinearOpMode {
                 v2 = (r * Math.sin(robotAngle) + (rightX * scaleTurningSpeed)) * scaleFactor * direction;
                 v3 = (r * Math.sin(robotAngle) - (rightX * scaleTurningSpeed)) * scaleFactor * direction;
                 v4 = (r * Math.cos(robotAngle) + (rightX * scaleTurningSpeed)) * scaleFactor * direction;
-                leftFront.setPower(v1);
-                rightFront.setPower(v2);
-                leftBack.setPower(v3);
-                rightBack.setPower(v4);
+                leftFront.setPower(v1/2);
+                rightFront.setPower(v2/2);
+                leftBack.setPower(v3/2);
+                rightBack.setPower(v4/2);
             } else {
                 v1 = (r * Math.cos(robotAngle) + (rightX * scaleTurningSpeed)) * scaleFactor * direction;
                 v2 = (r * Math.sin(robotAngle) - (rightX * scaleTurningSpeed)) * scaleFactor * direction;
                 v3 = (r * Math.sin(robotAngle) + (rightX * scaleTurningSpeed)) * scaleFactor * direction;
                 v4 = (r * Math.cos(robotAngle) - (rightX * scaleTurningSpeed)) * scaleFactor * direction;
-                leftFront.setPower(v1);
-                rightFront.setPower(v2);
-                leftBack.setPower(v3);
-                rightBack.setPower(v4);
+                leftFront.setPower(v1/2);
+                rightFront.setPower(v2/2);
+                leftBack.setPower(v3/2);
+                rightBack.setPower(v4/2);
             }
 
             // GM0 Code for Debugging

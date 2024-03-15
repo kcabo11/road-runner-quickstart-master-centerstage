@@ -72,8 +72,8 @@ public class RobotAutoDriveToLine_Linear extends LinearOpMode {
     /** The variable to store a reference to our color sensor hardware object */
     NormalizedColorSensor colorSensor;
 
-    static final double     WHITE_THRESHOLD = 0.55;  // spans between 0.0 - 1.0 from dark to light
-    static final double     APPROACH_SPEED  = 0.15;
+    static double     WHITE_THRESHOLD = 0.55;  // spans between 0.0 - 1.0 from dark to light
+    static double     APPROACH_SPEED  = 0.15;
 
     @Override
     public void runOpMode() {
@@ -109,7 +109,7 @@ public class RobotAutoDriveToLine_Linear extends LinearOpMode {
         // Get a reference to our sensor object. It's recommended to use NormalizedColorSensor over
         // ColorSensor, because NormalizedColorSensor consistently gives values between 0 and 1, while
         // the values you get from ColorSensor are dependent on the specific sensor you're using.
-        colorSensor = hardwareMap.get(NormalizedColorSensor.class, "floorSensor");
+        colorSensor = hardwareMap.get(NormalizedColorSensor.class, "lineDetectionRight");
 
         // If necessary, turn ON the white LED (if there is no LED switch on the sensor)
         if (colorSensor instanceof SwitchableLight) {
@@ -148,6 +148,20 @@ public class RobotAutoDriveToLine_Linear extends LinearOpMode {
         rightFrontDrive.setPower(0);
         rightBackDrive.setPower(0);
 
+        // After you pass the line, come back at a slower speed and catch the line
+        APPROACH_SPEED = .1;
+        leftFrontDrive.setPower(APPROACH_SPEED);
+        leftBackDrive.setPower(APPROACH_SPEED);
+        rightFrontDrive.setPower(APPROACH_SPEED);
+        rightBackDrive.setPower(APPROACH_SPEED);
+        // run until the white line is seen OR the driver presses STOP;
+        while (opModeIsActive() && (getBrightness() < WHITE_THRESHOLD)) {
+            sleep(5);
+        }
+        leftFrontDrive.setPower(0);
+        leftBackDrive.setPower(0);
+        rightFrontDrive.setPower(0);
+        rightBackDrive.setPower(0);
     }
 
     // to obtain reflected light, read the normalized values from the color sensor.  Return the Alpha channel.
