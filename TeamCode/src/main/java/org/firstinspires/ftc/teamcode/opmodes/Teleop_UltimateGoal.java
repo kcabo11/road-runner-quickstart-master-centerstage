@@ -27,6 +27,7 @@ public class Teleop_UltimateGoal extends LinearOpMode
 //    private Servo claw;
 //    private Servo fireSelector;
     private RevBlinkinLedDriver lights;
+    private DigitalChannel redLED;
 //    public ElapsedTime clawruntime = new ElapsedTime();
 //    public ElapsedTime fireruntime = new ElapsedTime();
     public ElapsedTime intakehelperruntime = new ElapsedTime();
@@ -92,7 +93,11 @@ public class Teleop_UltimateGoal extends LinearOpMode
 //        fireSelector = hardwareMap.servo.get("fire_selector");
 //        arm = hardwareMap.dcMotor.get("arm");
 //        claw = hardwareMap.servo.get("claw");
-        lights = hardwareMap.get(RevBlinkinLedDriver.class, "LED");
+//        lights = hardwareMap.get(RevBlinkinLedDriver.class, "LED");
+        redLED = hardwareMap.get(DigitalChannel.class, "red");
+        // change LED mode from input to output
+        redLED.setMode(DigitalChannel.Mode.OUTPUT);
+
         rightBack.setDirection(DcMotorSimple.Direction.REVERSE);
         rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
         waitForStart();
@@ -132,7 +137,8 @@ public class Teleop_UltimateGoal extends LinearOpMode
 
             // TESTING LED LIGHT
             if (gamepad2.b) {
-                lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.YELLOW);
+//                lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.YELLOW);
+                redLED.setState(true);
             }
 
             //flywheel
