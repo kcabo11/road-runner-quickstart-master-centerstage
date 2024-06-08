@@ -23,4 +23,8 @@ android {
     namespace = 'com.qualcomm.ftcrobotcontroller'
 }
 
+dependencies {
+    implementation fileTree(dir: 'C:\\Users\\Admin\\StudioProjects\\road-runner-quickstart-master-centerstage\\libs', include: ['*.aar', '*.jar'], exclude: [])
+}
+
 apply from: '../build.dependencies.gradle'

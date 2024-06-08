@@ -37,6 +37,7 @@ import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -74,8 +75,10 @@ public class Teleop extends LinearOpMode {
     public Servo pixelLoaderRight = null;
 
     ColorSensor colorSensor;    // Hardware Device Object
-    ColorSensor floorSensor;    // Hardware Device Object
+//    ColorSensor floorSensor;    // Hardware Device Object
 
+    DistanceSensor distanceSensor1;
+    DistanceSensor distanceSensor2;
 
     public ModernRoboticsI2cColorSensor frontColorSensor = null;
 
@@ -84,7 +87,7 @@ public class Teleop extends LinearOpMode {
 
     double clawOffset = 0;
     double scaleTurningSpeed = .8;
-    double scaleFactor = 1;
+    double scaleFactor = .5;
     int direction = -1;
 
     HardwareMap hwMap = null;
@@ -138,7 +141,9 @@ public class Teleop extends LinearOpMode {
         pixelLiftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         pixelLiftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         colorSensor = hardwareMap.get(ColorSensor.class, "sensorColor");
-        floorSensor = hardwareMap.get(ColorSensor.class, "floorSensor");
+//        floorSensor = hardwareMap.get(ColorSensor.class, "floorSensor");
+        distanceSensor1 = hardwareMap.get(DistanceSensor.class, "distanceSensor1");
+        distanceSensor2 = hardwareMap.get(DistanceSensor.class, "distanceSensor2");
 
         // Get the LED colors and touch sensor from the hardwaremap
         redLED = hardwareMap.get(DigitalChannel.class, "red");
@@ -240,43 +245,43 @@ public class Teleop extends LinearOpMode {
 //            }
 
             double dpad_y = 0, dpad_x = 0;
-            if (gamepad1.dpad_left) {dpad_x = -1;}
-            if (gamepad1.dpad_right) {dpad_x = 1;}
-            if (gamepad1.dpad_up) {dpad_y = -1;}
-            if (gamepad1.dpad_down) {dpad_y = 1;}
+            if (gamepad1.dpad_left) {dpad_x = -2;}
+            if (gamepad1.dpad_right) {dpad_x = 2;}
+            if (gamepad1.dpad_up) {dpad_y = -2;}
+            if (gamepad1.dpad_down) {dpad_y = 2;}
 
             double r, robotAngle, rightX;
-            if (gamepad1.dpad_left || gamepad1.dpad_down || gamepad1.dpad_up || gamepad1.dpad_right) {
-                r = Math.hypot(-dpad_x, dpad_y);
-                robotAngle = Math.atan2(-dpad_y, dpad_x) - Math.PI / 4;
-                rightX = 0;
-                scaleFactor = .4;
-            }
-            else {
+//            if (gamepad1.dpad_left || gamepad1.dpad_down || gamepad1.dpad_up || gamepad1.dpad_right) {
+//                r = Math.hypot(-dpad_x, dpad_y);
+//                robotAngle = Math.atan2(-dpad_y, dpad_x) - Math.PI / 4;
+//                rightX = 0;
+//                scaleFactor = 1;
+//            }
+//            else {
                 r = Math.hypot(-gamepad1.left_stick_x, gamepad1.left_stick_y);
                 robotAngle = Math.atan2(-gamepad1.left_stick_y, gamepad1.left_stick_x) - Math.PI / 4;
                 rightX = gamepad1.right_stick_x;
                 scaleFactor = 1;
-            }
+//            }
             // Default mode: The robot starts with the scaleTurningSpeed set to 1, scaleFactor set to 1, and direction set to forward.
             if (direction == 1) {
                 v1 = (r * Math.cos(robotAngle) - (rightX * scaleTurningSpeed)) * scaleFactor * direction;
                 v2 = (r * Math.sin(robotAngle) + (rightX * scaleTurningSpeed)) * scaleFactor * direction;
                 v3 = (r * Math.sin(robotAngle) - (rightX * scaleTurningSpeed)) * scaleFactor * direction;
                 v4 = (r * Math.cos(robotAngle) + (rightX * scaleTurningSpeed)) * scaleFactor * direction;
-                leftFront.setPower(v1/2);
-                rightFront.setPower(v2/2);
-                leftBack.setPower(v3/2);
-                rightBack.setPower(v4/2);
+                leftFront.setPower(v1);
+                rightFront.setPower(v2);
+                leftBack.setPower(v3);
+                rightBack.setPower(v4);
             } else {
                 v1 = (r * Math.cos(robotAngle) + (rightX * scaleTurningSpeed)) * scaleFactor * direction;
                 v2 = (r * Math.sin(robotAngle) - (rightX * scaleTurningSpeed)) * scaleFactor * direction;
                 v3 = (r * Math.sin(robotAngle) + (rightX * scaleTurningSpeed)) * scaleFactor * direction;
                 v4 = (r * Math.cos(robotAngle) - (rightX * scaleTurningSpeed)) * scaleFactor * direction;
-                leftFront.setPower(v1/2);
-                rightFront.setPower(v2/2);
-                leftBack.setPower(v3/2);
-                rightBack.setPower(v4/2);
+                leftFront.setPower(v1);
+                rightFront.setPower(v2);
+                leftBack.setPower(v3);
+                rightBack.setPower(v4);
             }
 
             // GM0 Code for Debugging
@@ -537,56 +542,56 @@ public class Teleop extends LinearOpMode {
              * PIXEL COUNTER
              *****************************************/
             // convert the RGB values to HSV values.
-            Color.RGBToHSV(colorSensor.red() * 8, colorSensor.green() * 8, colorSensor.blue() * 8, hsvValues);
-
-            switch (colorSensorState) {
-                case 0: {
-                    if ((hsvValues[0] > (DEFAULTHUE * 1.1))) { // || (hsvValues[0] < (DEFAULTHUE - 2))) {
-                        //A pixel has been seen
-                        pixels++;
-                        colorSensorState = 1;
-                        redLED.setState(true);
-                        greenLED.setState(false);
-                    }
-                    break;
-                }
-                case 1: {
-                    if ((hsvValues[0] < (DEFAULTHUE * 1.1)) && (hsvValues[0] > (DEFAULTHUE * 0.9))) {
-                        //A pixel has been seen
-                        colorSensorState = 2;
-                    }
-                    break;
-                }
-                case 2: {
-                    if ((hsvValues[0] > (DEFAULTHUE * 1.1))) { // || (hsvValues[0] < (DEFAULTHUE - 2))) {
-                        pixels++;
-                        colorSensorState = 3;
-                        redLED.setState(false);
-                        greenLED.setState(true);
-                    }
-                    break;
-                }
-                case 3: {
-                    if (pixelPlacerServoStateMachine > 1) {
-                        // if the pixel placer has flipped, then reset to 0;;
-                        pixels = 0;
-                        colorSensorState = 4;
-                        redLED.setState(false);
-                        greenLED.setState(false);
-                    }
-                    break;
-                }
-                case 4: { //Pixel Lift
-                    if (pixelliftMotorStateMachine == 0)
-                    {
-//                        // set LED off
+//            Color.RGBToHSV(colorSensor.red() * 8, colorSensor.green() * 8, colorSensor.blue() * 8, hsvValues);
+//
+//            switch (colorSensorState) {
+//                case 0: {
+//                    if ((hsvValues[0] > (DEFAULTHUE * 1.1))) { // || (hsvValues[0] < (DEFAULTHUE - 2))) {
+//                        //A pixel has been seen
+//                        pixels++;
+//                        colorSensorState = 1;
+//                        redLED.setState(true);
+//                        greenLED.setState(false);
+//                    }
+//                    break;
+//                }
+//                case 1: {
+//                    if ((hsvValues[0] < (DEFAULTHUE * 1.1)) && (hsvValues[0] > (DEFAULTHUE * 0.9))) {
+//                        //A pixel has been seen
+//                        colorSensorState = 2;
+//                    }
+//                    break;
+//                }
+//                case 2: {
+//                    if ((hsvValues[0] > (DEFAULTHUE * 1.1))) { // || (hsvValues[0] < (DEFAULTHUE - 2))) {
+//                        pixels++;
+//                        colorSensorState = 3;
+//                        redLED.setState(false);
+//                        greenLED.setState(true);
+//                    }
+//                    break;
+//                }
+//                case 3: {
+//                    if (pixelPlacerServoStateMachine > 1) {
+//                        // if the pixel placer has flipped, then reset to 0;;
+//                        pixels = 0;
+//                        colorSensorState = 4;
 //                        redLED.setState(false);
 //                        greenLED.setState(false);
-                        // reset back to case 0
-                        colorSensorState = 0;
-                    }
-                }
-            }
+//                    }
+//                    break;
+//                }
+//                case 4: { //Pixel Lift
+//                    if (pixelliftMotorStateMachine == 0)
+//                    {
+////                        // set LED off
+////                        redLED.setState(false);
+////                        greenLED.setState(false);
+//                        // reset back to case 0
+//                        colorSensorState = 0;
+//                    }
+//                }
+//            }
             // ==================================== TELEMETRY =========================================
             // Send telemetry message to signify robot running;
 
@@ -627,6 +632,8 @@ public class Teleop extends LinearOpMode {
 //            telemetry.addData("Green: ", colorSensor.green());
 //            telemetry.addData("Red: ", colorSensor.red());
 //
+
+//            telemetry.addData(distanceSensor1.getDistance());
 //            telemetry.update();
 
             //
