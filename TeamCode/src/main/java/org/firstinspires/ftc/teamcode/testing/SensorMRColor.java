@@ -34,6 +34,7 @@ import android.graphics.Color;
 import android.view.View;
 
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cColorSensor;
+import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -41,6 +42,7 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.teamcode.utils.MovingAverage;
 
 /*
  *
@@ -56,14 +58,19 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  */
 @TeleOp(name = "Sensor: MR Color", group = "Sensor")
-@Disabled
+//@Disabled
 public class SensorMRColor extends LinearOpMode {
 
   ColorSensor colorSensor;    // Hardware Device Object
+  private MovingAverage movingAverage1 = new MovingAverage(10);
+  public DistanceSensor distanceSensor1;
 
 
   @Override
   public void runOpMode() {
+
+    distanceSensor1 = hardwareMap.get(DistanceSensor.class, "distanceSensor1");
+    Rev2mDistanceSensor sensorTimeOfFlight1 = (Rev2mDistanceSensor) distanceSensor1;
 
     // hsvValues is an array that will hold the hue, saturation, and value information.
     float hsvValues[] = {0F,0F,0F};
@@ -101,6 +108,22 @@ public class SensorMRColor extends LinearOpMode {
     // Note we use opModeIsActive() as our loop condition because it is an interruptible method.
     while (opModeIsActive()) {
 
+//    TESTING OBJECTIVE:
+//    Develop code for color and distance sensor to simultaneously count pixels as they pass by
+// ========================================================================================================================================
+      // Distance sensor code:
+      movingAverage1.add((float)(distanceSensor1.getDistance(DistanceUnit.CM)));
+      telemetry.addData("movingAverage1: ", movingAverage1.getAverage());
+      // Pseudocode:
+/*    1. Set a timer
+      2. Scan your "set distance"
+      3. If there is a decrease in distance, increment the pixel value
+      4. Pause scanning for (probably half a second) before you start rescanning
+ */
+
+
+// ========================================================================================================================================
+      // Color sensor code:
 
       // check the status of the x button on either gamepad.
       bCurrState = gamepad1.x;
@@ -155,6 +178,7 @@ public class SensorMRColor extends LinearOpMode {
 
 
       // send the info back to driver station using telemetry function.
+      // Color sensor telemetry:
       telemetry.addData("LED", bLedOn ? "On" : "Off");
       telemetry.addData("Clear", colorSensor.alpha());
       telemetry.addData("Red  ", colorSensor.red());
@@ -163,6 +187,13 @@ public class SensorMRColor extends LinearOpMode {
       telemetry.addData("Hue", hsvValues[0]);
       telemetry.addData("Default Hue", DEFAULTHUE);
       telemetry.addData("number of pixels", pixels);
+      // Distance Sensor Telemetry:
+      movingAverage1.add((float)(distanceSensor1.getDistance(DistanceUnit.CM)));
+      telemetry.addData("range1", String.format("%.01f cm", distanceSensor1.getDistance(DistanceUnit.CM)));
+      telemetry.addData("movingAverage1: ", movingAverage1.getAverage());
+
+      // ADD TELEMETRY FOR PIXEL COUNT - Color
+      // ADD TELEMETRY FOR PIXEL COUNT - Distance
 
       // change the background color to match the color detected by the RGB sensor.
       // pass a reference to the hue, saturation, and value array as an argument
