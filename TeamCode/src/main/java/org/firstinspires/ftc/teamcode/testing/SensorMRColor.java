@@ -40,6 +40,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.utils.MovingAverage;
@@ -64,7 +65,8 @@ public class SensorMRColor extends LinearOpMode {
   ColorSensor colorSensor;    // Hardware Device Object
   private MovingAverage movingAverage1 = new MovingAverage(10);
   public DistanceSensor distanceSensor1;
-
+  int distanceSensorStateMachine = 1;
+  ElapsedTime timer = new ElapsedTime();
 
   @Override
   public void runOpMode() {
@@ -90,9 +92,9 @@ public class SensorMRColor extends LinearOpMode {
     // bLedOn represents the state of the LED.
     boolean bLedOn = true;
 
-    int colorSensorState = 0, pixels = 0;
+    int colorSensorState = 0, colorCountpixels = 0, distanceCountpixels = 0;
     // get a reference to our ColorSensor object.
-    colorSensor = hardwareMap.get(ColorSensor.class, "floorSensor");
+    colorSensor = hardwareMap.get(ColorSensor.class, "colorSensor");
 
     // Set the LED in the beginning
     colorSensor.enableLed(bLedOn);
@@ -114,14 +116,31 @@ public class SensorMRColor extends LinearOpMode {
       // Distance sensor code:
       movingAverage1.add((float)(distanceSensor1.getDistance(DistanceUnit.CM)));
       telemetry.addData("movingAverage1: ", movingAverage1.getAverage());
-      // Pseudocode:
-/*    1. Set a timer
-      2. Scan your "set distance"
-      3. If there is a decrease in distance, increment the pixel value
-      4. Pause scanning for (probably half a second) before you start rescanning
- */
 
+      switch (distanceSensorStateMachine) {
+                case 1: {
+                    if (movingAverage1.getAverage() < 5) { //check for distance under __ cm (whatever the distance is between the sensor and pixel)
+                        distanceSensorStateMachine++;
+                        timer.reset();
+                        distanceCountpixels++;
+                        // IF YOU SEE IT GO TO CASE 2
+                    }
+                    break;
+                }
+                case 2: {
+                  if (timer.seconds() > 1.5) {
+                    distanceSensorStateMachine = 1;
+                        // WAIT FOR HALF A SECOND
+                    }
+                    break;
+                }
+            }
 
+            // Distance sensor task for next time:
+      /*
+            Modify the code to where the distance sensor can recognize a 10% change with any marginal threshold.
+            Basically, it should be able to recognize a change in distance no matter how far or close it starts
+       */
 // ========================================================================================================================================
       // Color sensor code:
 
@@ -146,7 +165,7 @@ public class SensorMRColor extends LinearOpMode {
         case 0: {
           if ((hsvValues[0] > (DEFAULTHUE * 1.1)) || (hsvValues[0] < (DEFAULTHUE * .9))) {
             //A pixel has been seen
-            pixels++;
+            colorCountpixels++;
             colorSensorState = 1;
           }
           break;
@@ -160,7 +179,7 @@ public class SensorMRColor extends LinearOpMode {
         }
         case 2: {
           if ((hsvValues[0] > (DEFAULTHUE * 1.1)) || (hsvValues[0] < (DEFAULTHUE * .9))) {
-            pixels++;
+            colorCountpixels++;
             colorSensorState = 3;
           }
           break;
@@ -169,7 +188,7 @@ public class SensorMRColor extends LinearOpMode {
           if ((hsvValues[0] < (DEFAULTHUE * 1.1)) && (hsvValues[0] > (DEFAULTHUE * .9))) {
             // if the pixel placer has flipped, then reset to 0;;
             // pixels = 0;
-            //colorSensorState = 0;
+            colorSensorState = 0;
           }
           break;
         }
@@ -186,11 +205,15 @@ public class SensorMRColor extends LinearOpMode {
       telemetry.addData("Blue ", colorSensor.blue());
       telemetry.addData("Hue", hsvValues[0]);
       telemetry.addData("Default Hue", DEFAULTHUE);
-      telemetry.addData("number of pixels", pixels);
+      telemetry.addData("Distance Pixel Count:", distanceCountpixels);
+      telemetry.addData("Color Pixel Count:", colorCountpixels);
+
       // Distance Sensor Telemetry:
       movingAverage1.add((float)(distanceSensor1.getDistance(DistanceUnit.CM)));
       telemetry.addData("range1", String.format("%.01f cm", distanceSensor1.getDistance(DistanceUnit.CM)));
       telemetry.addData("movingAverage1: ", movingAverage1.getAverage());
+      telemetry.addData("DistanceStateMachine:", distanceSensorStateMachine);
+      telemetry.addData("ColorStateMachine:", colorSensorState);
 
       // ADD TELEMETRY FOR PIXEL COUNT - Color
       // ADD TELEMETRY FOR PIXEL COUNT - Distance

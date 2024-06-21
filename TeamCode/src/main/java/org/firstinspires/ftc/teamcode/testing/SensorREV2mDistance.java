@@ -67,12 +67,12 @@ public class SensorREV2mDistance extends LinearOpMode {
 
         // you can use this as a regular DistanceSensor.
         distanceSensor1 = hardwareMap.get(DistanceSensor.class, "distanceSensor1");
-        distanceSensor2 = hardwareMap.get(DistanceSensor.class, "distanceSensor2");
+//        distanceSensor2 = hardwareMap.get(DistanceSensor.class, "distanceSensor2");
 
         // you can also cast this to a Rev2mDistanceSensor if you want to use added
         // methods associated with the Rev2mDistanceSensor class.
         Rev2mDistanceSensor sensorTimeOfFlight1 = (Rev2mDistanceSensor) distanceSensor1;
-        Rev2mDistanceSensor sensorTimeOfFlight2 = (Rev2mDistanceSensor) distanceSensor2;
+//        Rev2mDistanceSensor sensorTimeOfFlight2 = (Rev2mDistanceSensor) distanceSensor2;
 
         telemetry.addData(">>", "Press start to continue");
         telemetry.update();
@@ -92,17 +92,17 @@ public class SensorREV2mDistance extends LinearOpMode {
 
             // Distance Sensor 2 Telemetry
             // generic DistanceSensor methods.
-            movingAverage2.add((float)(distanceSensor2.getDistance(DistanceUnit.CM)));
-//            telemetry.addData("distanceSensor2", distanceSensor2.getDeviceName() );
-//            telemetry.addData("range", String.format("%.01f mm", distanceSensor2.getDistance(DistanceUnit.MM)));
-            telemetry.addData("range2", String.format("%.01f cm", distanceSensor2.getDistance(DistanceUnit.CM)));
-//            telemetry.addData("range", String.format("%.01f m", distanceSensor2.getDistance(DistanceUnit.METER)));
-//            telemetry.addData("range", String.format("%.01f in", distanceSensor2.getDistance(DistanceUnit.INCH)));
-            telemetry.addData("movingAverage2: ", movingAverage2.getAverage());
+//            movingAverage2.add((float)(distanceSensor2.getDistance(DistanceUnit.CM)));
+////            telemetry.addData("distanceSensor2", distanceSensor2.getDeviceName() );
+////            telemetry.addData("range", String.format("%.01f mm", distanceSensor2.getDistance(DistanceUnit.MM)));
+//            telemetry.addData("range2", String.format("%.01f cm", distanceSensor2.getDistance(DistanceUnit.CM)));
+////            telemetry.addData("range", String.format("%.01f m", distanceSensor2.getDistance(DistanceUnit.METER)));
+////            telemetry.addData("range", String.format("%.01f in", distanceSensor2.getDistance(DistanceUnit.INCH)));
+//            telemetry.addData("movingAverage2: ", movingAverage2.getAverage());
 
-            // Rev2mDistanceSensor specific methods.
-            telemetry.addData("ID", String.format("%x", sensorTimeOfFlight2.getModelID()));
-            telemetry.addData("did time out", Boolean.toString(sensorTimeOfFlight2.didTimeoutOccur()));
+//            // Rev2mDistanceSensor specific methods.
+//            telemetry.addData("ID", String.format("%x", sensorTimeOfFlight2.getModelID()));
+//            telemetry.addData("did time out", Boolean.toString(sensorTimeOfFlight2.didTimeoutOccur()));
 
             telemetry.update();
         }
