@@ -67,6 +67,7 @@ public class SensorMRColor extends LinearOpMode {
   public DistanceSensor distanceSensor1;
   int distanceSensorStateMachine = 1;
   ElapsedTime timer = new ElapsedTime();
+  float DEFAULT_DISTANCE = 0;
 
   @Override
   public void runOpMode() {
@@ -100,7 +101,13 @@ public class SensorMRColor extends LinearOpMode {
     colorSensor.enableLed(bLedOn);
 
     // wait for the start button to be pressed.
-    waitForStart();
+
+    while (opModeInInit()) {
+      movingAverage1.add((float)(distanceSensor1.getDistance(DistanceUnit.CM)));
+      DEFAULT_DISTANCE =  movingAverage1.getAverage();
+      telemetry.addData("movingAverage1: ", movingAverage1.getAverage());
+      telemetry.addData("Status", "Waiting for Start");    //
+    }
 
     // convert the RGB values to HSV values.
     Color.RGBToHSV(colorSensor.red() * 8, colorSensor.green() * 8, colorSensor.blue() * 8, hsvValues);
@@ -117,9 +124,11 @@ public class SensorMRColor extends LinearOpMode {
       movingAverage1.add((float)(distanceSensor1.getDistance(DistanceUnit.CM)));
       telemetry.addData("movingAverage1: ", movingAverage1.getAverage());
 
+
+
       switch (distanceSensorStateMachine) {
                 case 1: {
-                    if (movingAverage1.getAverage() < 5) { //check for distance under __ cm (whatever the distance is between the sensor and pixel)
+                    if (movingAverage1.getAverage() < (DEFAULT_DISTANCE * .9)) { //check for distance under __ cm (whatever the distance is between the sensor and pixel)
                         distanceSensorStateMachine++;
                         timer.reset();
                         distanceCountpixels++;
