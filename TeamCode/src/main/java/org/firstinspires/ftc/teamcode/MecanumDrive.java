@@ -52,6 +52,9 @@ import java.util.List;
 
 @Config
 public final class MecanumDrive {
+    public Double getExternalHeadingVelocity() {
+        return (double) imu.getRobotAngularVelocity(AngleUnit.RADIANS).zRotationRate;
+    }
     public static class Params {
         // IMU orientation
         // DONE: fill in these values based on
@@ -127,6 +130,10 @@ public final class MecanumDrive {
     private final DownsampledWriter targetPoseWriter = new DownsampledWriter("TARGET_POSE", 50_000_000);
     private final DownsampledWriter driveCommandWriter = new DownsampledWriter("DRIVE_COMMAND", 50_000_000);
     private final DownsampledWriter mecanumCommandWriter = new DownsampledWriter("MECANUM_COMMAND", 50_000_000);
+
+    // IF YOU NEED TO REVERSE THE DIRECTION OF YOUR MOTORS:
+//    rightFront.setDirection(DcMotorSimple.Direction.REVERSE); // add if needed
+//    rightBack.setDirection(DcMotorSimple.Direction.REVERSE); // add if needed
 
     public class DriveLocalizer implements Localizer {
         public final Encoder leftFront, leftBack, rightBack, rightFront;
