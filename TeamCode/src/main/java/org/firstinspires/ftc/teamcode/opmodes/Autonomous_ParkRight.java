@@ -81,7 +81,7 @@ import java.util.concurrent.TimeUnit;
  */
 
 @com.qualcomm.robotcore.eventloop.opmode.Autonomous(name="Autonomous_ParkRight", group="Robot")
-//@Disabled
+
 public class Autonomous_ParkRight extends LinearOpMode {
 
     // Huskylens Integration
@@ -290,7 +290,7 @@ public class Autonomous_ParkRight extends LinearOpMode {
                     driveStraight(.5, -5, 0);    // Drive Backward 10"
                     holdHeading(.5,   0, 1);    // Hold  0 Deg heading for 2 seconds
 
-                    //overturn so the camera squarly sees the QR codes
+                    //overturn so the camera squarely sees the QR codes
                     turnToHeading(.5, -90); // turn left 90 degrees
                     holdHeading(.5, -90, 1); // hold -90 degrees heading for 2 a second
 

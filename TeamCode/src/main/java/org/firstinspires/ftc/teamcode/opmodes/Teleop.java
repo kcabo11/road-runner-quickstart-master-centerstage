@@ -31,6 +31,7 @@ package org.firstinspires.ftc.teamcode.opmodes;
 
 import android.graphics.Color;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -55,7 +56,12 @@ import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cColorSensor;
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  */
 
-@TeleOp(name="Teleop", group="Robot")
+
+//================================================================================================================
+// - - - - - - - - - - - - - - - - - - - - - - - - - OUTDATED - - - - - - - - - - - - - - - - - - - - - - - - - -
+//================================================================================================================
+
+@Autonomous(name="Teleop", group="Robot")
 public class Teleop extends LinearOpMode {
 
     /* Declare OpMode members. */
@@ -640,9 +646,12 @@ public class Teleop extends LinearOpMode {
 
             // Pace this loop so jaw action is reasonable speed.
             //sleep(50);
+
+        telemetry.addData("PixelPlacerPosition: ", pixelPlacerServo.getPosition());
         }
     }
 }
+
 
 
 /* PseudoCode TeleOp
